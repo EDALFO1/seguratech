@@ -310,7 +310,7 @@ public function update(Request $request, Recibo $recibo)
         return redirect()->route('recibos.index')
             ->with('success','Recibo eliminado correctamente');
     }
-   public function calcularRecibo($afiliadoId, $fecha)
+   public function calcularRecibo($afiliadoId, $fecha, $permitirMismoMes = false)
 {
     $afiliado = Afiliado::find($afiliadoId);
     if (!$afiliado) return null;
@@ -325,17 +325,37 @@ public function update(Request $request, Recibo $recibo)
     $fechaRecibo = Carbon::parse($fecha);
 
     // 🔥 PERIODO
+    if ($permitirMismoMes) {
+
+    // 🔥 PARA EXPORTAR VIGENTES
+    // LIQUIDAR MES ACTUAL
+    $periodo = $fechaRecibo->copy();
+
+} else {
+
+    // 🔥 RECIBO NORMAL
+    // LIQUIDA MES ANTERIOR
     $periodo = $fechaRecibo->copy()->subMonthNoOverflow();
-    $finPeriodo = $periodo->copy()->startOfMonth()->addDays(29);
+}
+
+$finPeriodo = $periodo->copy()->startOfMonth()->addDays(29);
 
     $fechaIngreso = Carbon::parse($afiliacion->fecha_afiliacion)->startOfDay();
 
     if (
-        $fechaIngreso->year == $fechaRecibo->year &&
-        $fechaIngreso->month == $fechaRecibo->month
-    ) return null;
+    !$permitirMismoMes &&
+    $fechaIngreso->year == $fechaRecibo->year &&
+    $fechaIngreso->month == $fechaRecibo->month
+) {
+    return null;
+}
 
-    if ($fechaIngreso->gt($finPeriodo)) return null;
+    if (
+    !$permitirMismoMes &&
+    $fechaIngreso->gt($finPeriodo)
+) {
+    return null;
+}
 
     // 🔥 DIAS
     $dias = 30;
