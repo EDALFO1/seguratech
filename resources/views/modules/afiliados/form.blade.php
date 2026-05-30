@@ -147,7 +147,7 @@
     <label>Fecha Nacimiento</label>
     <input type="date" name="fecha_nacimiento"
     class="form-control @error('fecha_nacimiento') is-invalid @enderror"
-    value="{{ old('fecha_nacimiento',$afiliado->fecha_nacimiento ?? '') }}" required>
+    value="{{ old('fecha_nacimiento', $afiliado->fecha_nacimiento?->format('Y-m-d')) }}" required>
 
     @error('fecha_nacimiento')
         <div class="invalid-feedback">{{ $message }}</div>

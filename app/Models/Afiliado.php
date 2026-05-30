@@ -38,7 +38,7 @@ class Afiliado extends BaseModel
         'estado'
     ];
     protected $casts = [
-        'fecha_nacimiento' => 'date:Y-m-d',
+        'fecha_nacimiento' => 'date',
         'estado' => 'boolean',
     ];
 
