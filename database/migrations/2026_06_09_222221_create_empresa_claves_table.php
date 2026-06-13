@@ -12,24 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('empresa_claves', function (Blueprint $table) {
-    $table->id();
+        $table->id();
 
-    $table->foreignId('empresa_id')
-        ->constrained('empresas')
-        ->cascadeOnDelete();
+        $table->foreignId('empresa_id')
+              ->constrained('empresas')
+              ->onDelete('cascade');
 
-    $table->foreignId('servicio_externo_id')
-        ->constrained('servicios_externos')
-        ->cascadeOnDelete();
+        $table->foreignId('servicio_externo_id')
+              ->constrained('servicios_externos')
+              ->onDelete('cascade');
 
-    $table->string('usuario')->nullable();
-    $table->string('correo_registrado')->nullable();
-    $table->string('password')->nullable();
+        $table->string('usuario')->nullable();
+        $table->string('correo_registrado')->nullable();
+        $table->text('password')->nullable();
 
-    $table->timestamps();
-
-    $table->index('empresa_id');
-});
+        $table->timestamps();
+    });
     }
 
     /**

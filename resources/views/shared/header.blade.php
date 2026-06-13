@@ -33,7 +33,7 @@
 
       {{-- BOTÓN CLAVES --}}
       <li class="nav-item me-4">
-        <a href="#" 
+        <a href="{{ route('empresa-claves.index') }}"
           class="btn d-flex align-items-center text-white px-3" 
           style="background: linear-gradient(90deg, #ff7e5f, #feb47b);">
           <i class="bi bi-key me-2 fs-5"></i>

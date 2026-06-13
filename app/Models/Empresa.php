@@ -63,4 +63,8 @@ class Empresa extends Model
 {
     return $this->belongsToMany(User::class);
 }
+public function claves()
+{
+    return $this->hasMany(EmpresaClave::class);
+}
 }

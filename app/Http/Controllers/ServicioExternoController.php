@@ -2,63 +2,98 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ServicioExterno;
 use Illuminate\Http\Request;
 
 class ServicioExternoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * LISTADO
      */
     public function index()
     {
-        //
+        $servicios = ServicioExterno::latest()
+            ->paginate(15);
+
+        return view(
+            'modules.servicios_externos.index',
+            compact('servicios')
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * FORM CREAR
      */
     public function create()
     {
-        //
+        return view(
+            'modules.servicios_externos.create'
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * GUARDAR
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|max:255',
+            'url' => 'nullable|url|max:255',
+        ]);
+
+        ServicioExterno::create([
+            'nombre' => $request->nombre,
+            'url' => $request->url,
+            'activo' => $request->activo ?? 1,
+        ]);
+
+        return redirect()
+            ->route('servicios-externos.index')
+            ->with('success', 'Servicio creado correctamente.');
     }
 
     /**
-     * Display the specified resource.
+     * FORM EDITAR
      */
-    public function show(string $id)
+    public function edit(ServicioExterno $serviciosExterno)
     {
-        //
+        return view(
+            'modules.servicios_externos.edit',
+            compact('serviciosExterno')
+        );
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * ACTUALIZAR
      */
-    public function edit(string $id)
+    public function update(Request $request, ServicioExterno $serviciosExterno)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|max:255',
+            'url' => 'nullable|url|max:255',
+        ]);
+
+        $serviciosExterno->update([
+            'nombre' => $request->nombre,
+            'url' => $request->url,
+            'activo' => $request->activo ?? 1,
+        ]);
+
+        return redirect()
+            ->route('servicios-externos.index')
+            ->with('success', 'Servicio actualizado.');
     }
 
     /**
-     * Update the specified resource in storage.
+     * ELIMINAR
      */
-    public function update(Request $request, string $id)
+    public function destroy(ServicioExterno $serviciosExterno)
     {
-        //
-    }
+        $serviciosExterno->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return back()->with(
+            'success',
+            'Servicio eliminado.'
+        );
     }
 }

@@ -20,15 +20,42 @@ use App\Exports\PilaRealExport;
 class ReciboController extends Controller
 {
     public function index()
-    {
-        $recibos = Recibo::with('afiliado')
-            ->latest()
-            ->paginate(15);
+{
+    $empresaId = session('empresa_id');
 
-        $pendientes = Recibo::whereNull('export_batch_id')->count();
+    // 🔥 PERIODO ACTUAL
+    // EJEMPLO:
+    // si hoy es junio -> mostrar recibos del periodo mayo
+    $periodo = now()->subMonth()->format('Y-m');
 
-        return view('modules.recibos.index', compact('recibos','pendientes'));
-    }
+    // 🔥 SOLO RECIBOS DEL PERIODO ACTUAL
+    $recibos = Recibo::with('afiliado')
+        ->where('empresa_id', $empresaId)
+        ->whereRaw("
+            DATE_FORMAT(
+                DATE_SUB(fecha, INTERVAL 1 MONTH),
+                '%Y-%m'
+            ) = ?
+        ", [$periodo])
+        ->latest()
+        ->paginate(15);
+
+    // 🔥 PENDIENTES SOLO DEL PERIODO ACTUAL
+    $pendientes = Recibo::where('empresa_id', $empresaId)
+        ->whereNull('export_batch_id')
+        ->whereRaw("
+            DATE_FORMAT(
+                DATE_SUB(fecha, INTERVAL 1 MONTH),
+                '%Y-%m'
+            ) = ?
+        ", [$periodo])
+        ->count();
+
+    return view(
+        'modules.recibos.index',
+        compact('recibos', 'pendientes')
+    );
+}
 
     public function create()
     {
@@ -861,6 +888,9 @@ $contenido = (new \App\Exports\PilaTxtExport(collect($otros), $empresa))->genera
         // 🔥 DESCARGA ZIP
         // =========================
         $zip = new \ZipArchive();
+
+
+$zipPath = storage_path("app/pila_{$batch->id}.zip");
 
 $result = $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
 

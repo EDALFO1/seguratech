@@ -87,6 +87,19 @@
       </a>
     </li>
 
+    <li class="nav-item">
+    <a class="nav-link"
+       href="{{ route('servicios-externos.index') }}">
+
+        <i class="bi bi-globe"></i>
+        <span>Servicios Externos</span>
+
+    </a>
+</li>
+
+
+
+
   </ul>
 </li>
 

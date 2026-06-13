@@ -27,7 +27,9 @@ use App\Http\Controllers\{
     SubtipoCotizanteController,
     ParametroAnualController,
     AfiliadoServicioController,
-    RemisionDetalleController
+    EmpresaClaveController,
+    RemisionDetalleController,
+    ServicioExternoController
 };
 
 /*
@@ -205,6 +207,39 @@ Route::middleware('auth')->group(function () {
 
     Route::get('{id}/descargar', [ExportBatchController::class, 'descargar'])
         ->name('descargar');
+});
+// EMPRESA CLAVES
+        Route::prefix('empresa-claves')->as('empresa-claves.')->group(function () {
+            Route::get('/', [EmpresaClaveController::class, 'index'])->name('index');
+            Route::get('/create', [EmpresaClaveController::class, 'create'])->name('create');
+            Route::post('/', [EmpresaClaveController::class, 'store'])->name('store');
+            Route::get('/{empresaClave}/edit', [EmpresaClaveController::class, 'edit'])->name('edit');
+            Route::put('/{empresaClave}', [EmpresaClaveController::class, 'update'])->name('update');
+            Route::delete('/{empresaClave}', [EmpresaClaveController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('servicios-externos')
+    ->as('servicios-externos.')
+    ->group(function () {
+
+    Route::get('/', [ServicioExternoController::class, 'index'])
+        ->name('index');
+
+    Route::get('/create', [ServicioExternoController::class, 'create'])
+        ->name('create');
+
+    Route::post('/', [ServicioExternoController::class, 'store'])
+        ->name('store');
+
+    Route::get('/{serviciosExterno}/edit', [ServicioExternoController::class, 'edit'])
+        ->name('edit');
+
+    Route::put('/{serviciosExterno}', [ServicioExternoController::class, 'update'])
+        ->name('update');
+
+    Route::delete('/{serviciosExterno}', [ServicioExternoController::class, 'destroy'])
+        ->name('destroy');
+
 });
 
 
