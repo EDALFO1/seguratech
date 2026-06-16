@@ -181,15 +181,15 @@ table.detalle tfoot td.num {
 <div class="info-grid">
     <div class="col">
         <div class="label">Afiliado</div>
-        <div class="value">{{ $remision->afiliado->primer_nombre }} {{ $remision->afiliado->primer_apellido }}</div>
+        <div class="value">{{ $remision->afiliado?->primer_nombre }} {{ $remision->afiliado?->primer_apellido }}</div>
         <div class="label" style="margin-top:6px">Dirección</div>
-        <div class="value">{{ $remision->afiliado->direccion }}</div>
+        <div class="value">{{ $remision->afiliado?->direccion ?? 'N/A' }}</div>
     </div>
     <div class="col" style="text-align:right">
         <div class="label">Documento</div>
-        <div class="value">{{ $remision->afiliado->numero_documento }}</div>
+        <div class="value">{{ $remision->afiliado?->numero_documento ?? 'N/A' }}</div>
         <div class="label" style="margin-top:6px">Teléfono</div>
-        <div class="value">{{ $remision->afiliado->telefono }}</div>
+        <div class="value">{{ $remision->afiliado?->telefono ?? 'N/A' }}</div>
     </div>
 </div>
 

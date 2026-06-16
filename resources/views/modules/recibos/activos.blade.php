@@ -35,16 +35,16 @@
 @forelse($activos as $r)
 <tr>
 
-<td>{{ $r->afiliado->id }}</td>
+<td>{{ $r->afiliado?->id }}</td>
 
-<td>{{ $r->afiliado->numero_documento }}</td>
+<td>{{ $r->afiliado?->numero_documento ?? 'N/A' }}</td>
 
 <td>
-    {{ $r->afiliado->primer_nombre }}
-    {{ $r->afiliado->primer_apellido }}
+    {{ $r->afiliado?->primer_nombre }}
+    {{ $r->afiliado?->primer_apellido }}
     <br>
     <small class="text-muted">
-        {{ $r->afiliado->numero_documento }}
+        {{ $r->afiliado?->numero_documento ?? 'N/A' }}
     </small>
 </td>
 

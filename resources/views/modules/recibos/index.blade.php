@@ -111,7 +111,7 @@
 
                         <td>
                             <div class="fw-semibold">
-                                {{ $r->afiliado->primer_nombre }} {{ $r->afiliado->primer_apellido }}
+                                {{ $r->afiliado?->primer_nombre }} {{ $r->afiliado?->primer_apellido }}
                             </div>
                         </td>
 

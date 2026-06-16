@@ -46,10 +46,10 @@
 
                             <td>
                                 <div class="fw-semibold">
-                                    {{ $r->afiliado->primer_nombre }} {{ $r->afiliado->primer_apellido }}
+                                    {{ $r->afiliado?->primer_nombre }} {{ $r->afiliado?->primer_apellido }}
                                 </div>
                                 <div class="text-muted small">
-                                    CC {{ $r->afiliado->numero_documento }}
+                                    CC {{ $r->afiliado?->numero_documento ?? 'N/A' }}
                                 </div>
                             </td>
 

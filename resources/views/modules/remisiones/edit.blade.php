@@ -77,7 +77,7 @@
                     <i class="bi bi-person me-1"></i>Afiliado
                 </label>
                 <input type="text" class="form-control bg-light"
-                       value="{{ $remision->afiliado->primer_nombre }} {{ $remision->afiliado->primer_apellido }} - {{ $remision->afiliado->numero_documento }}"
+                       value="{{ $remision->afiliado?->primer_nombre }} {{ $remision->afiliado?->primer_apellido }} - {{ $remision->afiliado?->numero_documento ?? 'N/A' }}"
                        readonly>
             </div>
 

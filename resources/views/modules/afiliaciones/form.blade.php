@@ -34,8 +34,8 @@ $isEdit = isset($afiliacion) && $afiliacion->id;
     <div class="col-md-6">
         <label class="form-label fw-semibold">Afiliado</label>
         <div class="alert alert-info mb-0">
-            <strong>{{ $afiliacion->afiliado->primer_nombre }} {{ $afiliacion->afiliado->primer_apellido }}</strong><br>
-            Documento: {{ $afiliacion->afiliado->numero_documento }}
+            <strong>{{ $afiliacion->afiliado?->primer_nombre }} {{ $afiliacion->afiliado?->primer_apellido }}</strong><br>
+            Documento: {{ $afiliacion->afiliado?->numero_documento ?? 'N/A' }}
         </div>
         <input type="hidden" name="afiliado_id" value="{{ $afiliacion->afiliado_id }}">
     </div>
