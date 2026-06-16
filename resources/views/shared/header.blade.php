@@ -17,10 +17,10 @@
             <div class="logo-icon">ST</div>
             <div>
                 <div class="logo-text">SeguraTech</div>
-                <div class="logo-sub">Gestión de Seguridad Social</div>
+                <div class="logo-sub"></div>
             </div>
         </a>
-        <i class="bi bi-list toggle-sidebar-btn ms-2"></i>
+        <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>
 
     {{-- ACCIONES + PERFIL --}}

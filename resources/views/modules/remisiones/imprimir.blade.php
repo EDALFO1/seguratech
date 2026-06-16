@@ -2,41 +2,153 @@
 <html>
 <head>
 
-<title>Remisión</title>
+<meta charset="utf-8">
+<title>Remisión {{ $remision->numero }}</title>
 
 <style>
 
+* { box-sizing: border-box; }
+
 body{
-font-family: Arial;
-font-size:14px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 14px;
+    color: #1e293b;
+    margin: 0;
+    padding: 30px;
 }
 
-table{
-width:100%;
-border-collapse:collapse;
+.doc {
+    max-width: 760px;
+    margin: 0 auto;
 }
 
-td,th{
-border:1px solid #000;
-padding:6px;
+.doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 3px solid #3b82f6;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
 }
 
-.sin-borde{
-border:none;
+.doc-header .empresa h2 {
+    margin: 0 0 2px;
+    font-size: 19px;
+    letter-spacing: -0.3px;
+    color: #0f172a;
 }
 
-.total{
-font-size:22px;
-font-weight:bold;
-text-align:right;
+.doc-header .empresa p {
+    margin: 0;
+    font-size: 12.5px;
+    color: #64748b;
+}
+
+.doc-header .folio {
+    text-align: right;
+}
+
+.doc-header .folio .badge-remision {
+    display: inline-block;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    border-radius: 99px;
+    padding: 5px 14px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.doc-header .folio .fecha {
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: #64748b;
+}
+
+.info-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+}
+
+.info-grid .col { font-size: 13px; line-height: 1.6; }
+.info-grid .label { color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.info-grid .value { color: #0f172a; font-weight: 600; }
+
+table.detalle {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 18px;
+}
+
+table.detalle thead th {
+    background: #f1f5f9;
+    color: #475569;
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    padding: 10px 12px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+table.detalle thead th.num { text-align: right; }
+
+table.detalle tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 13.5px;
+}
+
+table.detalle tbody td.num { text-align: right; }
+
+table.detalle tfoot td {
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    border-top: 2px solid #0f172a;
+}
+
+table.detalle tfoot td.num {
+    text-align: right;
+    color: #2563eb;
+}
+
+.nota {
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    color: #475569;
+    line-height: 1.7;
+}
+
+.nota strong { color: #0f172a; }
+
+.no-print {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.no-print button {
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 @media print{
-
-.no-print{
-display:none;
-}
-
+    body { padding: 0; }
+    .no-print { display: none; }
 }
 
 </style>
@@ -45,108 +157,76 @@ display:none;
 
 <body>
 
-<div class="no-print" style="text-align:right;margin-bottom:20px">
+@php(\Carbon\Carbon::setLocale('es'))
 
-<button onclick="window.print()" style="padding:10px 20px">
-🖨 Imprimir
-</button>
+<div class="doc">
 
+<div class="no-print">
+    <button onclick="window.print()">🖨 Imprimir</button>
 </div>
 
-<h2 style="text-align:center">
-{{ strtoupper($remision->empresa->nombre) }}
-</h2>
+<div class="doc-header">
+    <div class="empresa">
+        <h2>{{ strtoupper($remision->empresa->nombre) }}</h2>
+        <p>NIT: {{ $remision->empresa->nit }}</p>
+    </div>
+    <div class="folio">
+        <span class="badge-remision">Remisión N° {{ $remision->numero }}</span>
+        <div class="fecha">
+            {{ \Carbon\Carbon::parse($remision->fecha)->translatedFormat('d \\d\\e F \\d\\e Y') }}
+        </div>
+    </div>
+</div>
 
-<p style="text-align:center">
-NIT: {{ $remision->empresa->nit }}
-</p>
+<div class="info-grid">
+    <div class="col">
+        <div class="label">Afiliado</div>
+        <div class="value">{{ $remision->afiliado->primer_nombre }} {{ $remision->afiliado->primer_apellido }}</div>
+        <div class="label" style="margin-top:6px">Dirección</div>
+        <div class="value">{{ $remision->afiliado->direccion }}</div>
+    </div>
+    <div class="col" style="text-align:right">
+        <div class="label">Documento</div>
+        <div class="value">{{ $remision->afiliado->numero_documento }}</div>
+        <div class="label" style="margin-top:6px">Teléfono</div>
+        <div class="value">{{ $remision->afiliado->telefono }}</div>
+    </div>
+</div>
 
-<table class="sin-borde">
-
-<tr class="sin-borde">
-
-<td class="sin-borde">
-
-<b>Fecha:</b> {{ $remision->fecha }} <br>
-<b>Periodo:</b> {{ date('m/Y', strtotime($remision->fecha)) }} <br>
-<b>Nombre:</b> {{ $remision->afiliado->primer_nombre }} {{ $remision->afiliado->primer_apellido }} <br>
-<b>Dirección:</b> {{ $remision->afiliado->direccion }}
-
-</td>
-
-<td class="sin-borde" style="text-align:right">
-
-<b>Remisión N°:</b> {{ $remision->numero }} <br>
-<b>CC:</b> {{ $remision->afiliado->numero_documento }} <br>
-<b>Teléfono:</b> {{ $remision->afiliado->telefono }}
-
-</td>
-
-</tr>
-
-</table>
-
-<br>
-
-<table>
+<table class="detalle">
 
 <thead>
-
 <tr>
-
-<th>Concepto</th>
-<th>Valor</th>
-
+    <th>Concepto</th>
+    <th class="num">Valor</th>
 </tr>
-
 </thead>
 
 <tbody>
 
 @foreach($remision->detalles as $d)
-
 <tr>
-
-<td>{{ $d->concepto }}</td>
-
-<td style="text-align:right">
-${{ number_format($d->valor) }}
-</td>
-
+    <td>{{ $d->concepto }}</td>
+    <td class="num">${{ number_format($d->valor) }}</td>
 </tr>
-
 @endforeach
-
-<tr>
-
-<td><b>TOTAL</b></td>
-
-<td class="total">
-
-${{ number_format($remision->total) }}
-
-</td>
-
-</tr>
 
 </tbody>
 
+<tfoot>
+<tr>
+    <td>TOTAL</td>
+    <td class="num">${{ number_format($remision->total) }}</td>
+</tr>
+</tfoot>
+
 </table>
 
-<br>
-
-<div style="border:1px dashed #999;padding:10px">
-
-CRA 9 # 9 - 49  
-Tel: 8818282  
-
-No cuenta: 017070235944  
-Banco DAVIVIENDA CTA AHORROS  
-
-Enviar consignación por WHATSAPP  
-
-3152041979  
-3183375879  
+<div class="nota">
+    <strong>CRA 9 # 9 - 49</strong> · Tel: 8818282<br>
+    No. cuenta: <strong>017070235944</strong> · Banco DAVIVIENDA, cta. ahorros<br>
+    Enviar comprobante de consignación por WhatsApp al <strong>3152041979</strong> o <strong>3183375879</strong>
+</div>
 
 </div>
 

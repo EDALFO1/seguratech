@@ -4,130 +4,162 @@
 
 @section('contenido')
 
-<div class="pagetitle">
-    <h1>Editar Recibo</h1>
+<div class="pagetitle d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Editar Recibo</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('recibos.index') }}">Recibos</a></li>
+                <li class="breadcrumb-item active">{{ $recibo->numero }}</li>
+            </ol>
+        </nav>
+    </div>
+    <a href="{{ route('recibos.index') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Volver
+    </a>
 </div>
 
-<section class="section">
-
-<div class="row">
-<div class="col-lg-12">
-
-<div class="card">
-<div class="card-body pt-4">
+<section class="section mt-3">
 
 <form action="{{ route('recibos.update',$recibo->id) }}" method="POST">
 @csrf
 @method('PUT')
 
-<div class="row">
+<div class="row g-3">
 
-{{-- FECHA --}}
-<div class="col-md-4 mb-3">
-<label>Fecha</label>
-<input type="date" name="fecha" id="fecha"
-class="form-control"
-value="{{ $recibo->fecha }}">
+<div class="col-xl-8">
+
+<div class="card shadow-sm border-0">
+    <div class="card-header py-3">
+        <h5 class="mb-0 fw-semibold">Datos del recibo</h5>
+        <p class="text-muted small mb-0 mt-1">
+            Recibo N° <strong>{{ $recibo->numero }}</strong>
+        </p>
+    </div>
+    <div class="card-body pt-4">
+
+        <div class="row g-3">
+
+            {{-- FECHA --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Fecha</label>
+                <input type="date" name="fecha" id="fecha"
+                       class="form-control"
+                       value="{{ $recibo->fecha }}">
+            </div>
+
+            {{-- PERIODO --}}
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Periodo</label>
+                <input type="text" id="periodo" class="form-control bg-light" readonly>
+            </div>
+
+            {{-- AFILIADO (BLOQUEADO) --}}
+            <div class="col-md-7">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-person me-1"></i>Afiliado
+                </label>
+                <input type="text" class="form-control bg-light"
+                       value="{{ optional($recibo->afiliado)->primer_nombre }} {{ optional($recibo->afiliado)->primer_apellido }} - {{ optional($recibo->afiliado)->numero_documento }}"
+                       readonly>
+                <input type="hidden" id="afiliado_id" name="afiliado_id" value="{{ $recibo->afiliado_id }}">
+            </div>
+
+            <div class="col-12"><hr class="my-1"></div>
+
+            {{-- DIAS --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Días</label>
+                <input type="number" id="dias_liquidar" class="form-control bg-light" readonly>
+            </div>
+
+            {{-- IBC --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">IBC</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" id="ibc" class="form-control bg-light" readonly>
+                </div>
+            </div>
+
+            {{-- TOTAL --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Total</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" id="total" name="total" class="form-control fw-bold" readonly>
+                </div>
+            </div>
+
+            <div class="col-12"><hr class="my-1"></div>
+
+            {{-- NOVEDAD --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Novedad</label>
+                <select name="novedad" id="novedad" class="form-select">
+                    <option value="">Sin novedad</option>
+                    <option value="Ingreso" {{ $recibo->novedad=='Ingreso'?'selected':'' }}>Ingreso</option>
+                    <option value="Retiro" {{ $recibo->novedad=='Retiro'?'selected':'' }}>Retiro</option>
+                </select>
+            </div>
+
+            {{-- FECHA RETIRO --}}
+            <div class="col-md-3" id="campo_retiro"
+                 style="{{ $recibo->novedad=='Retiro'?'':'display:none;' }}">
+                <label class="form-label fw-semibold">Fecha Retiro</label>
+                <input type="date" name="fecha_retiro"
+                       class="form-control"
+                       value="{{ $recibo->fecha_retiro }}">
+            </div>
+
+        </div>
+
+        <div class="d-flex gap-2 mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg me-1"></i>Actualizar Recibo
+            </button>
+            <a href="{{ route('recibos.index') }}" class="btn btn-outline-secondary">
+                Cancelar
+            </a>
+        </div>
+
+    </div>
 </div>
 
-{{-- PERIODO --}}
-<div class="col-md-4 mb-3">
-<label>Periodo</label>
-<input type="text" id="periodo" class="form-control" readonly>
-</div>
-
-{{-- AFILIADO (BLOQUEADO 🔒) --}}
-<div class="col-md-6 mb-3">
-<label>Afiliado</label>
-<input type="text" class="form-control"
-value="{{ optional($recibo->afiliado)->primer_nombre }} {{ optional($recibo->afiliado)->primer_apellido }} - {{ optional($recibo->afiliado)->numero_documento }}"
-readonly>
-
-<input type="hidden" id="afiliado_id" name="afiliado_id"
-value="{{ $recibo->afiliado_id }}">
-</div>
-
-{{-- DIAS --}}
-<div class="col-md-3 mb-3">
-<label>Días</label>
-<input type="number" id="dias_liquidar" class="form-control" readonly>
-</div>
-
-{{-- IBC --}}
-<div class="col-md-3 mb-3">
-<label>IBC</label>
-<input type="number" id="ibc" class="form-control" readonly>
-</div>
-
-{{-- TOTAL --}}
-<div class="col-md-3 mb-3">
-<label>Total</label>
-<input type="number" id="total" name="total"
-class="form-control" readonly>
-</div>
-
-{{-- NOVEDAD --}}
-<div class="col-md-3 mb-3">
-<label>Novedad</label>
-<select name="novedad" id="novedad" class="form-control">
-<option value="">Sin novedad</option>
-<option value="Ingreso" {{ $recibo->novedad=='Ingreso'?'selected':'' }}>Ingreso</option>
-<option value="Retiro" {{ $recibo->novedad=='Retiro'?'selected':'' }}>Retiro</option>
-</select>
-</div>
-
-{{-- FECHA RETIRO --}}
-<div class="col-md-3 mb-3" id="campo_retiro"
-style="{{ $recibo->novedad=='Retiro'?'':'display:none;' }}">
-<label>Fecha Retiro</label>
-<input type="date" name="fecha_retiro"
-class="form-control"
-value="{{ $recibo->fecha_retiro }}">
-</div>
-
-</div>
-
-<button class="btn btn-primary">Actualizar</button>
-
-<a href="{{ route('recibos.index') }}" class="btn btn-secondary">
-Cancelar
-</a>
-
-</form>
-
-</div>
 </div>
 
 {{-- DETALLE --}}
-<div class="card mt-4">
-<div class="card-body">
-
-<h5>Detalle del Recibo</h5>
-
-<table class="table table-bordered">
-<thead>
-<tr>
-<th>Concepto</th>
-<th>Valor</th>
-</tr>
-</thead>
-
-<tbody id="detalle_recibo"></tbody>
-
-<tfoot>
-<tr>
-<th>Total</th>
-<th id="total_recibo"></th>
-</tr>
-</tfoot>
-
-</table>
+<div class="col-xl-4">
+    <div class="card shadow-sm border-0" style="position:sticky; top:80px;">
+        <div class="card-header py-3">
+            <h5 class="mb-0 fw-semibold">
+                <i class="bi bi-receipt-cutoff me-1"></i>Detalle del Recibo
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Concepto</th>
+                        <th class="text-end pe-3">Valor</th>
+                    </tr>
+                </thead>
+                <tbody id="detalle_recibo"></tbody>
+                <tfoot>
+                    <tr class="table-light">
+                        <th class="ps-3">Total</th>
+                        <th class="text-end pe-3" id="total_recibo"></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
 
 </div>
-</div>
 
-</div>
-</div>
+</form>
 
 </section>
 
@@ -206,10 +238,7 @@ function cargarPreview(){
         tbody.innerHTML = "";
 
         data.detalles.forEach(d => {
-            tbody.innerHTML += `<tr>
-                <td>${d.concepto}</td>
-                <td>${Number(d.valor).toLocaleString()}</td>
-            </tr>`;
+            tbody.innerHTML += `<tr><td class="ps-3">${d.concepto}</td><td class="text-end pe-3">${Number(d.valor).toLocaleString()}</td></tr>`;
         });
 
         document.getElementById("total").value = TOTAL_BASE;

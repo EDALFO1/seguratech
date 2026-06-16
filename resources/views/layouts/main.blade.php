@@ -69,7 +69,7 @@ body { overflow-x: hidden; }
 .toggle-sidebar-btn {
     color: #64748b !important;
     font-size: 1.4rem !important;
-    margin-left: 10px; padding: 6px;
+    margin-left: 0; padding: 6px;
     border-radius: 6px; transition: all 0.15s; line-height: 1;
 }
 .toggle-sidebar-btn:hover { color: #0f172a !important; background: #f1f5f9; }

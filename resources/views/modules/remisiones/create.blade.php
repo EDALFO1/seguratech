@@ -4,159 +4,187 @@
 
 @section('contenido')
 
-<div class="pagetitle">
-<h1>Crear Remisión</h1>
+<div class="pagetitle d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Nueva Remisión</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('remisiones.index') }}">Remisiones</a></li>
+                <li class="breadcrumb-item active">Nueva</li>
+            </ol>
+        </nav>
+    </div>
+    <a href="{{ route('remisiones.index') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Volver
+    </a>
 </div>
 
-<section class="section">
-
-<div class="row">
-<div class="col-lg-12">
-
-<div class="card">
-<div class="card-body pt-4">
-
-<div class="alert alert-info">
-El número de remisión se generará automáticamente.
-</div>
+<section class="section mt-3">
 
 <form action="{{ route('remisiones.store') }}" method="POST">
 @csrf
 
-<div class="row">
+<div class="row g-3">
 
-{{-- EMPRESA --}}
-<div class="col-md-4 mb-3">
-<label>Empresa</label>
-<input type="text" class="form-control bg-light"
-value="{{ session('empresa_nombre') }}" readonly>
+<div class="col-xl-8">
+
+<div class="card shadow-sm border-0">
+    <div class="card-header py-3">
+        <h5 class="mb-0 fw-semibold">Datos de la remisión</h5>
+        <p class="text-muted small mb-0 mt-1">
+            El número de remisión se generará automáticamente.
+        </p>
+    </div>
+    <div class="card-body pt-4">
+
+        <div class="row g-3">
+
+            {{-- EMPRESA --}}
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Empresa</label>
+                <input type="text" class="form-control bg-light"
+                       value="{{ session('empresa_nombre') }}" readonly>
+            </div>
+
+            {{-- NIT --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">NIT</label>
+                <input type="text" class="form-control bg-light"
+                       value="{{ session('empresa_nit') }}" readonly>
+            </div>
+
+            {{-- FECHA --}}
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Fecha</label>
+                <input type="date" name="fecha" id="fecha"
+                       class="form-control"
+                       value="{{ date('Y-m-d') }}">
+            </div>
+
+            {{-- PERIODO --}}
+            <div class="col-md-1">
+                <label class="form-label fw-semibold">Periodo</label>
+                <input type="text" id="periodo" class="form-control bg-light" readonly>
+            </div>
+
+            <div class="col-12"><hr class="my-1"></div>
+
+            {{-- BUSCADOR --}}
+            <div class="col-md-7 position-relative">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-search me-1"></i>Afiliado
+                </label>
+                <input type="text" id="buscar_afiliado"
+                       class="form-control"
+                       placeholder="Buscar por documento o nombre">
+                <input type="hidden" name="afiliado_id" id="afiliado_id">
+                <div id="resultados_afiliado" class="list-group shadow-sm"
+                     style="position:absolute; z-index:20; width:100%;"></div>
+            </div>
+
+            {{-- FECHA AFILIACION --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Fecha afiliación</label>
+                <input type="text" id="fecha_afiliacion" class="form-control bg-light" readonly>
+            </div>
+
+            {{-- DIAS --}}
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Días</label>
+                <input type="number" name="dias_liquidar" id="dias_liquidar"
+                       class="form-control bg-light" readonly>
+            </div>
+
+            <div class="col-12"><hr class="my-1"></div>
+
+            {{-- MENSAJERIA --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Mensajería</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" step="0.01" name="mensajeria" id="mensajeria"
+                           class="form-control" value="0">
+                </div>
+            </div>
+
+            {{-- INTERESES --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Intereses</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" step="0.01" name="intereses" id="intereses"
+                           class="form-control" value="0">
+                </div>
+            </div>
+
+            {{-- TOTAL --}}
+            <div class="col-md-3 ms-auto">
+                <label class="form-label fw-semibold">Total</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" name="total" id="total"
+                           class="form-control fw-bold" readonly>
+                </div>
+            </div>
+
+            {{-- CARGOS DINAMICOS --}}
+            <div class="col-12 mt-2">
+                <label class="form-label fw-semibold">Cargos adicionales</label>
+                <div id="contenedor_cargos"></div>
+                <button type="button" class="btn btn-outline-success btn-sm mt-2"
+                        onclick="agregarCargo()">
+                    <i class="bi bi-plus-lg me-1"></i>Agregar cargo
+                </button>
+            </div>
+
+        </div>
+
+        <div class="d-flex gap-2 mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg me-1"></i>Guardar Remisión
+            </button>
+            <a href="{{ route('remisiones.index') }}" class="btn btn-outline-secondary">
+                Cancelar
+            </a>
+        </div>
+
+    </div>
 </div>
 
-{{-- NIT --}}
-<div class="col-md-4 mb-3">
-<label>NIT</label>
-<input type="text" class="form-control bg-light"
-value="{{ session('empresa_nit') }}" readonly>
-</div>
-
-{{-- FECHA --}}
-<div class="col-md-4 mb-3">
-<label>Fecha</label>
-<input type="date" name="fecha" id="fecha"
-class="form-control"
-value="{{ date('Y-m-d') }}">
-</div>
-
-{{-- PERIODO --}}
-<div class="col-md-4 mb-3">
-<label>Periodo</label>
-<input type="text" id="periodo" class="form-control" readonly>
-</div>
-
-{{-- BUSCADOR --}}
-<div class="col-md-6 mb-3 position-relative">
-
-<label>Afiliado</label>
-
-<input type="text" id="buscar_afiliado"
-class="form-control"
-placeholder="Buscar por documento o nombre">
-
-<input type="hidden" name="afiliado_id" id="afiliado_id">
-
-<div id="resultados_afiliado" class="list-group"></div>
-
-</div>
-
-{{-- FECHA AFILIACION --}}
-<div class="col-md-3 mb-3">
-<label>Fecha afiliación</label>
-<input type="text" id="fecha_afiliacion" class="form-control" readonly>
-</div>
-
-{{-- DIAS --}}
-<div class="col-md-3 mb-3">
-<label>Días</label>
-<input type="number" name="dias_liquidar" id="dias_liquidar"
-class="form-control" readonly>
-</div>
-
-{{-- TOTAL --}}
-<div class="col-md-3 mb-3">
-<label>Total</label>
-<input type="number" name="total" id="total"
-class="form-control" readonly>
-</div>
-
-{{-- 🔥 MENSAJERIA --}}
-<div class="col-md-3 mb-3">
-<label>Mensajería</label>
-<input type="number" step="0.01" name="mensajeria" id="mensajeria"
-class="form-control" value="0">
-</div>
-
-{{-- 🔥 INTERESES --}}
-<div class="col-md-3 mb-3">
-<label>Intereses</label>
-<input type="number" step="0.01" name="intereses" id="intereses"
-class="form-control" value="0">
-</div>
-
-{{-- 🔥 CARGOS DINAMICOS --}}
-<div class="col-12 mt-3">
-<label><strong>Cargos adicionales</strong></label>
-
-<div id="contenedor_cargos"></div>
-
-<button type="button" class="btn btn-sm btn-success mt-2"
-onclick="agregarCargo()">
-+ Agregar cargo
-</button>
-</div>
-
-</div> {{-- FIN ROW --}}
-
-<button class="btn btn-primary">Guardar</button>
-
-<a href="{{ route('remisiones.index') }}" class="btn btn-secondary">
-Cancelar
-</a>
-
-</form>
-
-</div>
 </div>
 
 {{-- PREVIEW --}}
-<div class="card mt-4">
-<div class="card-body">
-
-<h5>Detalle de Remisión</h5>
-
-<table class="table table-bordered">
-<thead>
-<tr>
-<th>Concepto</th>
-<th>Valor</th>
-</tr>
-</thead>
-
-<tbody id="detalle_remision"></tbody>
-
-<tfoot>
-<tr>
-<th>Total</th>
-<th id="total_remision"></th>
-</tr>
-</tfoot>
-
-</table>
+<div class="col-xl-4">
+    <div class="card shadow-sm border-0" style="position:sticky; top:80px;">
+        <div class="card-header py-3">
+            <h5 class="mb-0 fw-semibold">
+                <i class="bi bi-receipt-cutoff me-1"></i>Detalle de Remisión
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Concepto</th>
+                        <th class="text-end pe-3">Valor</th>
+                    </tr>
+                </thead>
+                <tbody id="detalle_remision"></tbody>
+                <tfoot>
+                    <tr class="table-light">
+                        <th class="ps-3">Total</th>
+                        <th class="text-end pe-3" id="total_remision"></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
 
 </div>
-</div>
 
-</div>
-</div>
+</form>
 
 </section>
 
@@ -257,22 +285,27 @@ function agregarCargo(){
     contadorCargos++;
 
     let html = `
-    <div class="row mt-2 cargo-item" data-id="${contadorCargos}">
-        <div class="col-md-5">
+    <div class="row g-2 mt-1 cargo-item align-items-center" data-id="${contadorCargos}">
+        <div class="col-7">
             <input type="text" name="cargos[${contadorCargos}][concepto]"
-                class="form-control"
+                class="form-control form-control-sm"
                 placeholder="Concepto">
         </div>
 
-        <div class="col-md-3">
-            <input type="number" step="0.01"
-                name="cargos[${contadorCargos}][valor]"
-                class="form-control valor-cargo">
+        <div class="col-4">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01"
+                    name="cargos[${contadorCargos}][valor]"
+                    class="form-control valor-cargo">
+            </div>
         </div>
 
-        <div class="col-md-2">
-            <button type="button" class="btn btn-danger"
-                onclick="eliminarCargo(${contadorCargos})">X</button>
+        <div class="col-1 text-end">
+            <button type="button" class="btn btn-outline-danger btn-sm"
+                onclick="eliminarCargo(${contadorCargos})">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
     </div>`;
 
@@ -303,12 +336,12 @@ function recalcularTotal(){
     let intereses = Number(document.getElementById("intereses").value || 0);
 
     if(mensajeria > 0){
-        tbody.innerHTML += `<tr class="manual-row"><td>Mensajería</td><td>${mensajeria.toLocaleString()}</td></tr>`;
+        tbody.innerHTML += `<tr class="manual-row"><td class="ps-3">Mensajería</td><td class="text-end pe-3">${mensajeria.toLocaleString()}</td></tr>`;
         totalFinal += mensajeria;
     }
 
     if(intereses > 0){
-        tbody.innerHTML += `<tr class="manual-row"><td>Intereses</td><td>${intereses.toLocaleString()}</td></tr>`;
+        tbody.innerHTML += `<tr class="manual-row"><td class="ps-3">Intereses</td><td class="text-end pe-3">${intereses.toLocaleString()}</td></tr>`;
         totalFinal += intereses;
     }
 
@@ -319,7 +352,7 @@ function recalcularTotal(){
             .querySelector('input[type="text"]').value || 'Cargo';
 
         if(valor > 0){
-            tbody.innerHTML += `<tr class="cargo-row"><td>${concepto}</td><td>${valor.toLocaleString()}</td></tr>`;
+            tbody.innerHTML += `<tr class="cargo-row"><td class="ps-3">${concepto}</td><td class="text-end pe-3">${valor.toLocaleString()}</td></tr>`;
             totalFinal += valor;
         }
     });
@@ -378,7 +411,7 @@ function cargarPreview(){
         tbody.innerHTML = "";
 
         data.detalles.forEach(d => {
-            tbody.innerHTML += `<tr><td>${d.concepto}</td><td>${Number(d.valor).toLocaleString()}</td></tr>`;
+            tbody.innerHTML += `<tr><td class="ps-3">${d.concepto}</td><td class="text-end pe-3">${Number(d.valor).toLocaleString()}</td></tr>`;
         });
 
         recalcularTotal();
