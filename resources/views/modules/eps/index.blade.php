@@ -1,89 +1,89 @@
 @extends('layouts.main')
-
 @section('titulo', $titulo)
-
 @section('contenido')
 
-<div class="pagetitle">
-    <h1>EPS</h1>
+<div class="pagetitle d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1 class="mb-0"><i class="bi bi-heart-pulse me-2"></i>EPS</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
+                <li class="breadcrumb-item active">EPS</li>
+            </ol>
+        </nav>
+    </div>
+    <a href="{{ route('eps.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>Nuevo
+    </a>
 </div>
 
-<section class="section">
+<section class="section mt-3">
 
-<div class="card">
-<div class="card-body">
-
-<div class="d-flex justify-content-between mb-3 mt-3">
-
-<a href="{{ route('eps.create') }}" class="btn btn-primary">
-    Crear EPS
-</a>
-
-</div>
-
-@if(session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
-
-<table class="table table-striped">
-
-<thead>
-<tr>
-    <th>ID</th>
-    <th>Nombre</th>
-    <th>Código</th>
-    <th>Porcentaje</th>
-    <th width="150">Acciones</th>
-</tr>
-</thead>
-
-<tbody>
-
-@foreach($eps as $item)
-
-<tr>
-<td>{{ $item->id }}</td>
-<td>{{ $item->nombre }}</td>
-<td>{{ $item->codigo }}</td>
-<td>{{ $item->porcentaje }}%</td>
-
-<td>
-
-<a href="{{ route('eps.edit',$item->id) }}"
-class="btn btn-sm btn-warning">
-Editar
-</a>
-
-<form action="{{ route('eps.destroy',$item->id) }}"
-method="POST"
-style="display:inline">
-
-@csrf
-@method('DELETE')
-
-<button
-onclick="return confirm('¿Eliminar EPS?')"
-class="btn btn-sm btn-danger">
-Eliminar
-</button>
-
-</form>
-
-</td>
-
-</tr>
-
-@endforeach
-
-</tbody>
-
-</table>
-
-</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 datatable">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Nombre</th>
+                        <th>Código</th>
+                        <th>Porcentaje</th>
+                        <th class="text-center" style="width:120px">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($eps as $item)
+                    <tr>
+                        <td class="ps-3">{{ $item->nombre }}</td>
+                        <td>{{ $item->codigo }}</td>
+                        <td>{{ $item->porcentaje }}%</td>
+                        <td class="text-center">
+                            <a href="{{ route('eps.edit', $item->id) }}" class="btn btn-outline-warning btn-sm" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form action="{{ route('eps.destroy', $item->id) }}" method="POST" class="d-inline form-delete" data-nombre="{{ $item->nombre }}">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2 opacity-50"></i>
+                            No hay registros.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 </section>
+
+@push('scripts')
+<script>
+$(function () {
+    $('.form-delete').on('submit', function (e) {
+        e.preventDefault();
+        const form = this;
+        const nombre = $(this).data('nombre') || 'este registro';
+        Swal.fire({
+            title: '¿Eliminar registro?',
+            text: `«${nombre}» será eliminado permanentemente.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Sí, eliminar',
+        }).then(r => { if (r.isConfirmed) form.submit(); });
+    });
+});
+</script>
+@endpush
 
 @endsection

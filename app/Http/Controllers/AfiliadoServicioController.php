@@ -14,12 +14,11 @@ class AfiliadoServicioController extends Controller
     {
         $titulo = "Servicios por Afiliado";
 
-        $registros = AfiliadoServicio::with([
-            'afiliado',
-            'servicio'
-        ])
-        ->orderBy('id','desc')
-        ->get();
+        $registros = AfiliadoServicio::with(['afiliado', 'servicio'])
+            ->whereHas('afiliado')
+            ->whereHas('servicio')
+            ->orderBy('id', 'desc')
+            ->get();
 
         return view('modules.afiliado_servicios.index',
             compact('titulo','registros'));

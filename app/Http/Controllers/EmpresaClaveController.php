@@ -18,6 +18,8 @@ class EmpresaClaveController extends Controller
 {
     $empresaId = session('empresa_id');
 
+    abort_if(!$empresaId, 403, 'Debe seleccionar una empresa antes de continuar.');
+
     $claves = EmpresaClave::with('servicio')
         ->where('empresa_id', $empresaId)
         ->latest()
@@ -31,6 +33,8 @@ class EmpresaClaveController extends Controller
      */
     public function create()
 {
+    abort_if(!session('empresa_id'), 403, 'Debe seleccionar una empresa antes de continuar.');
+
     $servicios = ServicioExterno::orderBy('nombre')
         ->pluck('nombre', 'id');
 

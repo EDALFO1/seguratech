@@ -1,103 +1,131 @@
-<header id="header" class="header fixed-top d-flex align-items-center">
+<header id="header" class="header fixed-top d-flex align-items-center gap-3">
 
-  <div class="d-flex align-items-center justify-content-between">
-    <a href="index.html" class="logo d-flex align-items-center">
-      <img src="assets/img/logo.png" alt="">
-      <span class="d-none d-lg-block">SeguraTech</span>
-    </a>
-    <i class="bi bi-list toggle-sidebar-btn"></i>
-  </div>
+    @php
+        $hayEmpresa    = session()->has('empresa_id');
+        $rolActual     = (int) auth()->user()->rol_id;
+        $iniciales     = strtoupper(substr(auth()->user()->name, 0, 2));
+        $empresaActiva = auth()->user()->empresas->where('id', session('empresa_id'))->first();
+        $rolNombre     = match($rolActual) { 1 => 'Admin', 2 => 'Operador', 3 => 'Asesor', default => 'Usuario' };
+        $notasPend     = $hayEmpresa
+            ? \App\Models\Nota::whereIn('estado', ['pendiente','en_proceso'])->count()
+            : 0;
+    @endphp
 
-  <nav class="header-nav ms-auto">
-    <ul class="d-flex align-items-center">
-     
-      {{-- BOTÓN NOTAS --}}
-      <li class="nav-item me-4">
-        <a href="#" 
-          class="btn d-flex align-items-center text-white px-3" 
-          style="background: linear-gradient(90deg, #28a745, #5cd08d);">
-          <i class="bi bi-stickies-fill me-2 fs-5"></i>
-          <span>Notas</span>
+    {{-- LOGO + TOGGLE --}}
+    <div class="d-flex align-items-center flex-shrink-0">
+        <a href="{{ route('dashboard') }}" class="logo">
+            <div class="logo-icon">ST</div>
+            <div>
+                <div class="logo-text">SeguraTech</div>
+                <div class="logo-sub">Gestión de Seguridad Social</div>
+            </div>
         </a>
-      </li>
+        <i class="bi bi-list toggle-sidebar-btn ms-2"></i>
+    </div>
 
-      {{-- BOTÓN PLANES --}}
-      <li class="nav-item me-4">
-        <a href="#" 
-          class="btn d-flex align-items-center text-white px-3" 
-          style="background: linear-gradient(90deg, #0062E6, #33AEFF);">
-          <i class="bi bi-layers-fill me-2 fs-5"></i>
-          <span>Planes</span>
-        </a>
-      </li>
+    {{-- ACCIONES + PERFIL --}}
+    <nav class="header-nav ms-auto">
+        <ul class="d-flex align-items-center gap-2 mb-0 list-unstyled flex-wrap">
 
-      {{-- BOTÓN CLAVES --}}
-      <li class="nav-item me-4">
-        <a href="{{ route('empresa-claves.index') }}"
-          class="btn d-flex align-items-center text-white px-3" 
-          style="background: linear-gradient(90deg, #ff7e5f, #feb47b);">
-          <i class="bi bi-key me-2 fs-5"></i>
-          <span>Claves por Empresa</span>
-        </a>
-      </li>
-
-
-      {{-- Empresa Activa --}}
-      @php
-    $empresaActiva = auth()->user()->empresas
-        ->where('id', session('empresa_id'))
-        ->first();
-@endphp
-
-@if($empresaActiva)
-<div class="d-flex align-items-center gap-2 me-3">
-
-    <span class="badge bg-success text-truncate" style="max-width: 180px;">
-        <i class="bi bi-building"></i>
-        {{ $empresaActiva->nombre }}
-    </span>
-
-    <a href="{{ route('seleccionar.empresa') }}" 
-       class="btn btn-sm btn-warning">
-        Cambiar
-    </a>
-
-</div>
-@endif
-
-      {{-- PERFIL DEL USUARIO --}}
-      <li class="nav-item dropdown pe-3">
-        <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-          <span class="d-none d-md-block dropdown-toggle ps-2">
-            {{ Auth::check() ? Auth::user()->name : 'Invitado' }}
-          </span>
-        </a>
-
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-          <li class="dropdown-header">
-            <h6>{{ Auth::check() ? Auth::user()->name : 'Invitado' }}</h6>
-          </li>
-
-          <li><hr class="dropdown-divider"></li>
-
-          @if(Auth::check())
+            {{-- NOTAS --}}
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="#"
-                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Salir</span>
-              </a>
+                <a href="{{ $hayEmpresa ? route('notas.index') : '#' }}"
+                   class="st-pill notas {{ !$hayEmpresa ? 'disabled' : '' }}"
+                   @if(!$hayEmpresa) title="Selecciona una empresa primero" @endif>
+                    <i class="bi bi-stickies-fill"></i>
+                    <span class="d-none d-md-inline">Notas</span>
+                    @if($notasPend > 0)
+                        <span class="badge-count">{{ $notasPend > 99 ? '99+' : $notasPend }}</span>
+                    @endif
+                </a>
             </li>
 
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-              @csrf
-            </form>
-          @endif
+            {{-- PLANES --}}
+            <li>
+                <a href="{{ $hayEmpresa ? route('planes.index') : '#' }}"
+                   class="st-pill planes {{ !$hayEmpresa ? 'disabled' : '' }}"
+                   @if(!$hayEmpresa) title="Selecciona una empresa primero" @endif>
+                    <i class="bi bi-layers-fill"></i>
+                    <span class="d-none d-md-inline">Planes</span>
+                </a>
+            </li>
+
+            {{-- CLAVES --}}
+            <li>
+                <a href="{{ route('empresa-claves.index') }}" class="st-pill claves">
+                    <i class="bi bi-key-fill"></i>
+                    <span class="d-none d-lg-inline">Claves</span>
+                </a>
+            </li>
+
+            {{-- SEPARADOR --}}
+            <li class="d-none d-lg-flex"><div class="st-sep mx-1"></div></li>
+
+            {{-- EMPRESA ACTIVA --}}
+            @if($empresaActiva)
+            <li class="d-none d-lg-flex align-items-center gap-2">
+                <span class="st-empresa-chip">
+                    <i class="bi bi-building-fill"></i>
+                    {{ $empresaActiva->nombre }}
+                </span>
+                <a href="{{ route('seleccionar.empresa') }}" class="st-cambiar">
+                    <i class="bi bi-arrow-left-right me-1"></i>Cambiar
+                </a>
+            </li>
+            @endif
+
+            {{-- SEPARADOR --}}
+            <li class="d-none d-lg-flex"><div class="st-sep mx-1"></div></li>
+
+            {{-- PERFIL --}}
+            <li class="nav-item dropdown">
+                <a href="#"
+                   data-bs-toggle="dropdown"
+                   class="d-flex align-items-center gap-2 text-decoration-none">
+                    <div class="st-avatar">{{ $iniciales }}</div>
+                    <div class="st-user-info d-none d-lg-block">
+                        <div class="uname">{{ auth()->user()->name }}</div>
+                        <div class="urole">{{ $rolNombre }}</div>
+                    </div>
+                    <i class="bi bi-chevron-down st-chevron d-none d-lg-inline"></i>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end st-profile mt-2">
+                    <li class="dh">
+                        <div class="dh-name">{{ auth()->user()->name }}</div>
+                        <div class="dh-email">{{ auth()->user()->email }}</div>
+                    </li>
+                    <li><hr class="dropdown-divider my-1"></li>
+
+                    @if($empresaActiva)
+                    <li>
+                        <a class="dropdown-item" href="{{ route('seleccionar.empresa') }}">
+                            <i class="bi bi-arrow-left-right text-warning"></i>
+                            Cambiar empresa
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider my-1"></li>
+                    @endif
+
+                    <li>
+                        <a class="dropdown-item text-danger" href="#"
+                           onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Cerrar sesión
+                        </a>
+                    </li>
+                </ul>
+
+                <form id="logout-form"
+                      action="{{ route('logout') }}"
+                      method="POST"
+                      class="d-none">
+                    @csrf
+                </form>
+            </li>
 
         </ul>
-      </li>
-
-    </ul>
-  </nav>
+    </nav>
 
 </header>

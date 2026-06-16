@@ -4,13 +4,9 @@
 
 @section('contenido')
 
-<main id="main" class="main">
-
     <div class="pagetitle">
         <h1>Editar Servicio</h1>
     </div>
-
-    <section class="section">
 
         <div class="card">
 
@@ -44,9 +40,5 @@
             </div>
 
         </div>
-
-    </section>
-
-</main>
 
 @endsection

@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Crypt;
 
     /* CONTENEDOR GENERAL */
     .claves-wrapper{
-    margin-top: -45px;
-    margin-left: -35px;
     padding-right: 10px;
 }
 
@@ -116,9 +114,7 @@ use Illuminate\Support\Facades\Crypt;
 
 </style>
 
-<main id="main" class="main">
-
-    <div class="container-fluid-fluid claves-wrapper">    
+<div class="container-fluid-fluid claves-wrapper">
 
         <div class="d-flex justify-content-between align-items-center mb-3">
 
@@ -356,8 +352,6 @@ use Illuminate\Support\Facades\Crypt;
         </div>
 
     </div>
-
-</main>
 
 @endsection
 

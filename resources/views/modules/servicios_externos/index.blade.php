@@ -4,13 +4,9 @@
 
 @section('contenido')
 
-<main id="main" class="main">
-
     <div class="pagetitle">
         <h1>Servicios Externos</h1>
     </div>
-
-    <section class="section">
 
         <div class="card">
 
@@ -161,9 +157,5 @@
             </div>
 
         </div>
-
-    </section>
-
-</main>
 
 @endsection

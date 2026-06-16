@@ -333,6 +333,13 @@ public function destroy($id)
         ->with('success','Remisión eliminada correctamente');
 }
 
+    public function imprimir($id)
+    {
+        $remision = Remision::with(['afiliado', 'detalles', 'empresa'])->findOrFail($id);
+
+        return view('modules.remisiones.imprimir', compact('remision'));
+    }
+
     public function buscarAfiliados(Request $request)
 {
     $buscar = $request->q;
