@@ -125,11 +125,11 @@ Route::middleware('auth')->group(function () {
 
     /*
     |-----------------------------------
-    | ADMIN + ASESOR (rol:1,3) — operador NO tiene acceso
+    | ADMIN + ASESOR + INVITADO (rol:1,3,4) — operador NO tiene acceso
     |-----------------------------------
     */
 
-    Route::middleware('rol:1,3')->group(function () {
+    Route::middleware('rol:1,3,4')->group(function () {
 
         // Recibos
         Route::middleware('empresa')->group(function () {
@@ -153,16 +153,6 @@ Route::middleware('auth')->group(function () {
             ]);
         });
 
-        // Servicios externos
-        Route::prefix('servicios-externos')->as('servicios-externos.')->group(function () {
-            Route::get('/',                       [ServicioExternoController::class, 'index'])->name('index');
-            Route::get('/create',                 [ServicioExternoController::class, 'create'])->name('create');
-            Route::post('/',                      [ServicioExternoController::class, 'store'])->name('store');
-            Route::get('/{serviciosExterno}/edit',[ServicioExternoController::class, 'edit'])->name('edit');
-            Route::put('/{serviciosExterno}',     [ServicioExternoController::class, 'update'])->name('update');
-            Route::delete('/{serviciosExterno}',  [ServicioExternoController::class, 'destroy'])->name('destroy');
-        });
-
         // Empresas externas
         Route::resource('empresas_externas', EmpresaExternaController::class);
 
@@ -177,8 +167,27 @@ Route::middleware('auth')->group(function () {
             Route::get('{id}/descargar',    [ExportBatchController::class, 'descargar'])->name('descargar');
         });
 
-    }); // fin rol:1,3
+    }); // fin rol:1,3,4
 
+    /*
+    |-----------------------------------
+    | ADMIN + ASESOR + INVITADO + OPERADOR (rol:1,3,4,5)
+    |-----------------------------------
+    */
+
+    Route::middleware('rol:1,3,4,5')->group(function () {
+
+        // Servicios externos
+        Route::prefix('servicios-externos')->as('servicios-externos.')->group(function () {
+            Route::get('/',                       [ServicioExternoController::class, 'index'])->name('index');
+            Route::get('/create',                 [ServicioExternoController::class, 'create'])->name('create');
+            Route::post('/',                      [ServicioExternoController::class, 'store'])->name('store');
+            Route::get('/{serviciosExterno}/edit',[ServicioExternoController::class, 'edit'])->name('edit');
+            Route::put('/{serviciosExterno}',     [ServicioExternoController::class, 'update'])->name('update');
+            Route::delete('/{serviciosExterno}',  [ServicioExternoController::class, 'destroy'])->name('destroy');
+        });
+
+    }); // fin rol:1,3,4,5
 
     /*
     |-----------------------------------

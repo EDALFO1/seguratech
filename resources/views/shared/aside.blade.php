@@ -36,7 +36,7 @@
                     <span>Crear Remisiones</span>
                 </a>
             </li>
-            @if(in_array($rol, [1, 3]))
+            @if(in_array($rol, [1, 3, 4]))
             <li>
                 <a href="{{ route('recibos.index') }}"
                    class="{{ request()->routeIs('recibos.*') ? 'active' : '' }}">
@@ -100,7 +100,7 @@
                     <span>Empresas Laborales</span>
                 </a>
             </li>
-            @if(in_array($rol, [1, 3]))
+            @if(in_array($rol, [1, 3, 4]))
             <li>
                 <a href="{{ route('asesores.index') }}"
                    class="{{ request()->routeIs('asesores.*') ? 'active' : '' }}">
@@ -125,7 +125,7 @@
         </a>
     </li>
 
-    @if(in_array($rol, [1, 3]))
+    @if(in_array($rol, [1, 3, 4, 5]))
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('servicios-externos.*') ? '' : 'collapsed' }}"
            href="{{ route('servicios-externos.index') }}">

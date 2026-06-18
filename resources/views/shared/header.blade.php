@@ -5,7 +5,7 @@
         $rolActual     = (int) auth()->user()->rol_id;
         $iniciales     = strtoupper(substr(auth()->user()->name, 0, 2));
         $empresaActiva = auth()->user()->empresas->where('id', session('empresa_id'))->first();
-        $rolNombre     = match($rolActual) { 1 => 'Admin', 2 => 'Operador', 3 => 'Asesor', default => 'Usuario' };
+        $rolNombre     = match($rolActual) { 1 => 'Admin', 3 => 'Asesor', 4 => 'Invitado', 5 => 'Operador', default => 'Usuario' };
         $notasPend     = $hayEmpresa
             ? \App\Models\Nota::whereIn('estado', ['pendiente','en_proceso'])->count()
             : 0;
