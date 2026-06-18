@@ -9,16 +9,21 @@
 
 * { box-sizing: border-box; }
 
+@page {
+    size: 5.5in 8.5in;
+    margin: 10mm 12mm;
+}
+
 body{
     font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     color: #1e293b;
     margin: 0;
-    padding: 30px;
+    padding: 16px;
 }
 
 .doc {
-    max-width: 760px;
+    max-width: 100%;
     margin: 0 auto;
 }
 
@@ -26,21 +31,21 @@ body{
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    border-bottom: 3px solid #3b82f6;
-    padding-bottom: 14px;
-    margin-bottom: 18px;
+    border-bottom: 2px solid #3b82f6;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .doc-header .empresa h2 {
     margin: 0 0 2px;
-    font-size: 19px;
+    font-size: 14px;
     letter-spacing: -0.3px;
     color: #0f172a;
 }
 
 .doc-header .empresa p {
     margin: 0;
-    font-size: 12.5px;
+    font-size: 11px;
     color: #64748b;
 }
 
@@ -54,30 +59,30 @@ body{
     color: #2563eb;
     border: 1px solid #bfdbfe;
     border-radius: 99px;
-    padding: 5px 14px;
+    padding: 3px 10px;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 11px;
 }
 
 .doc-header .folio .fecha {
-    margin-top: 6px;
-    font-size: 12.5px;
+    margin-top: 4px;
+    font-size: 10.5px;
     color: #64748b;
 }
 
 .info-grid {
     display: flex;
     justify-content: space-between;
-    gap: 24px;
+    gap: 12px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 14px 18px;
-    margin-bottom: 20px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
 }
 
-.info-grid .col { font-size: 13px; line-height: 1.6; }
-.info-grid .label { color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.info-grid .col { font-size: 11px; line-height: 1.5; }
+.info-grid .label { color: #94a3b8; font-size: 9.5px; text-transform: uppercase; letter-spacing: .04em; }
 .info-grid .value { color: #0f172a; font-weight: 600; }
 
 table.detalle {
@@ -90,26 +95,26 @@ table.detalle thead th {
     background: #f1f5f9;
     color: #475569;
     text-align: left;
-    font-size: 12px;
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: .03em;
-    padding: 10px 12px;
+    padding: 6px 8px;
     border-bottom: 2px solid #e2e8f0;
 }
 
 table.detalle thead th.num { text-align: right; }
 
 table.detalle tbody td {
-    padding: 10px 12px;
+    padding: 6px 8px;
     border-bottom: 1px solid #e2e8f0;
-    font-size: 13.5px;
+    font-size: 11.5px;
 }
 
 table.detalle tbody td.num { text-align: right; }
 
 table.detalle tfoot td {
-    padding: 12px;
-    font-size: 16px;
+    padding: 8px;
+    font-size: 13px;
     font-weight: 800;
     border-top: 2px solid #0f172a;
 }
@@ -121,11 +126,11 @@ table.detalle tfoot td.num {
 
 .nota {
     border: 1px dashed #cbd5e1;
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 12.5px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 10.5px;
     color: #475569;
-    line-height: 1.7;
+    line-height: 1.6;
 }
 
 .nota strong { color: #0f172a; }
@@ -147,7 +152,7 @@ table.detalle tfoot td.num {
 }
 
 @media print{
-    body { padding: 0; }
+    body { padding: 0; font-size: 11px; }
     .no-print { display: none; }
 }
 
@@ -157,7 +162,10 @@ table.detalle tfoot td.num {
 
 <body>
 
-@php(\Carbon\Carbon::setLocale('es'))
+@php
+    \Carbon\Carbon::setLocale('es');
+    $periodoStr = ucfirst(\Carbon\Carbon::parse($remision->fecha)->subMonth()->translatedFormat('F Y'));
+@endphp
 
 <div class="doc">
 
@@ -190,6 +198,8 @@ table.detalle tfoot td.num {
         <div class="value">{{ $remision->afiliado?->numero_documento ?? 'N/A' }}</div>
         <div class="label" style="margin-top:6px">Teléfono</div>
         <div class="value">{{ $remision->afiliado?->telefono ?? 'N/A' }}</div>
+        <div class="label" style="margin-top:6px">Período de cotización</div>
+        <div class="value" style="color:#2563eb">{{ $periodoStr }}</div>
     </div>
 </div>
 
