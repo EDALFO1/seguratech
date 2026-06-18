@@ -14,6 +14,7 @@ class AuthController extends Controller
         if (Auth::attempt($credenciales)) {
 
             $request->session()->regenerate();
+            $request->session()->flash('just_logged_in', true);
 
             $user = auth()->user();
 

@@ -337,5 +337,19 @@ $(function(){
 
 @stack('scripts')
 
+<script>
+(function () {
+    var key = 'seg_tab_activa';
+    @if(session('just_logged_in'))
+        sessionStorage.setItem(key, '1');
+    @else
+        if (!sessionStorage.getItem(key)) {
+            window.location.replace('/force-logout');
+        }
+        sessionStorage.setItem(key, '1');
+    @endif
+})();
+</script>
+
 </body>
 </html>

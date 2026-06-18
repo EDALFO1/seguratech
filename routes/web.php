@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\{
     AuthController,
@@ -44,6 +45,13 @@ Route::get('/', fn() => redirect()->route('dashboard'));
 Route::view('/login', 'modules.auth.login')->name('login');
 
 Route::post('/logear', [AuthController::class, 'logear'])->name('logear');
+
+Route::get('/force-logout', function (Illuminate\Http\Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/login');
+})->middleware('web');
 
 
 /*
