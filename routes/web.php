@@ -125,38 +125,72 @@ Route::middleware('auth')->group(function () {
 
     /*
     |-----------------------------------
-    | ADMIN + ASESOR + INVITADO (rol:1,3,4) — operador NO tiene acceso
+    | RECIBOS (modulo:recibos)
     |-----------------------------------
     */
 
-    Route::middleware('rol:1,3,4')->group(function () {
-
-        // Recibos
-        Route::middleware('empresa')->group(function () {
-            Route::prefix('recibos')->name('recibos.')->group(function () {
-                Route::post('preview',              [ReciboController::class, 'preview'])->name('preview');
-                Route::post('generar',              [ReciboController::class, 'generar'])->name('generar');
-                Route::get('activos-siguiente',     [ReciboController::class, 'activosSiguientePeriodo'])->name('activos');
-                Route::get('sin-recibo',            [ReciboController::class, 'usuariosSinRecibo'])->name('sin_recibo');
-                Route::post('cerrar-periodo',       [ReciboController::class, 'cerrarPeriodo'])->name('cerrar_periodo');
-                Route::post('generar/{afiliado}',   [ReciboController::class, 'generarUno'])->name('generar.uno');
-                Route::post('generar-todos',        [ReciboController::class, 'generarTodos'])->name('generar.todos');
-                Route::get('exportar-vigentes',     [ReciboController::class, 'exportarVigentes'])->name('exportar.vigentes');
-            });
-            Route::resource('recibos', ReciboController::class);
-            Route::resource('recibo_detalles', ReciboDetalleController::class);
-
-            // Asesores y servicios
-            Route::resources([
-                'asesores'  => AsesorController::class,
-                'servicios' => ServicioController::class,
-            ]);
+    Route::middleware(['empresa', 'modulo:recibos'])->group(function () {
+        Route::prefix('recibos')->name('recibos.')->group(function () {
+            Route::post('preview',              [ReciboController::class, 'preview'])->name('preview');
+            Route::post('generar',              [ReciboController::class, 'generar'])->name('generar');
+            Route::get('activos-siguiente',     [ReciboController::class, 'activosSiguientePeriodo'])->name('activos');
+            Route::get('sin-recibo',            [ReciboController::class, 'usuariosSinRecibo'])->name('sin_recibo');
+            Route::post('cerrar-periodo',       [ReciboController::class, 'cerrarPeriodo'])->name('cerrar_periodo');
+            Route::post('generar/{afiliado}',   [ReciboController::class, 'generarUno'])->name('generar.uno');
+            Route::post('generar-todos',        [ReciboController::class, 'generarTodos'])->name('generar.todos');
+            Route::get('exportar-vigentes',     [ReciboController::class, 'exportarVigentes'])->name('exportar.vigentes');
         });
+        Route::resource('recibos', ReciboController::class);
+        Route::resource('recibo_detalles', ReciboDetalleController::class);
+    });
 
-        // Empresas externas
+    /*
+    |-----------------------------------
+    | ASESORES Y SERVICIOS (modulo:asesores)
+    |-----------------------------------
+    */
+
+    Route::middleware(['empresa', 'modulo:asesores'])->group(function () {
+        Route::resources([
+            'asesores'  => AsesorController::class,
+            'servicios' => ServicioController::class,
+        ]);
+    });
+
+    /*
+    |-----------------------------------
+    | SERVICIOS EXTERNOS (modulo:servicios_externos)
+    |-----------------------------------
+    */
+
+    Route::middleware('modulo:servicios_externos')->group(function () {
+        Route::prefix('servicios-externos')->as('servicios-externos.')->group(function () {
+            Route::get('/',                       [ServicioExternoController::class, 'index'])->name('index');
+            Route::get('/create',                 [ServicioExternoController::class, 'create'])->name('create');
+            Route::post('/',                      [ServicioExternoController::class, 'store'])->name('store');
+            Route::get('/{serviciosExterno}/edit',[ServicioExternoController::class, 'edit'])->name('edit');
+            Route::put('/{serviciosExterno}',     [ServicioExternoController::class, 'update'])->name('update');
+            Route::delete('/{serviciosExterno}',  [ServicioExternoController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+    /*
+    |-----------------------------------
+    | EMPRESAS EXTERNAS (modulo:empresas_externas)
+    |-----------------------------------
+    */
+
+    Route::middleware('modulo:empresas_externas')->group(function () {
         Route::resource('empresas_externas', EmpresaExternaController::class);
+    });
 
-        // Exportaciones
+    /*
+    |-----------------------------------
+    | EXPORTACIONES (modulo:exportaciones)
+    |-----------------------------------
+    */
+
+    Route::middleware('modulo:exportaciones')->group(function () {
         Route::prefix('exportaciones')->name('export.')->group(function () {
             Route::get('/',                 [ExportBatchController::class, 'index'])->name('index');
             Route::post('/crear',           [ExportBatchController::class, 'crearLote'])->name('crear');
@@ -166,38 +200,15 @@ Route::middleware('auth')->group(function () {
             Route::post('{id}/reversar',    [ExportBatchController::class, 'reversar'])->name('reversar');
             Route::get('{id}/descargar',    [ExportBatchController::class, 'descargar'])->name('descargar');
         });
-
-    }); // fin rol:1,3,4
-
-    /*
-    |-----------------------------------
-    | ADMIN + ASESOR + INVITADO + OPERADOR (rol:1,3,4,5)
-    |-----------------------------------
-    */
-
-    Route::middleware('rol:1,3,4,5')->group(function () {
-
-        // Servicios externos
-        Route::prefix('servicios-externos')->as('servicios-externos.')->group(function () {
-            Route::get('/',                       [ServicioExternoController::class, 'index'])->name('index');
-            Route::get('/create',                 [ServicioExternoController::class, 'create'])->name('create');
-            Route::post('/',                      [ServicioExternoController::class, 'store'])->name('store');
-            Route::get('/{serviciosExterno}/edit',[ServicioExternoController::class, 'edit'])->name('edit');
-            Route::put('/{serviciosExterno}',     [ServicioExternoController::class, 'update'])->name('update');
-            Route::delete('/{serviciosExterno}',  [ServicioExternoController::class, 'destroy'])->name('destroy');
-        });
-
-    }); // fin rol:1,3,4,5
+    });
 
     /*
     |-----------------------------------
-    | SOLO ADMIN (rol:1)
+    | LIBRERÍA (modulo:arls)
     |-----------------------------------
     */
 
-    Route::middleware('rol:1')->group(function () {
-
-        // Librería
+    Route::middleware('modulo:arls')->group(function () {
         Route::resources([
             'eps'               => EpsController::class,
             'arls'              => ArlController::class,
@@ -206,16 +217,44 @@ Route::middleware('auth')->group(function () {
             'documentos'        => DocumentoController::class,
             'subtipo_cotizantes'=> SubtipoCotizanteController::class,
         ]);
-
-        // Valor anual (SMMLV)
         Route::resource('parametros_anuales', ParametroAnualController::class)
             ->parameters(['parametros_anuales' => 'parametro_anual']);
+    });
 
-        // Empresas, usuarios y roles
+    /*
+    |-----------------------------------
+    | SISTEMA (modulo:usuarios / modulo:empresas / modulo:roles)
+    |-----------------------------------
+    */
+
+    Route::middleware('modulo:empresas')->group(function () {
         Route::resource('empresas', EmpresaController::class)->parameters(['empresas' => 'empresa']);
-        Route::resource('usuarios', UserController::class);
-        Route::resource('roles', RolController::class);
+    });
 
-    }); // fin rol:1
+    Route::middleware('modulo:usuarios')->group(function () {
+        Route::resource('usuarios', UserController::class);
+    });
+
+    Route::middleware('modulo:roles')->group(function () {
+        Route::resource('roles', RolController::class);
+    });
+
+    /*
+    |-----------------------------------
+    | GESTIÓN DE MÓDULOS (modulo:modulos_empresa / modulo:modulos_rol)
+    |-----------------------------------
+    */
+
+    Route::middleware('modulo:modulos_empresa')->group(function () {
+        Route::get('modulos-empresa',               [\App\Http\Controllers\ModuloEmpresaController::class, 'index'])->name('modulos-empresa.index');
+        Route::get('modulos-empresa/{empresa}/edit',[\App\Http\Controllers\ModuloEmpresaController::class, 'edit'])->name('modulos-empresa.edit');
+        Route::put('modulos-empresa/{empresa}',     [\App\Http\Controllers\ModuloEmpresaController::class, 'update'])->name('modulos-empresa.update');
+    });
+
+    Route::middleware('modulo:modulos_rol')->group(function () {
+        Route::get('modulos-rol',               [\App\Http\Controllers\ModuloRolController::class, 'index'])->name('modulos-rol.index');
+        Route::get('modulos-rol/{rol}/edit',    [\App\Http\Controllers\ModuloRolController::class, 'edit'])->name('modulos-rol.edit');
+        Route::put('modulos-rol/{rol}',         [\App\Http\Controllers\ModuloRolController::class, 'update'])->name('modulos-rol.update');
+    });
 
 });

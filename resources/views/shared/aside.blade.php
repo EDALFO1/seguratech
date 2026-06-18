@@ -1,9 +1,5 @@
 <aside id="sidebar" class="sidebar">
 
-@php $rol = (int) auth()->user()->rol_id; @endphp
-
-
-
 <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-heading">Principal</li>
@@ -36,7 +32,7 @@
                     <span>Crear Remisiones</span>
                 </a>
             </li>
-            @if(in_array($rol, [1, 3, 4]))
+            @if($modulosPermitidos->contains('recibos'))
             <li>
                 <a href="{{ route('recibos.index') }}"
                    class="{{ request()->routeIs('recibos.*') ? 'active' : '' }}">
@@ -100,7 +96,7 @@
                     <span>Empresas Laborales</span>
                 </a>
             </li>
-            @if(in_array($rol, [1, 3, 4]))
+            @if($modulosPermitidos->contains('asesores'))
             <li>
                 <a href="{{ route('asesores.index') }}"
                    class="{{ request()->routeIs('asesores.*') ? 'active' : '' }}">
@@ -125,7 +121,7 @@
         </a>
     </li>
 
-    @if(in_array($rol, [1, 3, 4, 5]))
+    @if($modulosPermitidos->contains('servicios_externos'))
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('servicios-externos.*') ? '' : 'collapsed' }}"
            href="{{ route('servicios-externos.index') }}">
@@ -135,10 +131,12 @@
     </li>
     @endif
 
-    @if($rol === 1)
+    @if($modulosPermitidos->contains('arls') || $modulosPermitidos->contains('usuarios'))
     <li class="nav-divider"></li>
     <li class="nav-heading">Configuración</li>
+    @endif
 
+    @if($modulosPermitidos->contains('arls'))
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('arls.*','eps.*','pensions.*','cajas.*','documentos.*','subtipo_cotizantes.*','parametros_anuales.*') ? '' : 'collapsed' }}"
            data-bs-target="#nav-libreria"
@@ -160,9 +158,11 @@
             <li><a href="{{ route('parametros_anuales.index') }}" class="{{ request()->routeIs('parametros_anuales.*') ? 'active' : '' }}"><span>Valor Anual</span></a></li>
         </ul>
     </li>
+    @endif
 
+    @if($modulosPermitidos->contains('usuarios'))
     <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('empresas.*','usuarios.*','roles.*') ? '' : 'collapsed' }}"
+        <a class="nav-link {{ request()->routeIs('empresas.*','usuarios.*','roles.*','modulos-empresa.*','modulos-rol.*') ? '' : 'collapsed' }}"
            data-bs-target="#nav-sistema"
            data-bs-toggle="collapse"
            href="#">
@@ -171,11 +171,19 @@
             <i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="nav-sistema"
-            class="nav-content collapse {{ request()->routeIs('empresas.*','usuarios.*','roles.*') ? 'show' : '' }}"
+            class="nav-content collapse {{ request()->routeIs('empresas.*','usuarios.*','roles.*','modulos-empresa.*','modulos-rol.*') ? 'show' : '' }}"
             data-bs-parent="#sidebar-nav">
+            @if($modulosPermitidos->contains('empresas'))
             <li><a href="{{ route('empresas.index') }}" class="{{ request()->routeIs('empresas.*') ? 'active' : '' }}"><span>Empresas</span></a></li>
+            @endif
             <li><a href="{{ route('usuarios.index') }}" class="{{ request()->routeIs('usuarios.*') ? 'active' : '' }}"><span>Usuarios</span></a></li>
             <li><a href="{{ route('roles.index') }}"    class="{{ request()->routeIs('roles.*') ? 'active' : '' }}"><span>Roles</span></a></li>
+            @if($modulosPermitidos->contains('modulos_empresa'))
+            <li><a href="{{ route('modulos-empresa.index') }}" class="{{ request()->routeIs('modulos-empresa.*') ? 'active' : '' }}"><span>Módulos por Empresa</span></a></li>
+            @endif
+            @if($modulosPermitidos->contains('modulos_rol'))
+            <li><a href="{{ route('modulos-rol.index') }}" class="{{ request()->routeIs('modulos-rol.*') ? 'active' : '' }}"><span>Módulos por Rol</span></a></li>
+            @endif
         </ul>
     </li>
     @endif

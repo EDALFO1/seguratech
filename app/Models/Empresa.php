@@ -60,9 +60,14 @@ class Empresa extends Model
         ];
     }
     public function usuarios()
-{
-    return $this->belongsToMany(User::class);
-}
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+    public function modulos()
+    {
+        return $this->belongsToMany(Modulo::class, 'empresa_modulo');
+    }
 public function claves()
 {
     return $this->hasMany(EmpresaClave::class);

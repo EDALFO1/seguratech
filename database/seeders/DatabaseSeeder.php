@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RolesSeeder::class,
+            ModulosSeeder::class,
+            RolModulosSeeder::class,
+            EmpresaModulosSeeder::class,
         ]);
 
         // Usuario de prueba

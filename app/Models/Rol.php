@@ -18,6 +18,11 @@ class Rol extends Model
         return $this->hasMany(User::class);
     }
 
+    public function modulos()
+    {
+        return $this->belongsToMany(Modulo::class, 'rol_modulo');
+    }
+
     public static function rules($id = null)
 {
     return [
