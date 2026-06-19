@@ -28,6 +28,7 @@
         <ul class="d-flex align-items-center gap-2 mb-0 list-unstyled flex-wrap">
 
             {{-- NOTAS --}}
+            @if($modulosPermitidos->contains('notas'))
             <li>
                 <a href="{{ $hayEmpresa ? route('notas.index') : '#' }}"
                    class="st-pill notas {{ !$hayEmpresa ? 'disabled' : '' }}"
@@ -39,8 +40,10 @@
                     @endif
                 </a>
             </li>
+            @endif
 
             {{-- PLANES --}}
+            @if($modulosPermitidos->contains('planes'))
             <li>
                 <a href="{{ $hayEmpresa ? route('planes.index') : '#' }}"
                    class="st-pill planes {{ !$hayEmpresa ? 'disabled' : '' }}"
@@ -49,14 +52,17 @@
                     <span class="d-none d-md-inline">Planes</span>
                 </a>
             </li>
+            @endif
 
             {{-- CLAVES --}}
+            @if($modulosPermitidos->contains('empresa_claves'))
             <li>
                 <a href="{{ route('empresa-claves.index') }}" class="st-pill claves">
                     <i class="bi bi-key-fill"></i>
                     <span class="d-none d-lg-inline">Claves</span>
                 </a>
             </li>
+            @endif
 
             {{-- SEPARADOR --}}
             <li class="d-none d-lg-flex"><div class="st-sep mx-1"></div></li>

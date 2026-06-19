@@ -21,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         Paginator::useBootstrap();
 
-        View::composer('shared.aside', SidebarComposer::class);
+        View::composer(['shared.aside', 'shared.header'], SidebarComposer::class);
     }
 }

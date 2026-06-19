@@ -12,6 +12,13 @@
         </a>
     </li>
 
+    {{-- OPERATIVO --}}
+    @php
+        $tieneRemisiones = $modulosPermitidos->contains('remisiones');
+        $tieneRecibos    = $modulosPermitidos->contains('recibos');
+    @endphp
+
+    @if($tieneRemisiones || $tieneRecibos)
     <li class="nav-heading">Operativo</li>
 
     <li class="nav-item">
@@ -26,13 +33,15 @@
         <ul id="nav-facturacion"
             class="nav-content collapse {{ request()->routeIs('remisiones.*','recibos.*') ? 'show' : '' }}"
             data-bs-parent="#sidebar-nav">
+            @if($tieneRemisiones)
             <li>
                 <a href="{{ route('remisiones.index') }}"
                    class="{{ request()->routeIs('remisiones.*') ? 'active' : '' }}">
                     <span>Crear Remisiones</span>
                 </a>
             </li>
-            @if($modulosPermitidos->contains('recibos'))
+            @endif
+            @if($tieneRecibos)
             <li>
                 <a href="{{ route('recibos.index') }}"
                    class="{{ request()->routeIs('recibos.*') ? 'active' : '' }}">
@@ -42,9 +51,30 @@
             @endif
         </ul>
     </li>
+    @endif
 
+    {{-- GESTIÓN --}}
+    @php
+        $tieneAfiliados       = $modulosPermitidos->contains('afiliados');
+        $tieneAfiliaciones    = $modulosPermitidos->contains('afiliaciones');
+        $tieneAfiliadoServ    = $modulosPermitidos->contains('afiliado_servicios');
+        $tieneArlAfiliados    = $modulosPermitidos->contains('arl_afiliados');
+        $tieneEmpresasLab     = $modulosPermitidos->contains('empresas_laborales');
+        $tieneAsesores        = $modulosPermitidos->contains('asesores');
+        $tieneServicios       = $modulosPermitidos->contains('servicios');
+        $tieneIncapacidades   = $modulosPermitidos->contains('incapacidades');
+        $tieneServExt         = $modulosPermitidos->contains('servicios_externos');
+
+        $tieneAlgunAfiliado   = $tieneAfiliados || $tieneAfiliaciones || $tieneAfiliadoServ || $tieneArlAfiliados;
+        $tieneAlgunEmpresa    = $tieneEmpresasLab || $tieneAsesores || $tieneServicios;
+        $hayGestion           = $tieneAlgunAfiliado || $tieneAlgunEmpresa || $tieneIncapacidades || $tieneServExt;
+    @endphp
+
+    @if($hayGestion)
     <li class="nav-heading">Gestión</li>
+    @endif
 
+    @if($tieneAlgunAfiliado)
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('afiliados.*','afiliaciones.*','afiliado_servicios.*','arl-afiliados.*') ? '' : 'collapsed' }}"
            data-bs-target="#nav-afiliados"
@@ -57,33 +87,43 @@
         <ul id="nav-afiliados"
             class="nav-content collapse {{ request()->routeIs('afiliados.*','afiliaciones.*','afiliado_servicios.*','arl-afiliados.*') ? 'show' : '' }}"
             data-bs-parent="#sidebar-nav">
+            @if($tieneAfiliados)
             <li>
                 <a href="{{ route('afiliados.index') }}"
                    class="{{ request()->routeIs('afiliados.*') ? 'active' : '' }}">
                     <span>Afiliados</span>
                 </a>
             </li>
+            @endif
+            @if($tieneAfiliaciones)
             <li>
                 <a href="{{ route('afiliaciones.index') }}"
                    class="{{ request()->routeIs('afiliaciones.*') ? 'active' : '' }}">
                     <span>Afiliaciones</span>
                 </a>
             </li>
+            @endif
+            @if($tieneAfiliadoServ)
             <li>
                 <a href="{{ route('afiliado_servicios.index') }}"
                    class="{{ request()->routeIs('afiliado_servicios.*') ? 'active' : '' }}">
                     <span>Servicios por Afiliado</span>
                 </a>
             </li>
+            @endif
+            @if($tieneArlAfiliados)
             <li>
                 <a href="{{ route('arl-afiliados.index') }}"
                    class="{{ request()->routeIs('arl-afiliados.*') ? 'active' : '' }}">
                     <span>Afiliados ARL</span>
                 </a>
             </li>
+            @endif
         </ul>
     </li>
+    @endif
 
+    @if($tieneAlgunEmpresa)
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('empresas_laborales.*','asesores.*','servicios.*') ? '' : 'collapsed' }}"
            data-bs-target="#nav-empresas"
@@ -96,19 +136,23 @@
         <ul id="nav-empresas"
             class="nav-content collapse {{ request()->routeIs('empresas_laborales.*','asesores.*','servicios.*') ? 'show' : '' }}"
             data-bs-parent="#sidebar-nav">
+            @if($tieneEmpresasLab)
             <li>
                 <a href="{{ route('empresas_laborales.index') }}"
                    class="{{ request()->routeIs('empresas_laborales.*') ? 'active' : '' }}">
                     <span>Empresas Laborales</span>
                 </a>
             </li>
-            @if($modulosPermitidos->contains('asesores'))
+            @endif
+            @if($tieneAsesores)
             <li>
                 <a href="{{ route('asesores.index') }}"
                    class="{{ request()->routeIs('asesores.*') ? 'active' : '' }}">
                     <span>Asesores</span>
                 </a>
             </li>
+            @endif
+            @if($tieneServicios)
             <li>
                 <a href="{{ route('servicios.index') }}"
                    class="{{ request()->routeIs('servicios.*') ? 'active' : '' }}">
@@ -118,7 +162,9 @@
             @endif
         </ul>
     </li>
+    @endif
 
+    @if($tieneIncapacidades)
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('incapacidades.*') ? '' : 'collapsed' }}"
            href="{{ route('incapacidades.index') }}">
@@ -126,8 +172,9 @@
             <span>Incapacidades</span>
         </a>
     </li>
+    @endif
 
-    @if($modulosPermitidos->contains('servicios_externos'))
+    @if($tieneServExt)
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('servicios-externos.*') ? '' : 'collapsed' }}"
            href="{{ route('servicios-externos.index') }}">
@@ -137,6 +184,7 @@
     </li>
     @endif
 
+    {{-- EXPORTACIONES --}}
     @if($modulosPermitidos->contains('exportaciones'))
     <li class="nav-divider"></li>
     <li class="nav-heading">Exportaciones</li>
@@ -175,6 +223,7 @@
     </li>
     @endif
 
+    {{-- CONFIGURACIÓN --}}
     @if($modulosPermitidos->contains('arls') || $modulosPermitidos->contains('usuarios'))
     <li class="nav-divider"></li>
     <li class="nav-heading">Configuración</li>
