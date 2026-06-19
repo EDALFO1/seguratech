@@ -208,7 +208,8 @@ body { overflow-x: hidden; }
 #sidebar .sidebar-nav .nav-link .bi-file-medical-fill { background: #fff1f2; color: #e11d48 !important; }
 #sidebar .sidebar-nav .nav-link .bi-globe2          { background: #f5f3ff; color: #7c3aed !important; }
 #sidebar .sidebar-nav .nav-link .bi-collection-fill { background: #fff7ed; color: #ea580c !important; }
-#sidebar .sidebar-nav .nav-link .bi-shield-lock-fill { background: #f1f5f9; color: #334155 !important; }
+#sidebar .sidebar-nav .nav-link .bi-shield-lock-fill    { background: #f1f5f9; color: #334155 !important; }
+#sidebar .sidebar-nav .nav-link .bi-box-arrow-up-right  { background: #f0fdf4; color: #16a34a !important; }
 
 #sidebar .sidebar-nav .nav-link span { flex: 1; line-height: 1.3; color: inherit; }
 
@@ -229,7 +230,8 @@ body { overflow-x: hidden; }
 #sidebar .sidebar-nav .nav-link:hover .bi-file-medical-fill { background: #ffe4e6; color: #be123c !important; }
 #sidebar .sidebar-nav .nav-link:hover .bi-globe2          { background: #ede9fe; color: #6d28d9 !important; }
 #sidebar .sidebar-nav .nav-link:hover .bi-collection-fill { background: #ffedd5; color: #c2410c !important; }
-#sidebar .sidebar-nav .nav-link:hover .bi-shield-lock-fill { background: #e2e8f0; color: #1e293b !important; }
+#sidebar .sidebar-nav .nav-link:hover .bi-shield-lock-fill    { background: #e2e8f0; color: #1e293b !important; }
+#sidebar .sidebar-nav .nav-link:hover .bi-box-arrow-up-right  { background: #dcfce7; color: #15803d !important; }
 
 /* Activo / expandido */
 #sidebar .sidebar-nav .nav-link:not(.collapsed) { background: #f0f9ff !important; color: #0369a1 !important; }
@@ -240,7 +242,8 @@ body { overflow-x: hidden; }
 #sidebar .sidebar-nav .nav-link:not(.collapsed) .bi-file-medical-fill { background: #ffe4e6; color: #be123c !important; }
 #sidebar .sidebar-nav .nav-link:not(.collapsed) .bi-globe2          { background: #ede9fe; color: #6d28d9 !important; }
 #sidebar .sidebar-nav .nav-link:not(.collapsed) .bi-collection-fill { background: #ffedd5; color: #c2410c !important; }
-#sidebar .sidebar-nav .nav-link:not(.collapsed) .bi-shield-lock-fill { background: #e2e8f0; color: #1e293b !important; }
+#sidebar .sidebar-nav .nav-link:not(.collapsed) .bi-shield-lock-fill    { background: #e2e8f0; color: #1e293b !important; }
+#sidebar .sidebar-nav .nav-link:not(.collapsed) .bi-box-arrow-up-right  { background: #dcfce7; color: #15803d !important; }
 #sidebar .sidebar-nav .nav-link:not(.collapsed) .bi-chevron-down { transform: rotate(180deg); color: #0369a1 !important; }
 
 /* Submenú */

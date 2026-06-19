@@ -31,7 +31,8 @@ use App\Http\Controllers\{
     EmpresaClaveController,
     RemisionDetalleController,
     ServicioExternoController,
-    PlanController
+    PlanController,
+    ArlAfiliadoController
 };
 
 /*
@@ -80,6 +81,13 @@ Route::middleware('auth')->group(function () {
     | admin(1), operador(2), asesor(3)
     |-----------------------------------
     */
+
+    // Afiliados ARL exclusivo
+    Route::middleware('empresa')->group(function () {
+        Route::get('/arl-afiliados/buscar', [ArlAfiliadoController::class, 'buscar'])->name('arl-afiliados.buscar');
+        Route::resource('arl-afiliados', ArlAfiliadoController::class)
+            ->parameters(['arl-afiliados' => 'arl_afiliado']);
+    });
 
     // Afiliados, afiliaciones, servicios por afiliado y empresas laborales
     Route::middleware('empresa')->group(function () {
@@ -203,7 +211,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/',                 [ExportBatchController::class, 'index'])->name('index');
             Route::post('/crear',           [ExportBatchController::class, 'crearLote'])->name('crear');
             Route::get('pila-excel',        [ReciboController::class, 'exportarPilaExcel'])->name('pila.excel');
-            Route::get('afiliados/exportar',[AfiliadoController::class, 'exportar'])->name('afiliados.exportar');
+            Route::get('afiliados/exportar',    [AfiliadoController::class, 'exportar'])->name('afiliados.exportar');
+            Route::get('arl-afiliados/exportar',[ArlAfiliadoController::class, 'exportar'])->name('arl-afiliados.exportar');
             Route::get('{id}',              [ExportBatchController::class, 'show'])->name('show');
             Route::post('{id}/reversar',    [ExportBatchController::class, 'reversar'])->name('reversar');
             Route::get('{id}/descargar',    [ExportBatchController::class, 'descargar'])->name('descargar');

@@ -46,7 +46,7 @@
     <li class="nav-heading">Gestión</li>
 
     <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('afiliados.*','afiliaciones.*','afiliado_servicios.*') ? '' : 'collapsed' }}"
+        <a class="nav-link {{ request()->routeIs('afiliados.*','afiliaciones.*','afiliado_servicios.*','arl-afiliados.*') ? '' : 'collapsed' }}"
            data-bs-target="#nav-afiliados"
            data-bs-toggle="collapse"
            href="#">
@@ -55,7 +55,7 @@
             <i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="nav-afiliados"
-            class="nav-content collapse {{ request()->routeIs('afiliados.*','afiliaciones.*','afiliado_servicios.*') ? 'show' : '' }}"
+            class="nav-content collapse {{ request()->routeIs('afiliados.*','afiliaciones.*','afiliado_servicios.*','arl-afiliados.*') ? 'show' : '' }}"
             data-bs-parent="#sidebar-nav">
             <li>
                 <a href="{{ route('afiliados.index') }}"
@@ -73,6 +73,12 @@
                 <a href="{{ route('afiliado_servicios.index') }}"
                    class="{{ request()->routeIs('afiliado_servicios.*') ? 'active' : '' }}">
                     <span>Servicios por Afiliado</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('arl-afiliados.index') }}"
+                   class="{{ request()->routeIs('arl-afiliados.*') ? 'active' : '' }}">
+                    <span>Afiliados ARL</span>
                 </a>
             </li>
         </ul>
@@ -128,6 +134,44 @@
             <i class="bi bi-globe2"></i>
             <span>Servicios Externos</span>
         </a>
+    </li>
+    @endif
+
+    @if($modulosPermitidos->contains('exportaciones'))
+    <li class="nav-divider"></li>
+    <li class="nav-heading">Exportaciones</li>
+
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('export.*') ? '' : 'collapsed' }}"
+           data-bs-target="#nav-exportaciones"
+           data-bs-toggle="collapse"
+           href="#">
+            <i class="bi bi-box-arrow-up-right"></i>
+            <span>Exportaciones</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="nav-exportaciones"
+            class="nav-content collapse {{ request()->routeIs('export.*') ? 'show' : '' }}"
+            data-bs-parent="#sidebar-nav">
+            <li>
+                <a href="{{ route('export.index') }}"
+                   class="{{ request()->routeIs('export.index') ? 'active' : '' }}">
+                    <span>Lotes PILA</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('export.afiliados.exportar') }}"
+                   class="{{ request()->routeIs('export.afiliados.exportar') ? 'active' : '' }}">
+                    <span>Afiliados Excel</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('export.arl-afiliados.exportar') }}"
+                   class="{{ request()->routeIs('export.arl-afiliados.exportar') ? 'active' : '' }}">
+                    <span>Afiliados ARL Excel</span>
+                </a>
+            </li>
+        </ul>
     </li>
     @endif
 
