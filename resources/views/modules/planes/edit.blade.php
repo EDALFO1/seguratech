@@ -42,16 +42,17 @@
                 <a href="{{ route('planes.index') }}" class="btn btn-outline-secondary">
                     Cancelar
                 </a>
-                <form action="{{ route('planes.destroy', $plan) }}"
-                      method="POST"
-                      class="ms-auto form-delete"
-                      data-nombre="{{ $plan->nombre }}">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="btn btn-outline-danger btn-sm">
-                        <i class="bi bi-trash me-1"></i>Eliminar plan
-                    </button>
-                </form>
+                <button type="button" class="btn btn-outline-danger btn-sm ms-auto btn-delete">
+                    <i class="bi bi-trash me-1"></i>Eliminar plan
+                </button>
             </div>
+        </form>
+
+        <form action="{{ route('planes.destroy', $plan) }}"
+              method="POST"
+              class="d-none form-delete"
+              data-nombre="{{ $plan->nombre }}">
+            @csrf @method('DELETE')
         </form>
     </div>
 </div>
@@ -63,10 +64,9 @@
 @push('scripts')
 <script>
 $(function () {
-    $('.form-delete').on('submit', function (e) {
-        e.preventDefault();
-        const form   = this;
-        const nombre = $(this).data('nombre');
+    $('.btn-delete').on('click', function () {
+        const form   = document.querySelector('.form-delete');
+        const nombre = $(form).data('nombre');
         Swal.fire({
             title: '¿Eliminar plan?',
             text: `«${nombre}» será eliminado permanentemente.`,
