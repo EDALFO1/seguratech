@@ -69,21 +69,104 @@ use Illuminate\Support\Facades\Crypt;
         display: inline-block;
     }
 
-    /* PASSWORD */
-    .password-box{
-        max-width: 230px;
+    /* PASSWORD WRAPPER */
+    .pw-wrapper{
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        max-width: 260px;
+    }
+
+    .password-group{
+        flex: 1;
+        display: flex;
+        align-items: center;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+    .password-group:focus-within{
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+        background: #fff;
     }
 
     .password-field{
-        border-radius: 8px 0 0 8px !important;
-        border-right: 0;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
         font-size: 13px;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
+        padding: 7px 10px;
+        width: 100%;
+        color: #1e293b;
     }
 
-    .toggle-password,
-    .copy-password{
-        border-radius: 0 !important;
+    /* BOTONES ICONO */
+    .pwd-btn{
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,.2);
+        transition: filter .15s, transform .13s, box-shadow .15s;
+    }
+
+    .pwd-btn:active{
+        transform: scale(.86) !important;
+    }
+
+    /* OJO — azul */
+    .pwd-btn-eye{
+        background: linear-gradient(135deg,#3b82f6,#1d4ed8);
+    }
+
+    .pwd-btn-eye:hover{
+        filter: brightness(1.12);
+        box-shadow: 0 4px 12px rgba(37,99,235,.45);
+        transform: translateY(-1px);
+    }
+
+    .pwd-btn-eye.revealed{
+        background: linear-gradient(135deg,#0ea5e9,#0369a1);
+        box-shadow: 0 4px 12px rgba(14,165,233,.45);
+    }
+
+    /* COPIAR — violeta */
+    .pwd-btn-copy{
+        background: linear-gradient(135deg,#8b5cf6,#6d28d9);
+    }
+
+    .pwd-btn-copy:hover{
+        filter: brightness(1.12);
+        box-shadow: 0 4px 12px rgba(109,40,217,.45);
+        transform: translateY(-1px);
+    }
+
+    .pwd-btn-copy.copied{
+        background: linear-gradient(135deg,#10b981,#047857);
+        box-shadow: 0 4px 12px rgba(16,185,129,.45);
+    }
+
+    .pwd-btn.copied i,
+    .pwd-btn.revealed i{
+        animation: pop .22s ease;
+    }
+
+    @keyframes pop{
+        0%   { transform: scale(1); }
+        50%  { transform: scale(1.4); }
+        100% { transform: scale(1); }
     }
 
     /* BOTONES */
@@ -230,15 +313,19 @@ use Illuminate\Support\Facades\Crypt;
                                     {{-- PASSWORD --}}
                                     <td>
 
-                                        <div class="input-group input-group-sm password-box">
+                                        <div class="pw-wrapper">
 
-                                            <input type="password"
-                                                   readonly
-                                                   class="form-control password-field"
-                                                   value="{{ $clave->password ? Crypt::decryptString($clave->password) : '' }}">
+                                            <div class="password-group">
+
+                                                <input type="password"
+                                                       readonly
+                                                       class="form-control password-field"
+                                                       value="{{ $clave->password ? Crypt::decryptString($clave->password) : '' }}">
+
+                                            </div>
 
                                             <button type="button"
-                                                    class="btn btn-outline-secondary toggle-password"
+                                                    class="pwd-btn pwd-btn-eye toggle-password"
                                                     title="Mostrar contraseña">
 
                                                 <i class="fa-solid fa-eye"></i>
@@ -246,7 +333,7 @@ use Illuminate\Support\Facades\Crypt;
                                             </button>
 
                                             <button type="button"
-                                                    class="btn btn-outline-secondary copy-password"
+                                                    class="pwd-btn pwd-btn-copy copy-password"
                                                     title="Copiar contraseña">
 
                                                 <i class="fa-solid fa-copy"></i>
@@ -366,28 +453,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         btn.addEventListener('click', function() {
 
-            const input = this.closest('.input-group')
-                              .querySelector('.password-field');
+            const input  = this.closest('.pw-wrapper').querySelector('.password-field');
+            const icon   = this.querySelector('i');
+            const hidden = input.type === 'password';
 
-            const icon = this.querySelector('i');
-
-            if(input.type === 'password') {
-
-                input.type = 'text';
-
-                input.classList.add('bg-success-subtle');
-
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-
-            } else {
-
-                input.type = 'password';
-
-                input.classList.remove('bg-success-subtle');
-
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-
-            }
+            input.type = hidden ? 'text' : 'password';
+            icon.classList.replace(hidden ? 'fa-eye' : 'fa-eye-slash',
+                                   hidden ? 'fa-eye-slash' : 'fa-eye');
+            this.classList.toggle('revealed', hidden);
+            this.title = hidden ? 'Ocultar contraseña' : 'Mostrar contraseña';
 
         });
 
@@ -398,34 +472,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         btn.addEventListener('click', async function() {
 
-            const input = this.closest('.input-group')
-                              .querySelector('.password-field');
-
-            const icon = this.querySelector('i');
+            const input = this.closest('.pw-wrapper').querySelector('.password-field');
+            const icon  = this.querySelector('i');
 
             try {
 
                 await navigator.clipboard.writeText(input.value);
 
                 icon.classList.replace('fa-copy', 'fa-check');
-
-                this.classList.remove('btn-outline-secondary');
-
-                this.classList.add('btn-outline-success');
+                this.classList.add('copied');
+                this.title = '¡Copiado!';
 
                 setTimeout(() => {
 
                     icon.classList.replace('fa-check', 'fa-copy');
+                    this.classList.remove('copied');
+                    this.title = 'Copiar contraseña';
 
-                    this.classList.remove('btn-outline-success');
+                }, 1600);
 
-                    this.classList.add('btn-outline-secondary');
+            } catch {
 
-                }, 1200);
-
-            } catch (error) {
-
-                alert('No se pudo copiar.');
+                alert('No se pudo copiar la contraseña.');
 
             }
 
