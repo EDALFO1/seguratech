@@ -96,6 +96,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/afiliados/buscar', [AfiliadoController::class, 'buscar'])->name('afiliados.buscar');
         Route::get('afiliado-servicio/{id}', [RemisionController::class, 'valorServicio']);
         Route::resource('afiliados', AfiliadoController::class)->parameters(['afiliados' => 'afiliado']);
+        Route::get('/afiliaciones/plantilla', [AfiliacionController::class, 'descargarPlantilla'])->name('afiliaciones.plantilla');
+        Route::post('/afiliaciones/importar', [AfiliacionController::class, 'importar'])->name('afiliaciones.importar');
         Route::resource('afiliaciones', AfiliacionController::class)->parameters(['afiliaciones' => 'afiliacion']);
         Route::resource('afiliado_servicios', AfiliadoServicioController::class)->parameters(['afiliado_servicios' => 'afiliado_servicio']);
 

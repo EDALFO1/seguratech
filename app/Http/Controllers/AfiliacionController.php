@@ -10,8 +10,11 @@ use App\Models\Pension;
 use App\Models\Caja;
 use App\Models\ParametroAnual;
 
+use App\Exports\AfiliacionesTemplateExport;
+use App\Imports\AfiliacionesImport;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AfiliacionController extends Controller
 {
@@ -255,6 +258,39 @@ class AfiliacionController extends Controller
         return redirect()->route('afiliaciones.index')
             ->with('success', 'Afiliación eliminada');
     }
+    public function descargarPlantilla()
+    {
+        return Excel::download(new AfiliacionesTemplateExport, 'plantilla_afiliaciones.xlsx');
+    }
+
+    public function importar(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ], [
+            'archivo.required' => 'Debes seleccionar un archivo.',
+            'archivo.mimes'    => 'El archivo debe ser Excel (.xlsx, .xls) o CSV.',
+        ]);
+
+        try {
+            $import = new AfiliacionesImport(session('empresa_id'));
+
+            Excel::import($import, $request->file('archivo'));
+
+            return redirect()->back()
+                ->with('success', 'Importación completada')
+                ->with('duplicados', $import->duplicados ?? [])
+                ->with('error_excel', $import->errores ?? []);
+
+        } catch (\Exception $e) {
+            $mensaje = $e->getMessage();
+            if (str_contains($mensaje, 'No ReaderType')) {
+                $mensaje = 'El archivo no es válido. Debe ser un Excel (.xlsx)';
+            }
+            return redirect()->back()->with('error', $mensaje);
+        }
+    }
+
    public function buscar(Request $request)
 {
     $buscar = $request->buscar ?? $request->q;

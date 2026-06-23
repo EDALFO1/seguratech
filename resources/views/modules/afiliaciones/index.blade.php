@@ -12,12 +12,75 @@
             </ol>
         </nav>
     </div>
-    <a href="{{ route('afiliaciones.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus-circle me-1"></i>Nuevo
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('afiliaciones.plantilla') }}" class="btn btn-outline-success">
+            <i class="bi bi-file-earmark-arrow-down me-1"></i>Plantilla Excel
+        </a>
+        <a href="{{ route('afiliaciones.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>Nuevo
+        </a>
+    </div>
 </div>
 
 <section class="section mt-3">
+
+{{-- TOOLBAR: importar / plantilla --}}
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body p-3">
+        <div class="row g-2 align-items-center">
+
+            {{-- Importar --}}
+            <div class="col-lg-6">
+                <form action="{{ route('afiliaciones.importar') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2 align-items-center">
+                    @csrf
+                    <input type="file" name="archivo" class="form-control form-control-sm" style="max-width: 240px;" required>
+                    <button class="btn btn-success btn-sm d-flex align-items-center gap-1">
+                        <i class="bi bi-upload"></i>Importar
+                    </button>
+                </form>
+            </div>
+
+            {{-- Plantilla --}}
+            <div class="col-lg-6 d-flex justify-content-lg-end">
+                <a href="{{ route('afiliaciones.plantilla') }}" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
+                    <i class="bi bi-download"></i>Plantilla Excel
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{-- Resultado importación --}}
+@if(session('success'))
+<div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+
+@if(session('duplicados') && count(session('duplicados')) > 0)
+<div class="alert alert-warning">
+    <strong>Afiliaciones ya existentes (omitidas):</strong>
+    <ul class="mb-0 mt-1">
+        @foreach(session('duplicados') as $doc)
+        <li>Documento: {{ $doc }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
+@if(session('error_excel') && count(session('error_excel')) > 0)
+<div class="alert alert-danger">
+    <strong>Filas con errores:</strong>
+    <ul class="mb-0 mt-1">
+        @foreach(session('error_excel') as $err)
+        <li>{{ $err }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
 
 @if($afiliados->isEmpty())
 <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2">

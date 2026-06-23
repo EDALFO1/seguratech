@@ -6,116 +6,123 @@ use App\Models\EmpresaLaboral;
 use App\Models\Asesor;
 use App\Models\Documento;
 use App\Models\SubtipoCotizante;
-use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
-use Maatwebsite\Excel\Concerns\FromArray;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class AfiliadosTemplateExport implements WithHeadings, WithEvents, FromArray
+class AfiliadosTemplateExport
 {
-    public function headings(): array
+    private int $empresaId;
+
+    public function __construct(int $empresaId)
     {
-        return [
-            'empresa_laboral',
-            'asesor',
-            'tipo_documento',
-            'subtipo_cotizante',
-            'numero_documento',
-            'primer_nombre',
-            'segundo_nombre',
-            'primer_apellido',
-            'segundo_apellido',
-            'fecha_nacimiento',
-            'sexo',
-            'correo',
-            'telefono',
-            'direccion',
-            'ciudad'
-        ];
+        $this->empresaId = $empresaId;
     }
 
-    public function registerEvents(): array
+    public function build(): Spreadsheet
     {
-        return [
-            \Maatwebsite\Excel\Events\AfterSheet::class => function($event) {
+        $spreadsheet = new Spreadsheet();
+        $sheet       = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Afiliados');
 
-                $spreadsheet = $event->sheet->getDelegate()->getParent();
-                $sheet = $event->sheet->getDelegate();
+        // --- Cabeceras ---
+        $headers = [
+            'A' => 'empresa_laboral',
+            'B' => 'asesor',
+            'C' => 'tipo_documento',
+            'D' => 'subtipo_cotizante',
+            'E' => 'numero_documento',
+            'F' => 'primer_nombre',
+            'G' => 'segundo_nombre',
+            'H' => 'primer_apellido',
+            'I' => 'segundo_apellido',
+            'J' => 'fecha_nacimiento',
+            'K' => 'sexo',
+            'L' => 'correo',
+            'M' => 'telefono',
+            'N' => 'direccion',
+            'O' => 'ciudad',
+        ];
 
-                $empresaId = session('empresa_id');
+        foreach ($headers as $col => $label) {
+            $sheet->setCellValue($col . '1', $label);
+        }
 
-                // 🔥 SOLO DATOS DE LA EMPRESA ACTIVA
-                $empresasLaborales = EmpresaLaboral::where('empresa_id', $empresaId)
-                    ->pluck('nombre')
-                    ->toArray();
+        $sheet->getStyle('A1:O1')->applyFromArray([
+            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '2563EB']],
+        ]);
 
-                $asesores = Asesor::where('empresa_id', $empresaId)
-                    ->pluck('nombre')
-                    ->toArray();
+        // --- Cargar listas desde BD ---
+        $empresasLaborales = EmpresaLaboral::withoutGlobalScopes()
+            ->where('empresa_id', $this->empresaId)
+            ->orderBy('nombre')->pluck('nombre')->toArray();
 
-                $documentos = Documento::pluck('nombre')->toArray();
-                $subtipos = SubtipoCotizante::pluck('nombre')->toArray();
-                $sexo = ['M','F','Otro'];
+        $asesores = Asesor::withoutGlobalScopes()
+            ->where('empresa_id', $this->empresaId)
+            ->orderBy('nombre')->pluck('nombre')->toArray();
 
-                // 🔹 HOJA OCULTA
-                $listasSheet = new Worksheet($spreadsheet, 'Listas');
-                $spreadsheet->addSheet($listasSheet);
+        $documentos = Documento::orderBy('nombre')->pluck('nombre')->toArray();
+        $subtipos   = SubtipoCotizante::orderBy('nombre')->pluck('nombre')->toArray();
+        $sexo       = ['M', 'F', 'Otro'];
 
-                $fillColumn = function($col, $data) use ($listasSheet) {
-                    foreach ($data as $i => $value) {
-                        $listasSheet->setCellValue($col . ($i + 1), $value);
-                    }
-                };
+        // --- Fila de ejemplo con primer valor real de cada lista ---
+        $sheet->setCellValue('A2', $empresasLaborales[0] ?? '');
+        $sheet->setCellValue('B2', $asesores[0]          ?? '');
+        $sheet->setCellValue('C2', $documentos[0]        ?? '');
+        $sheet->setCellValue('D2', $subtipos[0]          ?? '');
+        $sheet->setCellValue('E2', '123456789');
+        $sheet->setCellValue('F2', 'Carlos');
+        $sheet->setCellValue('G2', 'Andrés');
+        $sheet->setCellValue('H2', 'García');
+        $sheet->setCellValue('I2', 'López');
+        $sheet->setCellValue('J2', '1990-05-15');
+        $sheet->setCellValue('K2', 'M');
+        $sheet->setCellValue('L2', 'correo@demo.com');
+        $sheet->setCellValue('M2', '3001234567');
+        $sheet->setCellValue('N2', 'Calle 123 #45-67');
+        $sheet->setCellValue('O2', 'Cali');
 
-                $fillColumn('A', $empresasLaborales);
-                $fillColumn('B', $asesores);
-                $fillColumn('C', $documentos);
-                $fillColumn('D', $subtipos);
-                $fillColumn('E', $sexo);
+        // --- Hoja oculta "Listas" con los datos para los dropdowns ---
+        $listas = $spreadsheet->createSheet();
+        $listas->setTitle('Listas');
 
-                $listasSheet->setSheetState(Worksheet::SHEETSTATE_HIDDEN);
-
-                $setDropdown = function($column, $range) use ($sheet) {
-                    for ($row = 2; $row <= 500; $row++) {
-                        $validation = $sheet->getCell($column.$row)->getDataValidation();
-                        $validation->setType(DataValidation::TYPE_LIST);
-                        $validation->setAllowBlank(true);
-                        $validation->setShowDropDown(true);
-                        $validation->setFormula1($range);
-                    }
-                };
-
-                // 🔥 NUEVO MAPEO (SIN EMPRESA)
-                $setDropdown('A', '=Listas!$A$1:$A$'.count($empresasLaborales));
-                $setDropdown('B', '=Listas!$B$1:$B$'.count($asesores));
-                $setDropdown('C', '=Listas!$C$1:$C$'.count($documentos));
-                $setDropdown('D', '=Listas!$D$1:$D$'.count($subtipos));
-                $setDropdown('K', '=Listas!$E$1:$E$'.count($sexo)); // sexo
+        $fillCol = function (string $col, array $data) use ($listas) {
+            foreach ($data as $i => $val) {
+                $listas->setCellValue($col . ($i + 1), $val);
             }
-        ];
+        };
+
+        $fillCol('A', $empresasLaborales);
+        $fillCol('B', $asesores);
+        $fillCol('C', $documentos);
+        $fillCol('D', $subtipos);
+        $fillCol('E', $sexo);
+
+        $listas->setSheetState(Worksheet::SHEETSTATE_HIDDEN);
+
+        // --- Dropdowns en hoja principal ---
+        // IMPORTANTE: setShowDropDown(true) = mostrar flecha (PhpSpreadsheet invierte la lógica)
+        $dropdowns = [];
+        if (!empty($empresasLaborales)) $dropdowns['A'] = '=Listas!$A$1:$A$' . count($empresasLaborales);
+        if (!empty($asesores))          $dropdowns['B'] = '=Listas!$B$1:$B$' . count($asesores);
+        if (!empty($documentos))        $dropdowns['C'] = '=Listas!$C$1:$C$' . count($documentos);
+        if (!empty($subtipos))          $dropdowns['D'] = '=Listas!$D$1:$D$' . count($subtipos);
+        $dropdowns['K'] = '=Listas!$E$1:$E$' . count($sexo);
+
+        foreach ($dropdowns as $col => $formula) {
+            for ($row = 2; $row <= 500; $row++) {
+                $v = $sheet->getCell($col . $row)->getDataValidation();
+                $v->setType(DataValidation::TYPE_LIST);
+                $v->setAllowBlank(true);
+                $v->setShowDropDown(true); // true = mostrar flecha (PhpSpreadsheet invierte vs OOXML)
+                $v->setFormula1($formula);
+            }
+        }
+
+        $spreadsheet->setActiveSheetIndex(0);
+
+        return $spreadsheet;
     }
-    public function array(): array
-{
-    return [
-        [
-            'Empresa Demo SAS',
-            'Juan Pérez',
-            'CC',
-            'DEPENDIENTE',
-            '123456789',
-            'Carlos',
-            'Andrés',
-            'García',
-            'López',
-            '1990-05-15',
-            'M',
-            'correo@demo.com',
-            '3001234567',
-            'Calle 123 #45-67',
-            'Cali'
-        ]
-    ];
-}
 }

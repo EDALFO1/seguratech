@@ -171,7 +171,14 @@ public function importar(Request $request)
 
     public function descargarPlantilla()
     {
-        return Excel::download(new AfiliadosTemplateExport, 'plantilla_afiliados.xlsx');
+        $export   = new AfiliadosTemplateExport((int) session('empresa_id'));
+        $writer   = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($export->build());
+        $tmpPath  = tempnam(sys_get_temp_dir(), 'afiliados_') . '.xlsx';
+        $writer->save($tmpPath);
+
+        return response()->download($tmpPath, 'plantilla_afiliados.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])->deleteFileAfterSend(true);
     }
     public function buscar(Request $request)
 {
