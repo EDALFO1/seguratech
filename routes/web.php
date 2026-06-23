@@ -10,6 +10,7 @@ use App\Http\Controllers\{
     AfiliacionController,
     ReciboController,
     ReciboDetalleController,
+    ReciboAfiliacionController,
     RemisionController,
     ExportBatchController,
     EpsController,
@@ -147,7 +148,7 @@ Route::middleware('auth')->group(function () {
     |-----------------------------------
     */
 
-    Route::middleware(['empresa', 'modulo:recibos'])->group(function () {
+    Route::middleware(['empresa', 'modulo:recibos,recibos_afiliacion'])->group(function () {
         Route::prefix('recibos')->name('recibos.')->group(function () {
             Route::post('preview',              [ReciboController::class, 'preview'])->name('preview');
             Route::post('generar',              [ReciboController::class, 'generar'])->name('generar');
@@ -160,6 +161,13 @@ Route::middleware('auth')->group(function () {
         });
         Route::resource('recibos', ReciboController::class);
         Route::resource('recibo_detalles', ReciboDetalleController::class);
+
+        // Recibos de Afiliación
+        Route::prefix('recibos-afiliacion')->name('recibos-afiliacion.')->group(function () {
+            Route::get('/{recibos_afiliacion}/imprimir', [ReciboAfiliacionController::class, 'imprimir'])->name('imprimir');
+            Route::post('/{recibos_afiliacion}/pagar',   [ReciboAfiliacionController::class, 'pagar'])->name('pagar');
+        });
+        Route::resource('recibos-afiliacion', ReciboAfiliacionController::class)->parameters(['recibos-afiliacion' => 'recibos_afiliacion']);
     });
 
     /*

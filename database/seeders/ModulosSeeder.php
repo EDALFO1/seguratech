@@ -16,6 +16,7 @@ class ModulosSeeder extends Seeder
             // grupo: operativo
             ['slug' => 'remisiones',         'nombre' => 'Remisiones',              'grupo' => 'operativo',     'orden' => 1],
             ['slug' => 'recibos',            'nombre' => 'Recibos',                 'grupo' => 'operativo',     'orden' => 2],
+            ['slug' => 'recibos_afiliacion', 'nombre' => 'Recibos de Afiliación',   'grupo' => 'operativo',     'orden' => 3],
 
             // grupo: gestion
             ['slug' => 'afiliados',          'nombre' => 'Afiliados',               'grupo' => 'gestion',       'orden' => 1],

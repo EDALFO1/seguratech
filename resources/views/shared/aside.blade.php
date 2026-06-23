@@ -22,7 +22,7 @@
     <li class="nav-heading">Operativo</li>
 
     <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('remisiones.*','recibos.*') ? '' : 'collapsed' }}"
+        <a class="nav-link {{ request()->routeIs('remisiones.*','recibos.*','recibos-afiliacion.*') ? '' : 'collapsed' }}"
            data-bs-target="#nav-facturacion"
            data-bs-toggle="collapse"
            href="#">
@@ -31,7 +31,7 @@
             <i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="nav-facturacion"
-            class="nav-content collapse {{ request()->routeIs('remisiones.*','recibos.*') ? 'show' : '' }}"
+            class="nav-content collapse {{ request()->routeIs('remisiones.*','recibos.*','recibos-afiliacion.*') ? 'show' : '' }}"
             data-bs-parent="#sidebar-nav">
             @if($tieneRemisiones)
             <li>
@@ -46,6 +46,12 @@
                 <a href="{{ route('recibos.index') }}"
                    class="{{ request()->routeIs('recibos.*') ? 'active' : '' }}">
                     <span>Crear Recibos</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('recibos-afiliacion.index') }}"
+                   class="{{ request()->routeIs('recibos-afiliacion.*') ? 'active' : '' }}">
+                    <span>Recibos de Afiliación</span>
                 </a>
             </li>
             @endif

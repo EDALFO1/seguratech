@@ -24,7 +24,7 @@ class RolModulosSeeder extends Seeder
         ];
 
         // Módulos adicionales para admin, asesor, invitado y operador
-        $masOperador = ['servicios_externos'];
+        $masOperador = ['servicios_externos', 'recibos_afiliacion'];
 
         // Módulos exclusivos del admin
         $soloAdmin = [
