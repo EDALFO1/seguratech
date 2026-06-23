@@ -14,11 +14,12 @@
 
     {{-- OPERATIVO --}}
     @php
-        $tieneRemisiones = $modulosPermitidos->contains('remisiones');
-        $tieneRecibos    = $modulosPermitidos->contains('recibos');
+        $tieneRemisiones        = $modulosPermitidos->contains('remisiones');
+        $tieneRecibos           = $modulosPermitidos->contains('recibos');
+        $tieneRecibosAfiliacion = $modulosPermitidos->contains('recibos_afiliacion');
     @endphp
 
-    @if($tieneRemisiones || $tieneRecibos)
+    @if($tieneRemisiones || $tieneRecibos || $tieneRecibosAfiliacion)
     <li class="nav-heading">Operativo</li>
 
     <li class="nav-item">
@@ -48,6 +49,8 @@
                     <span>Crear Recibos</span>
                 </a>
             </li>
+            @endif
+            @if($tieneRecibosAfiliacion)
             <li>
                 <a href="{{ route('recibos-afiliacion.index') }}"
                    class="{{ request()->routeIs('recibos-afiliacion.*') ? 'active' : '' }}">

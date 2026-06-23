@@ -46,7 +46,7 @@ class RolModulosSeeder extends Seeder
             if (! $rol) continue;
 
             $moduloIds = Modulo::whereIn('slug', $slugs)->pluck('id');
-            $rol->modulos()->syncWithoutDetaching($moduloIds);
+            $rol->modulos()->sync($moduloIds);
         }
     }
 }
