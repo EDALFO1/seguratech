@@ -8,8 +8,9 @@
   <title>@yield('titulo', 'Segura Tech')</title>
 
   <!-- Favicon -->
-  <link href="{{ asset('assets/img/favicon.png') }}" rel="icon">
-  <link href="{{ asset('assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+  <link href="{{ asset('favicon.svg') }}" rel="icon" type="image/svg+xml">
+  <link href="{{ asset('favicon.png') }}" rel="icon" type="image/png">
+  <link href="{{ asset('favicon.ico') }}" rel="icon" type="image/x-icon">
 
   <!-- Google Fonts — solo Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

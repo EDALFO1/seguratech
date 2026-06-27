@@ -8,6 +8,11 @@
 
 <title>@yield('titulo')</title>
 
+<!-- Favicon -->
+<link href="{{ asset('favicon.svg') }}" rel="icon" type="image/svg+xml">
+<link href="{{ asset('favicon.png') }}" rel="icon" type="image/png">
+<link href="{{ asset('favicon.ico') }}" rel="icon" type="image/x-icon">
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- Google Fonts -->
