@@ -12,14 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('arl_afiliados', function (Blueprint $table) {
-            $table->dropForeign(['empresa_externa_id']);
-            $table->dropColumn('empresa_externa_id');
+            if (Schema::hasColumn('arl_afiliados', 'empresa_externa_id')) {
+                $table->dropForeign(['empresa_externa_id']);
+                $table->dropColumn('empresa_externa_id');
+            }
 
-            $table->foreignId('empresa_laboral_id')
-                ->nullable()
-                ->after('arl_id')
-                ->constrained('empresas_laborales')
-                ->nullOnDelete();
+            if (!Schema::hasColumn('arl_afiliados', 'empresa_laboral_id')) {
+                $table->foreignId('empresa_laboral_id')
+                    ->nullable()
+                    ->after('arl_id')
+                    ->constrained('empresas_laborales')
+                    ->nullOnDelete();
+            }
         });
     }
 

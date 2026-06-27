@@ -32,6 +32,7 @@ class Afiliado extends BaseModel
         'telefono',
         'direccion',
         'ciudad',
+        'observacion',
 
         'google_drive_folder_id',
 

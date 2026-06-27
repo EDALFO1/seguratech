@@ -43,13 +43,14 @@ class AfiliadosTemplateExport
             'M' => 'telefono',
             'N' => 'direccion',
             'O' => 'ciudad',
+            'P' => 'observacion',
         ];
 
         foreach ($headers as $col => $label) {
             $sheet->setCellValue($col . '1', $label);
         }
 
-        $sheet->getStyle('A1:O1')->applyFromArray([
+        $sheet->getStyle('A1:P1')->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '2563EB']],
         ]);
@@ -83,6 +84,7 @@ class AfiliadosTemplateExport
         $sheet->setCellValue('M2', '3001234567');
         $sheet->setCellValue('N2', 'Calle 123 #45-67');
         $sheet->setCellValue('O2', 'Cali');
+        $sheet->setCellValue('P2', 'Notas adicionales (opcional)');
 
         // --- Hoja oculta "Listas" con los datos para los dropdowns ---
         $listas = $spreadsheet->createSheet();

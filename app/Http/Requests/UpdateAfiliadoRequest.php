@@ -48,6 +48,7 @@ class UpdateAfiliadoRequest extends FormRequest
 
             'direccion' => 'nullable|string',
             'ciudad' => 'nullable|string',
+            'observacion' => 'nullable|string',
 
             'google_drive_folder_id' => 'nullable|url|max:500',
         ];

@@ -53,26 +53,62 @@ class AfiliadosImport implements
         $erroresFila = [];
 
         // ✅ documento
-        if (!preg_match('/^[0-9]+$/', $numero)) {
-            $erroresFila[] = "Documento inválido";
+        if (empty($numero)) {
+            $erroresFila[] = "Documento requerido";
+        } elseif (!preg_match('/^[0-9]+$/', $numero)) {
+            $erroresFila[] = "Documento debe contener solo números";
         }
 
         // ✅ nombre
-        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/', $row['primer_nombre'] ?? '')) {
-            $erroresFila[] = "Nombre inválido";
+        $primerNombre = trim($row['primer_nombre'] ?? '');
+        if (empty($primerNombre)) {
+            $erroresFila[] = "Primer nombre requerido";
+        } elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/', $primerNombre)) {
+            $erroresFila[] = "Primer nombre contiene caracteres inválidos";
         }
 
         // ✅ apellido
-        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/', $row['primer_apellido'] ?? '')) {
-            $erroresFila[] = "Apellido inválido";
+        $primerApellido = trim($row['primer_apellido'] ?? '');
+        if (empty($primerApellido)) {
+            $erroresFila[] = "Primer apellido requerido";
+        } elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/', $primerApellido)) {
+            $erroresFila[] = "Primer apellido contiene caracteres inválidos";
+        }
+
+        // ✅ fecha nacimiento
+        $fecha = $row['fecha_nacimiento'] ?? null;
+        if (empty($fecha)) {
+            $erroresFila[] = "Fecha de nacimiento requerida";
+        } else {
+            try {
+                if (is_numeric($fecha)) {
+                    Date::excelToDateTimeObject($fecha)->format('Y-m-d');
+                } else {
+                    \DateTime::createFromFormat('Y-m-d', trim((string)$fecha));
+                }
+            } catch (\Exception $e) {
+                $erroresFila[] = "Fecha de nacimiento inválida (usar YYYY-MM-DD)";
+            }
+        }
+
+        // ✅ sexo
+        $sexo = trim($row['sexo'] ?? '');
+        if (!empty($sexo) && !in_array($sexo, ['M', 'F', 'Otro'])) {
+            $erroresFila[] = "Sexo debe ser M, F u Otro";
         }
 
         // ✅ teléfono
         if (!empty($row['telefono']) && !preg_match('/^[0-9]+$/', $row['telefono'])) {
-            $erroresFila[] = "Teléfono inválido";
+            $erroresFila[] = "Teléfono debe contener solo números";
         }
 
-        // 🔥 SI HAY ERRORES → GUARDAR TODOS
+        // ✅ correo
+        $correo = trim($row['correo'] ?? '');
+        if (!empty($correo) && !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+            $erroresFila[] = "Correo inválido";
+        }
+
+        // 🔥 SI HAY ERRORES DE FORMATO → GUARDAR Y RETORNAR
         if (!empty($erroresFila)) {
             $this->errores[] = "Documento {$numero}: " . implode(', ', $erroresFila);
             return null;
@@ -87,16 +123,26 @@ class AfiliadosImport implements
             return null;
         }
 
-        // 🔥 RELACIONES
+        // 🔥 VALIDAR RELACIONES
+        $erroresRelaciones = [];
+
         $empresaLaboral = EmpresaLaboral::where('empresa_id', $this->empresaId)
             ->whereRaw('LOWER(TRIM(nombre)) = ?', [strtolower(trim($row['empresa_laboral'] ?? ''))])
             ->first();
+
+        if (!$empresaLaboral) {
+            $erroresRelaciones[] = "Empresa laboral «{$row['empresa_laboral']}» no encontrada";
+        }
 
         $asesor = null;
         if (!empty($row['asesor'])) {
             $asesor = Asesor::where('empresa_id', $this->empresaId)
                 ->whereRaw('LOWER(TRIM(nombre)) = ?', [strtolower(trim($row['asesor']))])
                 ->first();
+
+            if (!$asesor) {
+                $erroresRelaciones[] = "Asesor «{$row['asesor']}» no encontrado";
+            }
         }
 
         $documento = Documento::where(function($q) use ($row) {
@@ -105,18 +151,25 @@ class AfiliadosImport implements
               ->orWhereRaw('LOWER(TRIM(codigo)) = ?', [$tipo]);
         })->first();
 
+        if (!$documento) {
+            $erroresRelaciones[] = "Tipo documento «{$row['tipo_documento']}» no encontrado";
+        }
+
         $subtipo = SubtipoCotizante::whereRaw(
-            'LOWER(TRIM(nombre)) = ?', 
+            'LOWER(TRIM(nombre)) = ?',
             [strtolower(trim($row['subtipo_cotizante'] ?? ''))]
         )->first();
 
-        if (!$empresaLaboral || !$documento || !$subtipo) {
-            $this->errores[] = "Relaciones inválidas en documento {$numero}";
+        if (!$subtipo) {
+            $erroresRelaciones[] = "Subtipo cotizante «{$row['subtipo_cotizante']}» no encontrado";
+        }
+
+        if (!empty($erroresRelaciones)) {
+            $this->errores[] = "Documento {$numero}: " . implode(', ', $erroresRelaciones);
             return null;
         }
 
-        // 🔥 FECHA
-        $fecha = $row['fecha_nacimiento'] ?? null;
+        // 🔥 PROCESAR FECHA
         if (is_numeric($fecha)) {
             $fecha = Date::excelToDateTimeObject($fecha)->format('Y-m-d');
         }
@@ -142,6 +195,7 @@ class AfiliadosImport implements
             'telefono' => trim($row['telefono'] ?? ''),
             'direccion' => trim($row['direccion'] ?? ''),
             'ciudad' => trim($row['ciudad'] ?? ''),
+            'observacion' => trim($row['observacion'] ?? ''),
 
             'estado' => true,
         ]);

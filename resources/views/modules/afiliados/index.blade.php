@@ -60,6 +60,45 @@
     </div>
 </div>
 
+{{-- Resultado importación --}}
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
+@if(session('duplicados') && count(session('duplicados')) > 0)
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong><i class="bi bi-exclamation-triangle me-2"></i>Afiliados duplicados (omitidos):</strong>
+    <ul class="mb-0 mt-2">
+        @foreach(session('duplicados') as $doc)
+        <li>Documento: <code>{{ $doc }}</code></li>
+        @endforeach
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
+@if(session('error_excel') && count(session('error_excel')) > 0)
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong><i class="bi bi-x-circle me-2"></i>Filas con errores de validación:</strong>
+    <ul class="mb-0 mt-2">
+        @foreach(session('error_excel') as $err)
+        <li>{{ $err }}</li>
+        @endforeach
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
 {{-- Buscador en tiempo real --}}
 <div class="mb-3">
     <div class="input-group">
@@ -81,6 +120,7 @@
                         <th>Nombre</th>
                         <th>Teléfono</th>
                         <th>Empresa Laboral</th>
+                        <th>Observación</th>
                         <th>Estado</th>
                         <th class="text-center" style="width:150px">Acciones</th>
                     </tr>
@@ -92,6 +132,13 @@
                         <td>{{ $a->primer_nombre }} {{ $a->segundo_nombre }} {{ $a->primer_apellido }} {{ $a->segundo_apellido }}</td>
                         <td>{{ $a->telefono }}</td>
                         <td>{{ $a->empresaLaboral?->nombre ?? '' }}</td>
+                        <td>
+                            @if($a->observacion)
+                                <span class="badge bg-info-subtle text-info-emphasis" data-bs-toggle="tooltip" title="{{ $a->observacion }}" style="cursor: help;">
+                                    <i class="bi bi-chat-dots"></i> Nota
+                                </span>
+                            @endif
+                        </td>
                         <td>
                             @if($a->estado)
                             <span class="badge bg-success">Activo</span>
@@ -136,7 +183,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
+                        <td colspan="7" class="text-center py-5 text-muted">
                             <i class="bi bi-inbox fs-2 d-block mb-2 opacity-50"></i>
                             No hay afiliados registrados.
                         </td>
@@ -174,16 +221,23 @@ function buscarEnTiempoReal() {
                 let html = '';
 
                 if (data.length === 0) {
-                    html = `<tr><td colspan="6" class="text-center text-muted py-4">Sin resultados</td></tr>`;
+                    html = `<tr><td colspan="7" class="text-center text-muted py-4">Sin resultados</td></tr>`;
                 }
 
                 data.forEach(a => {
+                    const obsHtml = a.observacion
+                        ? `<span class="badge bg-info-subtle text-info-emphasis" data-bs-toggle="tooltip" title="${a.observacion.replace(/"/g, '&quot;')}" style="cursor: help;">
+                            <i class="bi bi-chat-dots"></i> Nota
+                           </span>`
+                        : '';
+
                     html += `
                         <tr>
                             <td class="ps-3">${a.documento?.nombre ?? ''} ${a.numero_documento}</td>
                             <td>${a.primer_nombre} ${a.primer_apellido}</td>
                             <td>${a.telefono ?? ''}</td>
                             <td>${a.empresa_laboral?.nombre ?? ''}</td>
+                            <td>${obsHtml}</td>
                             <td>${a.estado
                                     ? '<span class="badge bg-success">Activo</span>'
                                     : '<span class="badge bg-danger">Inactivo</span>'}</td>
@@ -197,11 +251,17 @@ function buscarEnTiempoReal() {
                 });
 
                 document.getElementById('tabla-afiliados').innerHTML = html;
+                // Reinicializar tooltips después de actualizar la tabla
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
             });
     }, 400);
 }
 
 $(function () {
+    // Inicializar tooltips en carga
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
     $('#tabla-afiliados').on('submit', '.form-delete', function (e) {
         e.preventDefault();
         const form = this;

@@ -122,6 +122,14 @@
         @error('ciudad') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
 
+    {{-- OBSERVACIÓN --}}
+    <div class="col-12">
+        <label class="form-label fw-semibold">Observación</label>
+        <textarea name="observacion" class="form-control @error('observacion') is-invalid @enderror" rows="3" placeholder="Registra información adicional del afiliado...">{{ old('observacion', $afiliado->observacion ?? '') }}</textarea>
+        <div class="form-text">Información adicional o notas sobre el afiliado.</div>
+        @error('observacion') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+    </div>
+
     {{-- ESTADO --}}
     <div class="col-md-3">
         <label class="form-label fw-semibold">Estado</label>
