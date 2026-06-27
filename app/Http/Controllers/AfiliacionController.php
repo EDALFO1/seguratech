@@ -277,8 +277,12 @@ class AfiliacionController extends Controller
 
             Excel::import($import, $request->file('archivo'));
 
+            $mensaje = "Se procesaron {$import->total} registros. Se crearon {$import->creados} afiliaciones.";
+
             return redirect()->back()
-                ->with('success', 'Importación completada')
+                ->with('success', $mensaje)
+                ->with('creados', $import->creados)
+                ->with('total', $import->total)
                 ->with('duplicados', $import->duplicados ?? [])
                 ->with('error_excel', $import->errores ?? []);
 

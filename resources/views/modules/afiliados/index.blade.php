@@ -63,7 +63,13 @@
 {{-- Resultado importación --}}
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+    <i class="bi bi-check-circle me-2"></i>
+    <strong>✅ Importación exitosa</strong>
+    @if(session('creados') && session('total'))
+    <br><small>Se procesaron <strong>{{ session('total') }} registros</strong>. Se crearon <strong>{{ session('creados') }} afiliados</strong>.</small>
+    @else
+    {{ session('success') }}
+    @endif
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif

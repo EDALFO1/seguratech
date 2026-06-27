@@ -12,14 +12,16 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class AfiliadosImport implements 
-    ToModel, 
+class AfiliadosImport implements
+    ToModel,
     WithHeadingRow,
     SkipsEmptyRows
 {
     protected $empresaId;
     public $duplicados = [];
     public $errores = [];
+    public $creados = 0;
+    public $total = 0;
 
     public function __construct($empresaId)
     {
@@ -63,16 +65,40 @@ class AfiliadosImport implements
         $primerNombre = trim($row['primer_nombre'] ?? '');
         if (empty($primerNombre)) {
             $erroresFila[] = "Primer nombre requerido";
-        } elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/', $primerNombre)) {
-            $erroresFila[] = "Primer nombre contiene caracteres inválidos";
+        } elseif (preg_match('/[0-9]/', $primerNombre)) {
+            $erroresFila[] = "Primer nombre no puede contener números";
+        } elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $primerNombre)) {
+            $erroresFila[] = "Primer nombre contiene caracteres especiales no permitidos";
         }
 
-        // ✅ apellido
+        // ✅ segundo nombre
+        $segundoNombre = trim($row['segundo_nombre'] ?? '');
+        if (!empty($segundoNombre)) {
+            if (preg_match('/[0-9]/', $segundoNombre)) {
+                $erroresFila[] = "Segundo nombre no puede contener números";
+            } elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $segundoNombre)) {
+                $erroresFila[] = "Segundo nombre contiene caracteres especiales no permitidos";
+            }
+        }
+
+        // ✅ primer apellido
         $primerApellido = trim($row['primer_apellido'] ?? '');
         if (empty($primerApellido)) {
             $erroresFila[] = "Primer apellido requerido";
-        } elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/', $primerApellido)) {
-            $erroresFila[] = "Primer apellido contiene caracteres inválidos";
+        } elseif (preg_match('/[0-9]/', $primerApellido)) {
+            $erroresFila[] = "Primer apellido no puede contener números";
+        } elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $primerApellido)) {
+            $erroresFila[] = "Primer apellido contiene caracteres especiales no permitidos";
+        }
+
+        // ✅ segundo apellido
+        $segundoApellido = trim($row['segundo_apellido'] ?? '');
+        if (!empty($segundoApellido)) {
+            if (preg_match('/[0-9]/', $segundoApellido)) {
+                $erroresFila[] = "Segundo apellido no puede contener números";
+            } elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $segundoApellido)) {
+                $erroresFila[] = "Segundo apellido contiene caracteres especiales no permitidos";
+            }
         }
 
         // ✅ fecha nacimiento
@@ -107,6 +133,9 @@ class AfiliadosImport implements
         if (!empty($correo) && !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
             $erroresFila[] = "Correo inválido";
         }
+
+        // Contar total de filas procesadas
+        $this->total++;
 
         // 🔥 SI HAY ERRORES DE FORMATO → GUARDAR Y RETORNAR
         if (!empty($erroresFila)) {
@@ -175,6 +204,8 @@ class AfiliadosImport implements
         }
 
         // 🔥 CREAR AFILIADO
+        $this->creados++;
+
         return Afiliado::create([
             'empresa_id' => $this->empresaId,
             'empresa_laboral_id' => $empresaLaboral->id,

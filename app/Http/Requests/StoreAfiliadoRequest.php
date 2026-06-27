@@ -28,10 +28,10 @@ class StoreAfiliadoRequest extends FormRequest
                 }),
             ],
 
-            'primer_nombre' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/',
-            'segundo_nombre' => 'nullable|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/',
-            'primer_apellido' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/',
-            'segundo_apellido' => 'nullable|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/',
+            'primer_nombre' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/|not_regex:/\d/',
+            'segundo_nombre' => 'nullable|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/|not_regex:/\d/',
+            'primer_apellido' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/|not_regex:/\d/',
+            'segundo_apellido' => 'nullable|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/|not_regex:/\d/',
 
             'fecha_nacimiento' => 'required|date',
             'sexo' => ['required', Rule::in(['M','F','Otro'])],
@@ -55,8 +55,14 @@ class StoreAfiliadoRequest extends FormRequest
 
             'telefono.regex' => 'El teléfono solo puede contener números.',
 
-            'primer_nombre.regex' => 'El nombre no puede contener números.',
-            'primer_apellido.regex' => 'El apellido no puede contener números.',
+            'primer_nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'primer_nombre.not_regex' => 'El nombre no puede contener números.',
+            'segundo_nombre.regex' => 'El segundo nombre solo puede contener letras y espacios.',
+            'segundo_nombre.not_regex' => 'El segundo nombre no puede contener números.',
+            'primer_apellido.regex' => 'El apellido solo puede contener letras y espacios.',
+            'primer_apellido.not_regex' => 'El apellido no puede contener números.',
+            'segundo_apellido.regex' => 'El segundo apellido solo puede contener letras y espacios.',
+            'segundo_apellido.not_regex' => 'El segundo apellido no puede contener números.',
         ];
     }
 }

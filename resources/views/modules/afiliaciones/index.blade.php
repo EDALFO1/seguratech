@@ -53,11 +53,23 @@
 
 {{-- Resultado importación --}}
 @if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    <strong>✅ Importación exitosa</strong>
+    @if(session('creados') && session('total'))
+    <br><small>Se procesaron <strong>{{ session('total') }} registros</strong>. Se crearon <strong>{{ session('creados') }} afiliaciones</strong>.</small>
+    @else
+    {{ session('success') }}
+    @endif
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 @endif
 
 @if(session('error'))
-<div class="alert alert-danger">{{ session('error') }}</div>
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 @endif
 
 @if(session('duplicados') && count(session('duplicados')) > 0)

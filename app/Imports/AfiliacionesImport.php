@@ -23,6 +23,8 @@ class AfiliacionesImport implements
     protected $empresaId;
     public $duplicados = [];
     public $errores    = [];
+    public $creados = 0;
+    public $total = 0;
 
     public function __construct($empresaId)
     {
@@ -46,6 +48,7 @@ class AfiliacionesImport implements
         $doc = trim($row['numero_documento'] ?? '');
         if ($doc === '') return null;
 
+        $this->total++;
         $erroresFila = [];
 
         // Buscar afiliado
@@ -136,6 +139,8 @@ class AfiliacionesImport implements
         $ibc = $tipoIbc === 'SMMLV'
             ? $parametro->salario_minimo
             : (float)($row['ibc'] ?? 0);
+
+        $this->creados++;
 
         return Afiliacion::create([
             'empresa_id'       => $this->empresaId,
