@@ -94,6 +94,7 @@
                     <tr>
                         <th class="ps-3">#</th>
                         <th>Fecha</th>
+                        <th>Documento</th>
                         <th>Afiliado</th>
                         <th class="text-end">IBC</th>
                         <th class="text-end">Total</th>
@@ -108,6 +109,8 @@
                         <td class="ps-3 fw-semibold">{{ $r->numero }}</td>
 
                         <td>{{ $r->fecha }}</td>
+
+                        <td>{{ $r->afiliado?->numero_documento }}</td>
 
                         <td>
                             <div class="fw-semibold">
@@ -150,7 +153,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-muted">
+                        <td colspan="8" class="text-center py-5 text-muted">
                             <i class="bi bi-inbox fs-2 d-block mb-2 opacity-50"></i>
                             No hay recibos registrados en este periodo.
                             <a href="{{ route('recibos.create') }}" class="d-block mt-1">

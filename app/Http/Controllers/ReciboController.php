@@ -37,7 +37,7 @@ class ReciboController extends Controller
                 '%Y-%m'
             ) = ?
         ", [$periodo])
-        ->latest()
+        ->orderBy('id', 'desc')
         ->paginate(15);
 
     // 🔥 PENDIENTES SOLO DEL PERIODO ACTUAL
@@ -554,7 +554,7 @@ $finPeriodo = $periodo->copy()->startOfMonth()->addDays(29);
 public function preview(Request $request)
 {
     $afiliacion = Afiliacion::where('afiliado_id', $request->afiliado_id)
-        ->latest()
+        ->orderBy('id', 'desc')
         ->first();
 
     $data = $this->calcularRecibo(
