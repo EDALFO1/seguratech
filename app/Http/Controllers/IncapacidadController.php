@@ -122,6 +122,7 @@ class IncapacidadController extends Controller
         ]);
 
         IncapacidadObservacion::create([
+            'empresa_id'     => $incapacidad->empresa_id,
             'incapacidad_id' => $incapacidad->id,
             'nota'           => $request->nota,
         ]);

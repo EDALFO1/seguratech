@@ -21,7 +21,7 @@
         <span class="badge bg-{{ $estadoInfo['color'] }} fs-6 px-3 py-2">
             {{ $estadoInfo['label'] }}
         </span>
-        <a href="{{ route('incapacidades.edit', $incapacidad) }}"
+        <a href="{{ route('incapacidades.edit', $incapacidad->id) }}"
            class="btn btn-warning btn-sm">
             <i class="bi bi-pencil me-1"></i>Editar
         </a>
@@ -120,7 +120,7 @@
                 <div class="mt-3 d-flex flex-wrap gap-2">
                     @foreach($estados as $key => $info)
                         @if($key !== $incapacidad->estado)
-                            <form action="{{ route('incapacidades.update', $incapacidad) }}"
+                            <form action="{{ route('incapacidades.update', $incapacidad->id) }}"
                                   method="POST"
                                   class="d-inline">
                                 @csrf @method('PUT')
@@ -164,7 +164,7 @@
 
             {{-- Form nueva observación --}}
             <div class="card-body border-bottom">
-                <form action="{{ route('incapacidades.observacion', $incapacidad) }}"
+                <form action="{{ route('incapacidades.observacion', $incapacidad->id) }}"
                       method="POST">
                     @csrf
                     <label class="form-label small fw-semibold">Agregar gestión / observación</label>
