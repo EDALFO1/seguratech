@@ -12,14 +12,14 @@
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('incapacidades.index') }}">Incapacidades</a></li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('incapacidades.show', $incapacidad) }}">{{ $incapacidad->nombre }}</a>
+                    <a href="{{ route('incapacidades.show', $incapacidad->id) }}">{{ $incapacidad->nombre }}</a>
                 </li>
                 <li class="breadcrumb-item active">Editar</li>
             </ol>
         </nav>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('incapacidades.show', $incapacidad) }}"
+        <a href="{{ route('incapacidades.show', $incapacidad->id) }}"
            class="btn btn-outline-primary btn-sm">
             <i class="bi bi-eye me-1"></i>Ver detalle
         </a>
@@ -40,14 +40,14 @@
         <span class="badge bg-{{ $ei['color'] }} px-3 py-2">{{ $ei['label'] }}</span>
     </div>
     <div class="card-body pt-4">
-        <form action="{{ route('incapacidades.update', $incapacidad) }}" method="POST">
+        <form action="{{ route('incapacidades.update', $incapacidad->id) }}" method="POST">
             @csrf @method('PUT')
             @include('modules.incapacidades.form')
             <div class="d-flex gap-2 mt-4 pt-3 border-top">
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-check-lg me-1"></i>Actualizar
                 </button>
-                <a href="{{ route('incapacidades.show', $incapacidad) }}"
+                <a href="{{ route('incapacidades.show', $incapacidad->id) }}"
                    class="btn btn-outline-secondary">
                     Cancelar
                 </a>

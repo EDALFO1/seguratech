@@ -213,6 +213,21 @@
         @error('fecha_pago') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
 
+    <div class="col-12"><hr class="my-1"></div>
+
+    {{-- ── Observaciones iniciales ──────────────────────────────────────── --}}
+    <div class="col-12">
+        <label class="form-label fw-semibold">
+            <i class="bi bi-journal-text me-1"></i>Observación inicial
+            <span class="text-muted fw-normal small">(opcional — descripción del trámite o gestión inicial)</span>
+        </label>
+        <textarea name="observacion_inicial"
+                  class="form-control @error('observacion_inicial') is-invalid @enderror"
+                  rows="3"
+                  placeholder="Ej: Se recibe incapacidad para tramitación...">{{ old('observacion_inicial', '') }}</textarea>
+        @error('observacion_inicial') <div class="invalid-feedback">{{ $message }}</div> @enderror
+    </div>
+
 </div>
 
 @push('scripts')

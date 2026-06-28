@@ -68,9 +68,17 @@ class IncapacidadController extends Controller
 
         $data = $this->prepareData($request);
 
-        Incapacidad::create($data);
+        $incapacidad = Incapacidad::create($data);
 
-        return redirect()->route('incapacidades.index')
+        if ($request->filled('observacion_inicial')) {
+            IncapacidadObservacion::create([
+                'empresa_id'     => $incapacidad->empresa_id,
+                'incapacidad_id' => $incapacidad->id,
+                'nota'           => $request->observacion_inicial,
+            ]);
+        }
+
+        return redirect()->route('incapacidades.show', $incapacidad)
             ->with('success', 'Incapacidad registrada correctamente.');
     }
 
