@@ -151,12 +151,12 @@
                             </td>
 
                             <td class="text-center">
-                                <a href="{{ route('incapacidades.show', $inc->id) }}"
+                                <a href="{{ route('incapacidades.show', $inc) }}"
                                    class="btn btn-outline-primary btn-sm"
                                    title="Ver detalle y seguimiento">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{{ route('incapacidades.edit', $inc->id) }}"
+                                <a href="{{ route('incapacidades.edit', $inc) }}"
                                    class="btn btn-outline-warning btn-sm"
                                    title="Editar">
                                     <i class="bi bi-pencil"></i>
