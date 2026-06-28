@@ -80,7 +80,12 @@
             {{-- SEPARADOR --}}
             <li class="d-none d-lg-flex"><div class="st-sep mx-1"></div></li>
 
-            
+            {{-- TOGGLE DARK MODE --}}
+            <li>
+                <button id="theme-toggle" class="st-pill theme-toggle" title="Cambiar tema">
+                    <i class="bi bi-moon-fill"></i>
+                </button>
+            </li>
 
             {{-- SEPARADOR --}}
             <li class="d-none d-lg-flex"><div class="st-sep mx-1"></div></li>
