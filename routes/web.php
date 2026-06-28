@@ -108,12 +108,13 @@ Route::middleware('auth')->group(function () {
 
     // Incapacidades
     Route::middleware('empresa')->group(function () {
-        Route::resource('incapacidades', IncapacidadController::class);
+        Route::resource('incapacidades', IncapacidadController::class)
+            ->parameters(['incapacidades' => 'incapacidad']);
         Route::post('incapacidades/{incapacidad}/observacion', [IncapacidadController::class, 'agregarObservacion'])->name('incapacidades.observacion');
         Route::delete('incapacidad-observaciones/{incapacidad_observacion}', function (\App\Models\IncapacidadObservacion $incapacidad_observacion) {
-            $incapacidad = $incapacidad_observacion->incapacidad_id;
+            $inc = \App\Models\Incapacidad::find($incapacidad_observacion->incapacidad_id);
             $incapacidad_observacion->delete();
-            return redirect()->route('incapacidades.show', $incapacidad)->with('success', 'Observación eliminada.');
+            return redirect()->route('incapacidades.show', $inc)->with('success', 'Observación eliminada.');
         })->name('incapacidad_observaciones.destroy');
     });
 
