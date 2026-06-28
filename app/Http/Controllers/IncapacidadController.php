@@ -78,7 +78,7 @@ class IncapacidadController extends Controller
             ]);
         }
 
-        return redirect()->route('incapacidades.show', $incapacidad)
+        return redirect()->route('incapacidades.show', $incapacidad->id)
             ->with('success', 'Incapacidad registrada correctamente.');
     }
 
@@ -111,7 +111,7 @@ class IncapacidadController extends Controller
 
         $incapacidad->update($this->prepareData($request));
 
-        return redirect()->route('incapacidades.show', $incapacidad)
+        return redirect()->route('incapacidades.show', $incapacidad->id)
             ->with('success', 'Incapacidad actualizada correctamente.');
     }
 
