@@ -107,14 +107,22 @@ body { overflow-x: hidden; }
 
 /* Empresa chip */
 .st-empresa-chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 14px;
-    background: #f8fafc; border: 1px solid #e2e8f0;
-    border-radius: 99px; font-size: 0.8rem; font-weight: 600;
-    color: #334155;
-    max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 22px;
+    background: linear-gradient(135deg, #1e3a5f 0%, #0f2744 100%);
+    border: 2.5px solid #ffffff; border-radius: 24px; font-size: 1.1rem; font-weight: 700;
+    color: #ffffff;
+    max-width: 350px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    box-shadow: 0 8px 30px rgba(15, 39, 68, 0.35);
+    transition: all 0.3s ease;
+    cursor: default;
 }
-.st-empresa-chip i { color: #3b82f6; font-size: 0.88rem; }
+.st-empresa-chip:hover {
+    box-shadow: 0 12px 40px rgba(15, 39, 68, 0.45);
+    transform: scale(1.05);
+    border-color: #f0f4f8;
+}
+.st-empresa-chip i { color: #ffffff; font-size: 1.15rem; }
 
 .st-cambiar {
     font-size: 0.76rem; font-weight: 600; padding: 6px 12px;

@@ -23,6 +23,19 @@
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>
 
+    {{-- EMPRESA ACTIVA CENTRADA --}}
+    @if($empresaActiva)
+    <div class="d-none d-lg-flex align-items-center justify-content-center gap-2 flex-grow-1">
+        <span class="st-empresa-chip">
+            <i class="bi bi-building-fill"></i>
+            {{ $empresaActiva->nombre }}
+        </span>
+        <a href="{{ route('seleccionar.empresa') }}" class="st-cambiar">
+            <i class="bi bi-arrow-left-right me-1"></i>Cambiar
+        </a>
+    </div>
+    @endif
+
     {{-- ACCIONES + PERFIL --}}
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center gap-2 mb-0 list-unstyled flex-wrap">
@@ -67,18 +80,7 @@
             {{-- SEPARADOR --}}
             <li class="d-none d-lg-flex"><div class="st-sep mx-1"></div></li>
 
-            {{-- EMPRESA ACTIVA --}}
-            @if($empresaActiva)
-            <li class="d-none d-lg-flex align-items-center gap-2">
-                <span class="st-empresa-chip">
-                    <i class="bi bi-building-fill"></i>
-                    {{ $empresaActiva->nombre }}
-                </span>
-                <a href="{{ route('seleccionar.empresa') }}" class="st-cambiar">
-                    <i class="bi bi-arrow-left-right me-1"></i>Cambiar
-                </a>
-            </li>
-            @endif
+            
 
             {{-- SEPARADOR --}}
             <li class="d-none d-lg-flex"><div class="st-sep mx-1"></div></li>

@@ -13,9 +13,6 @@
         </nav>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('afiliaciones.plantilla') }}" class="btn btn-outline-success">
-            <i class="bi bi-file-earmark-arrow-down me-1"></i>Plantilla Excel
-        </a>
         <a href="{{ route('afiliaciones.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle me-1"></i>Nuevo
         </a>
