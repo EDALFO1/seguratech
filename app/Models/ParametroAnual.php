@@ -12,7 +12,8 @@ class ParametroAnual extends BaseModel
         'empresa_id',
         'anio',
         'salario_minimo',
-        'administracion'
+        'administracion',
+        'valor_admin_solo_arl'
     ];
 
     public function empresa()
@@ -42,6 +43,11 @@ class ParametroAnual extends BaseModel
 
             'administracion' => [
                 'required',
+                'numeric'
+            ],
+
+            'valor_admin_solo_arl' => [
+                'nullable',
                 'numeric'
             ],
 

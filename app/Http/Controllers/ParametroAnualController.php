@@ -42,6 +42,7 @@ class ParametroAnualController extends Controller
             ],
             'salario_minimo' => 'required|numeric|min:0',
             'administracion' => 'required|numeric|min:0',
+            'valor_admin_solo_arl' => 'nullable|numeric|min:0',
         ], [
             'anio.unique' => 'Ya existe un parámetro para este año en esta empresa.'
         ]);
@@ -78,6 +79,7 @@ class ParametroAnualController extends Controller
             ],
             'salario_minimo' => 'required|numeric|min:0',
             'administracion' => 'required|numeric|min:0',
+            'valor_admin_solo_arl' => 'nullable|numeric|min:0',
         ], [
             'anio.unique' => 'Ya existe un parámetro para este año en esta empresa.'
         ]);

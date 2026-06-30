@@ -90,6 +90,31 @@
 
     <div class="col-12"><hr class="my-1"></div>
 
+    {{-- TIPO BASE COTIZACIÓN --}}
+    <div class="col-md-2">
+        <label class="form-label fw-semibold">Tipo Base <span class="text-danger">*</span></label>
+        <select name="tipo_base_cotizacion" id="sel_tipo_base" class="form-select @error('tipo_base_cotizacion') is-invalid @enderror" required>
+            <option value="FIJO" {{ old('tipo_base_cotizacion', $arl_afiliado->tipo_base_cotizacion ?? 'FIJO') === 'FIJO' ? 'selected' : '' }}>FIJO</option>
+            <option value="SMMLV" {{ old('tipo_base_cotizacion', $arl_afiliado->tipo_base_cotizacion ?? 'FIJO') === 'SMMLV' ? 'selected' : '' }}>SMMLV</option>
+        </select>
+        @error('tipo_base_cotizacion') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+    </div>
+
+    {{-- PARÁMETRO ANUAL (para SMMLV) --}}
+    <div class="col-md-2" id="col_param_anual" style="display:none;">
+        <label class="form-label fw-semibold">Año Referencia</label>
+        <select name="parametro_anual_id" id="sel_parametro" class="form-select @error('parametro_anual_id') is-invalid @enderror">
+            <option value="">Seleccione</option>
+            @foreach($parametrosAnuales ?? [] as $param)
+                <option value="{{ $param->id }}"
+                    {{ old('parametro_anual_id', $arl_afiliado->parametro_anual_id ?? '') == $param->id ? 'selected' : '' }}>
+                    {{ $param->anio }}
+                </option>
+            @endforeach
+        </select>
+        @error('parametro_anual_id') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+    </div>
+
     {{-- BASE COTIZACIÓN --}}
     <div class="col-md-3">
         <label class="form-label fw-semibold">Base Cotización (IBC) <span class="text-danger">*</span></label>
@@ -100,6 +125,9 @@
                    value="{{ old('base_cotizacion', $arl_afiliado->base_cotizacion ?? '') }}"
                    min="0" step="100" required>
         </div>
+        <small class="text-muted d-block mt-1" id="txt_salario_minimo" style="display:none;">
+            Salario Mínimo: <strong id="val_salario_minimo">$0</strong>
+        </small>
         @error('base_cotizacion') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
     </div>
 
@@ -114,7 +142,7 @@
     </div>
 
     {{-- ADMINISTRACIÓN --}}
-    <div class="col-md-3">
+    <div class="col-md-2">
         <label class="form-label fw-semibold">Administración <span class="text-danger">*</span></label>
         <div class="input-group">
             <span class="input-group-text">$</span>
@@ -123,6 +151,9 @@
                    value="{{ old('administracion', $arl_afiliado->administracion ?? '') }}"
                    min="0" step="100" required>
         </div>
+        <small class="text-muted d-block mt-1">
+            <i class="bi bi-info-circle"></i> <span id="txt_admin_info">Ingrese el valor</span>
+        </small>
         @error('administracion') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
     </div>
 
@@ -150,15 +181,65 @@
 @push('scripts')
 <script>
 (function () {
+    const selTipoBase = document.getElementById('sel_tipo_base');
+    const selParametro = document.getElementById('sel_parametro');
+    const colParamAnual = document.getElementById('col_param_anual');
     const selArl   = document.getElementById('sel_arl');
     const inpBase  = document.getElementById('inp_base');
     const inpAdmin = document.getElementById('inp_admin');
     const outArl   = document.getElementById('out_arl');
     const outTotal = document.getElementById('out_total');
     const txtPct   = document.getElementById('txt_porcentaje');
+    const txtSalarioMinimo = document.getElementById('val_salario_minimo');
+    const colSalarioMinimo = document.getElementById('txt_salario_minimo');
+    const txtAdminInfo = document.getElementById('txt_admin_info');
+
+    // Mapeo de parámetros anuales (se llena desde PHP)
+    const parametrosMap = {
+        @foreach($parametrosAnuales ?? [] as $param)
+            {{ $param->id }}: {
+                anio: {{ $param->anio }},
+                salario_minimo: {{ $param->salario_minimo }},
+                admin_solo_arl: {{ $param->valor_admin_solo_arl ?? 0 }}
+            },
+        @endforeach
+    };
 
     function fmt(n) {
         return Math.round(n).toLocaleString('es-CO');
+    }
+
+    function actualizarTipoBase() {
+        const esSMMLV = selTipoBase.value === 'SMMLV';
+        colParamAnual.style.display = esSMMLV ? 'block' : 'none';
+        colSalarioMinimo.style.display = esSMMLV ? 'block' : 'none';
+
+        if (esSMMLV && selParametro.value) {
+            cargarParametroAnual();
+        }
+    }
+
+    function cargarParametroAnual() {
+        const parametroId = selParametro.value;
+        const parametro = parametrosMap[parametroId];
+
+        if (parametro) {
+            const salario = parametro.salario_minimo;
+            const admin = parametro.admin_solo_arl;
+
+            inpBase.value = salario;
+            txtSalarioMinimo.textContent = '$' + fmt(salario);
+
+            if (admin && admin > 0) {
+                inpAdmin.value = admin;
+                txtAdminInfo.innerHTML = `✓ Cargado de parámetro anual ${parametro.anio}`;
+            } else {
+                inpAdmin.value = '';
+                txtAdminInfo.innerHTML = `<span class="text-warning">⚠ Sin valor admin en parámetro anual</span>`;
+            }
+
+            recalcular();
+        }
     }
 
     function recalcular() {
@@ -181,9 +262,19 @@
         }
     }
 
+    selTipoBase.addEventListener('change', actualizarTipoBase);
+    selParametro.addEventListener('change', cargarParametroAnual);
     selArl.addEventListener('change', recalcular);
     inpBase.addEventListener('input', recalcular);
     inpAdmin.addEventListener('input', recalcular);
+
+    // Inicializar
+    actualizarTipoBase();
+
+    // Si está en modo SMMLV y hay parámetro seleccionado, cargarlo automáticamente
+    if (selTipoBase.value === 'SMMLV' && selParametro.value) {
+        cargarParametroAnual();
+    }
 
     recalcular();
 })();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ParametroAnual;
 use App\Models\Plan;
+use App\Models\ArlAfiliado;
 use Illuminate\Http\Request;
 
 class PlanController extends Controller
@@ -24,8 +25,33 @@ class PlanController extends Controller
                 'calculo' => $parametro ? $plan->calcularValor($parametro) : null,
             ]);
 
+        // Crear planes virtuales SOLO ARL usando la lógica de parámetros anuales
+        $afiliadosSoloARL = collect();
+
+        if ($parametro) {
+            $nivelesARL = Plan::nivelesArl();
+            $smmlv = (float) $parametro->salario_minimo;
+            $adminSoloARL = (float) ($parametro->valor_admin_solo_arl ?? 0);
+
+            foreach ($nivelesARL as $nivel => $info) {
+                $porcentaje = (float) $info['porcentaje'];
+
+                // Calcular valor ARL: SMMLV × porcentaje / 100 (redondeado a múltiplos de 100)
+                $valorARL = (int) (ceil(($smmlv * $porcentaje / 100) / 100) * 100);
+                $totalMensual = $valorARL + $adminSoloARL;
+
+                $afiliadosSoloARL->push([
+                    'nivel' => $nivel,
+                    'nombre' => "Solo ARL {$nivel}",
+                    'valor_arl' => $valorARL,
+                    'admin' => $adminSoloARL,
+                    'total_mensual' => $totalMensual,
+                ]);
+            }
+        }
+
         return view('modules.planes.index', compact(
-            'titulo', 'planes', 'anio', 'aniosDisponibles', 'parametro'
+            'titulo', 'planes', 'afiliadosSoloARL', 'anio', 'aniosDisponibles', 'parametro'
         ));
     }
 

@@ -28,6 +28,7 @@
                         <th class="ps-3">Año</th>
                         <th>Salario Mínimo</th>
                         <th>Administración</th>
+                        <th>Admin. Solo ARL</th>
                         <th class="text-center" style="width:120px">Acciones</th>
                     </tr>
                 </thead>
@@ -37,6 +38,15 @@
                         <td class="ps-3">{{ $parametro->anio }}</td>
                         <td>{{ number_format($parametro->salario_minimo, 2) }}</td>
                         <td>{{ number_format($parametro->administracion, 2) }}</td>
+                        <td>
+                            @if($parametro->valor_admin_solo_arl)
+                                <span class="badge bg-info">
+                                    ${{ number_format($parametro->valor_admin_solo_arl, 2) }}
+                                </span>
+                            @else
+                                <span class="text-muted">—</span>
+                            @endif
+                        </td>
                         <td class="text-center">
                             <a href="{{ route('parametros_anuales.edit', $parametro) }}" class="btn btn-outline-warning btn-sm" title="Editar">
                                 <i class="bi bi-pencil"></i>
@@ -51,7 +61,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center py-5 text-muted">
+                        <td colspan="5" class="text-center py-5 text-muted">
                             <i class="bi bi-inbox fs-2 d-block mb-2 opacity-50"></i>
                             No hay registros.
                         </td>

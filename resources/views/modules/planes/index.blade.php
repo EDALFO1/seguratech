@@ -216,6 +216,38 @@
     </div>
 </div>
 
+{{-- ── Sección SOLO ARL ─────────────────────────────────────────────── --}}
+@if($afiliadosSoloARL->isNotEmpty())
+<div class="mt-4">
+    <h6 class="text-muted mb-3">SOLO ARL</h6>
+    <div class="table-responsive">
+        <table class="table table-sm mb-0" style="border: none;">
+            <thead style="border: none;">
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <th class="ps-0" style="border: none;">Plan</th>
+                    <th class="text-end" style="border: none; width: 150px;">Valor</th>
+                    <th style="border: none; padding-left: 80px;">Detalle</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($afiliadosSoloARL as $item)
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <td class="ps-0 fw-semibold" style="border: none;">{{ $item['nombre'] }}</td>
+                    <td class="text-end fw-bold" style="border: none; width: 150px;">
+                        ${{ number_format($item['total_mensual'], 0, ',', '.') }}
+                    </td>
+                    <td style="border: none; padding-left: 80px;">
+                        ARL{{$item['nivel']}}: ${{ number_format($item['valor_arl'], 0, ',', '.') }}
+                        <span class="ms-4">ADMINISTRACIÓN: ${{ number_format($item['admin'], 0, ',', '.') }}</span>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
+
 </section>
 
 @push('scripts')

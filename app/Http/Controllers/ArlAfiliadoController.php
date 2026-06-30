@@ -6,6 +6,7 @@ use App\Models\ArlAfiliado;
 use App\Models\Arl;
 use App\Models\Documento;
 use App\Models\EmpresaLaboral;
+use App\Models\ParametroAnual;
 use App\Exports\ArlAfiliadosExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
@@ -49,8 +50,12 @@ class ArlAfiliadoController extends Controller
         $arls       = Arl::orderBy('nombre')->get();
         $documentos = Documento::orderBy('nombre')->get();
         $empresas   = EmpresaLaboral::where('estado', true)->orderBy('nombre')->get();
+        $parametrosAnuales = ParametroAnual::orderBy('anio', 'desc')->get();
+        $parametroActual = ParametroAnual::orderBy('anio', 'desc')->first();
 
-        return view('modules.arl-afiliados.create', compact('titulo', 'arls', 'documentos', 'empresas'));
+        return view('modules.arl-afiliados.create', compact(
+            'titulo', 'arls', 'documentos', 'empresas', 'parametrosAnuales', 'parametroActual'
+        ));
     }
 
     public function store(Request $request)
@@ -77,9 +82,10 @@ class ArlAfiliadoController extends Controller
         $arls       = Arl::orderBy('nombre')->get();
         $documentos = Documento::orderBy('nombre')->get();
         $empresas   = EmpresaLaboral::orderBy('nombre')->get();
+        $parametrosAnuales = ParametroAnual::orderBy('anio', 'desc')->get();
 
         return view('modules.arl-afiliados.edit', compact(
-            'titulo', 'arl_afiliado', 'arls', 'documentos', 'empresas'
+            'titulo', 'arl_afiliado', 'arls', 'documentos', 'empresas', 'parametrosAnuales'
         ));
     }
 

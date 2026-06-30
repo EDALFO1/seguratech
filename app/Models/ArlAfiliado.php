@@ -18,6 +18,8 @@ class ArlAfiliado extends BaseModel
         'arl_id',
         'empresa_laboral_id',
         'base_cotizacion',
+        'tipo_base_cotizacion',
+        'parametro_anual_id',
         'administracion',
         'estado',
         'fecha_retiro',
@@ -46,6 +48,11 @@ class ArlAfiliado extends BaseModel
         return $this->belongsTo(EmpresaLaboral::class, 'empresa_laboral_id');
     }
 
+    public function parametroAnual()
+    {
+        return $this->belongsTo(\App\Models\ParametroAnual::class, 'parametro_anual_id');
+    }
+
     public function valorArl(): float
     {
         if (!$this->arl) {
@@ -70,6 +77,8 @@ class ArlAfiliado extends BaseModel
             'arl_id'            => ['required', 'exists:arls,id'],
             'empresa_laboral_id'=> ['nullable', 'exists:empresas_laborales,id'],
             'base_cotizacion'   => ['required', 'numeric', 'min:0'],
+            'tipo_base_cotizacion' => ['nullable', 'in:SMMLV,FIJO'],
+            'parametro_anual_id' => ['nullable', 'exists:parametros_anuales,id'],
             'administracion'    => ['required', 'numeric', 'min:0'],
             'estado'            => ['nullable', 'boolean'],
             'fecha_retiro'      => ['nullable', 'date_format:Y-m-d'],
