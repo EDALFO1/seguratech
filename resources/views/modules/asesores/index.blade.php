@@ -25,7 +25,7 @@
             Mostrando {{ $asesores->firstItem() }} a {{ $asesores->lastItem() }} de {{ $asesores->total() }} registros
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 datatable">
+            <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
                         <th class="ps-3">Documento</th>

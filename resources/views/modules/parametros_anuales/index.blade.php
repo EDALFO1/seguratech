@@ -25,7 +25,7 @@
             Mostrando {{ $parametros->firstItem() }} a {{ $parametros->lastItem() }} de {{ $parametros->total() }} registros
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 datatable">
+            <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
                         <th class="ps-3">Año</th>
