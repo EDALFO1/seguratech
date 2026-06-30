@@ -22,6 +22,21 @@
 
 <section class="section mt-3">
 
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="alert alert-info d-flex gap-2">
+            <span class="badge bg-primary text-white">CONTINÚA</span>
+            Afiliados que vienen del período anterior
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="alert alert-success d-flex gap-2">
+            <span class="badge bg-success text-white">NUEVO</span>
+            Afiliados que ingresaron en este período
+        </div>
+    </div>
+</div>
+
 <div class="card shadow-sm border-0">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -30,17 +45,29 @@
                     <tr>
                         <th class="ps-3">Nombre</th>
                         <th>Documento</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($afiliados as $a)
+                    @forelse($afiliados as $item)
                     <tr>
-                        <td class="ps-3 fw-semibold">{{ $a->primer_nombre }} {{ $a->primer_apellido }}</td>
-                        <td>{{ $a->numero_documento }}</td>
+                        <td class="ps-3 fw-semibold">{{ $item['afiliado']->primer_nombre }} {{ $item['afiliado']->primer_apellido }}</td>
+                        <td>{{ $item['afiliado']->numero_documento }}</td>
+                        <td>
+                            @if($item['es_nuevo'])
+                                <span class="badge bg-success">
+                                    <i class="bi bi-star-fill me-1"></i>NUEVO
+                                </span>
+                            @else
+                                <span class="badge bg-primary">
+                                    <i class="bi bi-arrow-repeat me-1"></i>CONTINÚA
+                                </span>
+                            @endif
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="2" class="text-center py-5 text-muted">
+                        <td colspan="3" class="text-center py-5 text-muted">
                             <i class="bi bi-inbox fs-2 d-block mb-2 opacity-50"></i>
                             No hay afiliados activos sin recibo para el siguiente periodo.
                         </td>

@@ -781,7 +781,7 @@ public function activosSiguientePeriodo()
     };
 
     // =========================
-    // 🔥 1. RECIBOS DEL MES SIN RETIRO
+    // 🔥 1. RECIBOS DEL MES SIN RETIRO (EXISTENTES)
     // =========================
     $recibosActivos = Recibo::where('empresa_id', $empresaId)
         ->whereRaw("DATE_FORMAT(fecha, '%Y-%m') = ?", [$periodo])
@@ -789,7 +789,7 @@ public function activosSiguientePeriodo()
         ->pluck('afiliado_id');
 
     // =========================
-    // 🔥 2. AFILIADOS QUE INGRESARON ESTE MES
+    // 🔥 2. AFILIADOS QUE INGRESARON ESTE MES (NUEVOS)
     // =========================
     $afiliadosNuevos = Afiliacion::where('empresa_id', $empresaId)
         ->whereRaw("DATE_FORMAT(fecha_afiliacion, '%Y-%m') = ?", [$periodo])
@@ -803,9 +803,18 @@ public function activosSiguientePeriodo()
         ->unique();
 
     // =========================
-    // 🔥 TRAER AFILIADOS
+    // 🔥 TRAER AFILIADOS CON ESTADO
     // =========================
-    $afiliados = Afiliado::whereIn('id', $ids)->get();
+    $afiliados = Afiliado::whereIn('id', $ids)
+        ->orderBy('primer_apellido')
+        ->get()
+        ->map(function($afiliado) use ($recibosActivos, $afiliadosNuevos) {
+            return [
+                'afiliado' => $afiliado,
+                'es_nuevo' => $afiliadosNuevos->contains($afiliado->id),
+                'continua' => $recibosActivos->contains($afiliado->id)
+            ];
+        });
 
     return view('modules.recibos.activos_siguiente', compact('afiliados'));
 }
