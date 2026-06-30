@@ -71,7 +71,7 @@
 
         <div class="vr d-none d-md-block"></div>
 
-        <a href="{{ route('recibos.activos') }}" class="btn btn-outline-dark">
+        <a href="{{ route('recibos.activos') }}" class="btn btn-outline-secondary">
             <i class="bi bi-calendar-check me-1"></i>Activos siguiente periodo
         </a>
 
