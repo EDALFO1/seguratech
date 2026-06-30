@@ -610,6 +610,37 @@ html.dark-mode .border-end { border-right-color: #334155 !important; }
 html.dark-mode .bg-light { background: #334155 !important; }
 html.dark-mode .bg-white { background: #1e293b !important; }
 
+/* Dark Mode - Badges en tablas */
+html.dark-mode .badge.bg-light {
+    background: #475569 !important;
+    color: #f1f5f9 !important;
+    border-color: #64748b !important;
+}
+
+html.dark-mode table .badge {
+    background: #475569 !important;
+    color: #f1f5f9 !important;
+}
+
+html.dark-mode table td .badge.bg-light {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #475569 !important;
+}
+
+/* Dark Mode - Texto en tablas */
+html.dark-mode table td {
+    color: #e2e8f0 !important;
+}
+
+html.dark-mode table td .text-dark {
+    color: #f1f5f9 !important;
+}
+
+html.dark-mode table .fw-bold {
+    color: #f1f5f9 !important;
+}
+
 /* Dark Mode - Elemento blanco genérico */
 html.dark-mode [style*="background: white"],
 html.dark-mode [style*="background-color: white"],
