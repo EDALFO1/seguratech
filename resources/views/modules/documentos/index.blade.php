@@ -21,6 +21,9 @@
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
+        <div class="px-3 pt-3 text-muted small">
+            Mostrando {{ $documentos->firstItem() }} a {{ $documentos->lastItem() }} de {{ $documentos->total() }} registros
+        </div>
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0 datatable">
                 <thead class="table-light">
