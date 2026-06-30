@@ -816,7 +816,14 @@ public function activosSiguientePeriodo()
             ];
         });
 
-    return view('modules.recibos.activos_siguiente', compact('afiliados'));
+    // =========================
+    // 🔥 ESTADÍSTICAS
+    // =========================
+    $totalAfiliados = $afiliados->count();
+    $afiliadosNuevosCount = $afiliados->filter(fn($a) => $a['es_nuevo'])->count();
+    $afiliadosContinuanCount = $afiliados->filter(fn($a) => $a['continua'])->count();
+
+    return view('modules.recibos.activos_siguiente', compact('afiliados', 'totalAfiliados', 'afiliadosNuevosCount', 'afiliadosContinuanCount'));
 }
 public function crearLote(Request $request)
 {

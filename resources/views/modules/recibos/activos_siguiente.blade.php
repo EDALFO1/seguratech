@@ -22,6 +22,34 @@
 
 <section class="section mt-3">
 
+{{-- ESTADÍSTICAS --}}
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 text-center">
+            <div class="card-body">
+                <h3 class="text-primary fw-bold mb-1">{{ $totalAfiliados }}</h3>
+                <p class="text-muted small mb-0"><i class="bi bi-people-fill me-1"></i>Total de Afiliados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 text-center">
+            <div class="card-body">
+                <h3 class="text-success fw-bold mb-1">{{ $afiliadosNuevosCount }}</h3>
+                <p class="text-muted small mb-0"><i class="bi bi-star-fill me-1"></i>Afiliados Nuevos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 text-center">
+            <div class="card-body">
+                <h3 class="text-info fw-bold mb-1">{{ $afiliadosContinuanCount }}</h3>
+                <p class="text-muted small mb-0"><i class="bi bi-arrow-repeat me-1"></i>Que Continúan</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mb-3">
     <div class="col-md-6">
         <div class="alert alert-info d-flex gap-2">
