@@ -22,7 +22,9 @@ class EmpresaClaveController extends Controller
 
     $claves = EmpresaClave::with('servicio')
         ->where('empresa_id', $empresaId)
-        ->latest()
+        ->join('servicios_externos', 'empresa_claves.servicio_externo_id', '=', 'servicios_externos.id')
+        ->orderBy('servicios_externos.nombre')
+        ->select('empresa_claves.*')
         ->paginate(20);
 
     return view('modules.empresa_claves.index', compact('claves'));

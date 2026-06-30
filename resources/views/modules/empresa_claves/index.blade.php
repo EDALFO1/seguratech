@@ -195,6 +195,58 @@ use Illuminate\Support\Facades\Crypt;
         color: #1b4332;
     }
 
+    /* DARK MODE */
+    html.dark-mode .claves-card{
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    html.dark-mode .table-claves thead th{
+        background: #334155;
+        border-bottom: 2px solid #475569;
+        color: #f1f5f9;
+    }
+
+    html.dark-mode .table-claves tbody td{
+        border-color: #334155;
+        color: #e2e8f0;
+    }
+
+    html.dark-mode .table-claves tbody tr:hover{
+        background: #0c2d4b;
+    }
+
+    html.dark-mode .servicio-badge{
+        background: linear-gradient(90deg, #0369a1, #0284c7);
+    }
+
+    html.dark-mode .password-group{
+        background: #334155;
+        border: 1.5px solid #475569;
+    }
+
+    html.dark-mode .password-group:focus-within{
+        border-color: #3b82f6;
+        background: #1e293b;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    html.dark-mode .password-field{
+        color: #e2e8f0 !important;
+        background: transparent !important;
+    }
+
+    html.dark-mode .claves-title,
+    html.dark-mode .claves-subtitle{
+        color: #f1f5f9;
+    }
+
+    html.dark-mode .alert-success{
+        background: #064e3b;
+        border-color: #10b981;
+        color: #a7f3d0;
+    }
+
 </style>
 
 <div class="container-fluid-fluid claves-wrapper">
