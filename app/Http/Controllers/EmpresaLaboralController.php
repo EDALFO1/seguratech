@@ -17,7 +17,7 @@ class EmpresaLaboralController extends Controller
         // 🔒 filtrado automático por empresa
         $empresas = EmpresaLaboral::with('documento')
             ->orderBy('nombre')
-            ->get();
+            ->paginate(10);
 
         return view('modules.empresas_laborales.index',
             compact('titulo','empresas'));

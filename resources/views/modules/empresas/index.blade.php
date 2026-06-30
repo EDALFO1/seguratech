@@ -70,6 +70,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="p-3">
+            {{ $empresas->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 

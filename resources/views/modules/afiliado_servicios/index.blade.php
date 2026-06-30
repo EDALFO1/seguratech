@@ -68,6 +68,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="p-3">
+            {{ $registros->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 

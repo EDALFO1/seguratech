@@ -64,6 +64,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="p-3">
+            {{ $asesores->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 

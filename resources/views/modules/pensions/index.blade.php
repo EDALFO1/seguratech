@@ -60,6 +60,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="p-3">
+            {{ $pensions->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 

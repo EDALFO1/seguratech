@@ -11,7 +11,7 @@ class ArlController extends Controller
     {
         $titulo = "ARL";
 
-        $arls = Arl::orderBy('nombre')->get();
+        $arls = Arl::orderBy('nombre')->paginate(10);
 
         return view('modules.arls.index', compact('titulo','arls'));
     }

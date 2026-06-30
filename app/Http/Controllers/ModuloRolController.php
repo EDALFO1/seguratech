@@ -10,7 +10,7 @@ class ModuloRolController extends Controller
 {
     public function index()
     {
-        $roles = Rol::orderBy('nombre')->get();
+        $roles = Rol::orderBy('nombre')->paginate(10);
 
         return view('modules.modulos_rol.index', [
             'titulo' => 'Módulos por Rol',

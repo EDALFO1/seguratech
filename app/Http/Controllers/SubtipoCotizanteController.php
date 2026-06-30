@@ -12,7 +12,7 @@ class SubtipoCotizanteController extends Controller
     {
         $titulo = "Subtipos de Cotizantes";
 
-        $subtipos = SubtipoCotizante::orderBy('codigo')->get();
+        $subtipos = SubtipoCotizante::orderBy('codigo')->paginate(10);
 
         return view('modules.subtipo_cotizantes.index', compact('titulo','subtipos'));
     }

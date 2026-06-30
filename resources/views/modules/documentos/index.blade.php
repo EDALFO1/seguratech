@@ -58,6 +58,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="p-3">
+            {{ $documentos->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 

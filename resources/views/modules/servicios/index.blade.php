@@ -68,6 +68,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="p-3">
+            {{ $servicios->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 

@@ -11,7 +11,7 @@ class PensionController extends Controller
     {
         $titulo = "Pensiones";
 
-        $pensions = Pension::orderBy('nombre')->get();
+        $pensions = Pension::orderBy('nombre')->paginate(10);
 
         return view('modules.pensions.index', compact('titulo','pensions'));
     }

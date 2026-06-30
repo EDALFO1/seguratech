@@ -434,9 +434,249 @@ html.dark-mode .table tbody tr:hover {
 html.dark-mode .dataTables_wrapper { color: #e2e8f0; }
 html.dark-mode .dataTables_length, html.dark-mode .dataTables_info { color: #cbd5e1; }
 html.dark-mode .dataTables_paginate { color: #cbd5e1; }
-html.dark-mode .dataTables_paginate .paginate_button { background: #334155; color: #e2e8f0; border-color: #475569; }
-html.dark-mode .dataTables_paginate .paginate_button:hover { background: #475569; }
-html.dark-mode .dataTables_paginate .paginate_button.current { background: #3b82f6; }
+html.dark-mode .dataTables_paginate .paginate_button {
+    background: #334155;
+    color: #e2e8f0;
+    border-color: #475569;
+    border: 1px solid #475569;
+}
+html.dark-mode .dataTables_paginate .paginate_button:hover {
+    background: #475569;
+    color: #f1f5f9;
+    border-color: #64748b;
+}
+html.dark-mode .dataTables_paginate .paginate_button.current {
+    background: #3b82f6;
+    color: #fff;
+    border-color: #3b82f6;
+}
+html.dark-mode .dataTables_paginate .paginate_button.disabled {
+    opacity: 0.5;
+    color: #94a3b8;
+}
+
+/* Dark Mode - Paginación COMPLETA */
+/* ═══════════════════════════════════════════════════════════════════
+   DARK MODE - DATATABLE PAGINACIÓN COMPLETA (17 MÓDULOS)
+   Se aplica a todos los módulos con clase .datatable
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Contenedores principales */
+html.dark-mode .dataTables_wrapper,
+html.dark-mode .dt-paging {
+    background: transparent !important;
+    color: #e2e8f0 !important;
+}
+
+/* Info text - "Mostrando X a Y de Z" */
+html.dark-mode .dataTables_info,
+html.dark-mode div.dataTables_info {
+    color: #3b82f6 !important;
+    background: transparent !important;
+}
+
+/* Length selector */
+html.dark-mode .dataTables_length label,
+html.dark-mode .dataTables_length select {
+    color: #e2e8f0 !important;
+}
+
+html.dark-mode .dataTables_length select {
+    background: #334155 !important;
+    border-color: #475569 !important;
+}
+
+/* Search filter */
+html.dark-mode .dataTables_filter label,
+html.dark-mode .dataTables_filter input {
+    color: #e2e8f0 !important;
+}
+
+html.dark-mode .dataTables_filter input {
+    background: #334155 !important;
+    border-color: #475569 !important;
+}
+
+/* ── BOTONES DE PAGINACIÓN ── */
+html.dark-mode .dataTables_paginate,
+html.dark-mode .dataTables_paginate span,
+html.dark-mode .dt-paging {
+    color: #e2e8f0 !important;
+}
+
+/* Botones genéricos */
+html.dark-mode .paginate_button,
+html.dark-mode .dt-paging-button,
+html.dark-mode span.paginate_button {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #475569 !important;
+    padding: 6px 12px !important;
+    margin: 0 2px !important;
+}
+
+/* Botones nombrados */
+html.dark-mode .paginate_button.first,
+html.dark-mode .paginate_button.previous,
+html.dark-mode .paginate_button.next,
+html.dark-mode .paginate_button.last {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+/* Estado hover */
+html.dark-mode .paginate_button:hover:not(.disabled),
+html.dark-mode .paginate_button:not(.disabled):hover,
+html.dark-mode .dt-paging-button:hover:not(.disabled),
+html.dark-mode span.paginate_button:hover {
+    background: #475569 !important;
+    color: #f1f5f9 !important;
+    border-color: #64748b !important;
+    cursor: pointer !important;
+}
+
+/* Página actual */
+html.dark-mode .paginate_button.current,
+html.dark-mode .dt-paging-button.active,
+html.dark-mode .paginate_button.current:hover {
+    background: #3b82f6 !important;
+    color: #fff !important;
+    border-color: #3b82f6 !important;
+}
+
+/* Deshabilitados */
+html.dark-mode .paginate_button.disabled,
+html.dark-mode .dt-paging-button.disabled {
+    background: #1e293b !important;
+    color: #64748b !important;
+    border-color: #334155 !important;
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* Enlaces */
+html.dark-mode .dataTables_paginate a,
+html.dark-mode .dt-paging a {
+    color: #e2e8f0 !important;
+}
+
+html.dark-mode .dataTables_paginate a:hover,
+html.dark-mode .dt-paging a:hover {
+    color: #f1f5f9 !important;
+}
+
+/* Ellipsis (...) */
+html.dark-mode .dataTables_paginate .ellipsis {
+    color: #e2e8f0 !important;
+}
+
+/* ── BOOTSTRAP PAGINATION (Laravel paginate) ── */
+html.dark-mode .pagination {
+    background: transparent !important;
+}
+
+html.dark-mode .pagination .page-link {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+    border-color: #475569 !important;
+    margin: 0 2px !important;
+}
+
+html.dark-mode .pagination .page-link:hover {
+    background: #475569 !important;
+    color: #f1f5f9 !important;
+    border-color: #64748b !important;
+}
+
+html.dark-mode .pagination .page-item.active .page-link {
+    background: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: #fff !important;
+}
+
+html.dark-mode .pagination .page-item.disabled .page-link {
+    background: #1e293b !important;
+    color: #64748b !important;
+    border-color: #334155 !important;
+    opacity: 0.5 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE - DATATABLE MÁXIMA ESPECIFICIDAD (SOBRESCRIBIR CDN)
+   ═══════════════════════════════════════════════════════════════ */
+
+html.dark-mode body div.dataTables_wrapper {
+    color: #e2e8f0 !important;
+}
+
+html.dark-mode body div.dataTables_wrapper div.dataTables_info {
+    color: #3b82f6 !important;
+}
+
+html.dark-mode body div.dataTables_wrapper div.dataTables_paginate {
+    color: #e2e8f0 !important;
+}
+
+html.dark-mode body .dataTables_wrapper .dataTables_paginate .paginate_button {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #475569 !important;
+}
+
+html.dark-mode body .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled) {
+    background: #475569 !important;
+    color: #f1f5f9 !important;
+}
+
+html.dark-mode body .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #3b82f6 !important;
+    color: #fff !important;
+    border-color: #3b82f6 !important;
+}
+
+html.dark-mode body .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    color: #64748b !important;
+    opacity: 0.5 !important;
+}
+
+html.dark-mode body .dataTables_wrapper .dataTables_length,
+html.dark-mode body .dataTables_wrapper .dataTables_filter {
+    color: #e2e8f0 !important;
+}
+
+html.dark-mode body .dataTables_wrapper .dataTables_length select,
+html.dark-mode body .dataTables_wrapper .dataTables_filter input {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #475569 !important;
+}
+
+html.dark-mode .paginate_button {
+    color: #e2e8f0 !important;
+    background: #334155 !important;
+    border: 1px solid #475569 !important;
+}
+
+html.dark-mode .paginate_button:hover:not(.disabled) {
+    color: #f1f5f9 !important;
+    background: #475569 !important;
+    border-color: #64748b !important;
+}
+
+html.dark-mode .paginate_button.current,
+html.dark-mode .paginate_button.current:hover {
+    color: #fff !important;
+    background: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+}
+
+html.dark-mode .paginate_button.disabled,
+html.dark-mode .paginate_button.disabled:hover {
+    color: #64748b !important;
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    opacity: 0.5;
+}
 
 html.dark-mode .form-control, html.dark-mode .form-select, html.dark-mode .input-group {
     background: #1e293b;

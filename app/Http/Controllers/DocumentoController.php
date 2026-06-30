@@ -11,7 +11,7 @@ class DocumentoController extends Controller
     {
         $titulo = "Tipos de Documento";
 
-        $documentos = Documento::orderBy('nombre')->get();
+        $documentos = Documento::orderBy('nombre')->paginate(10);
 
         return view('modules.documentos.index', compact('titulo','documentos'));
     }

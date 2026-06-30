@@ -13,7 +13,7 @@ class ServicioController extends Controller
 
         $titulo = "Servicios";
 
-        $servicios = Servicio::orderBy('nombre')->get();
+        $servicios = Servicio::orderBy('nombre')->paginate(10);
 
         return view('modules.servicios.index',
             compact('titulo','servicios'));

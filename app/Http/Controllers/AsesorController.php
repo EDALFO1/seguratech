@@ -17,7 +17,7 @@ class AsesorController extends Controller
         // 🔒 ya filtrado por empresa automáticamente
         $asesores = Asesor::with(['documento'])
             ->orderBy('nombre')
-            ->get();
+            ->paginate(10);
 
         return view('modules.asesores.index',
             compact('titulo','asesores'));

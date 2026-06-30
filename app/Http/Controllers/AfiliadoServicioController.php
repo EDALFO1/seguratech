@@ -18,7 +18,7 @@ class AfiliadoServicioController extends Controller
             ->whereHas('afiliado')
             ->whereHas('servicio')
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(10);
 
         return view('modules.afiliado_servicios.index',
             compact('titulo','registros'));

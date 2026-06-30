@@ -13,7 +13,7 @@ class ParametroAnualController extends Controller
         $titulo = "Parámetros Anuales";
 
         // 🔒 filtrado automático por empresa
-        $parametros = ParametroAnual::orderBy('anio','desc')->get();
+        $parametros = ParametroAnual::orderBy('anio','desc')->paginate(10);
 
         return view('modules.parametros_anuales.index',
             compact('titulo','parametros'));

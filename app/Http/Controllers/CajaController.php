@@ -11,7 +11,7 @@ class CajaController extends Controller
     {
         $titulo = "Cajas de Compensación";
 
-        $cajas = Caja::orderBy('nombre')->get();
+        $cajas = Caja::orderBy('nombre')->paginate(10);
 
         return view('modules.cajas.index', compact('titulo','cajas'));
     }

@@ -10,7 +10,7 @@ class ModuloEmpresaController extends Controller
 {
     public function index()
     {
-        $empresas = Empresa::orderBy('nombre')->get();
+        $empresas = Empresa::orderBy('nombre')->paginate(10);
 
         return view('modules.modulos_empresa.index', [
             'titulo'   => 'Módulos por Empresa',

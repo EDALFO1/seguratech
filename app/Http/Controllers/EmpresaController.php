@@ -15,13 +15,13 @@ class EmpresaController extends Controller
 
         if (auth()->user()->tipo === 'admin') {
             // 🔥 ADMIN VE TODAS
-            $empresas = Empresa::orderBy('nombre')->get();
+            $empresas = Empresa::orderBy('nombre')->paginate(10);
         } else {
             // 🔒 USUARIO SOLO SUS EMPRESAS
             $empresas = auth()->user()
                 ->empresas()
                 ->orderBy('nombre')
-                ->get();
+                ->paginate(10);
         }
 
         return view('modules.empresas.index', compact('titulo','empresas'));

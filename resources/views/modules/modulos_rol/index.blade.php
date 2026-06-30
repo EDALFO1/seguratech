@@ -52,6 +52,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="p-3">
+            {{ $roles->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 

@@ -64,6 +64,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="p-3">
+            {{ $arls->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 

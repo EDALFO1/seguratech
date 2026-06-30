@@ -12,7 +12,7 @@ class RolController extends Controller
     {
         $titulo = "Roles";
 
-        $roles = Rol::orderBy('nombre')->get();
+        $roles = Rol::orderBy('nombre')->paginate(10);
 
         return view('modules.roles.index', compact('titulo','roles'));
     }

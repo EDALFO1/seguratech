@@ -18,7 +18,7 @@ class UserController extends Controller
 
         $users = User::with(['empresas','rol'])
             ->orderBy('name')
-            ->get();
+            ->paginate(10);
 
         return view('modules.users.index', compact('titulo','users'));
     }
