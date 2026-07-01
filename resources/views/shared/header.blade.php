@@ -365,8 +365,9 @@ function calcularTotal() {
         detalles.push(`Administración: ${conceptosData.administracion}%`);
     }
 
-    // Actualizar totales
-    document.getElementById('totalPagar').textContent = `$${totalPago.toLocaleString('es-CO', {maximumFractionDigits: 0})}`;
+    // Actualizar totales (redondear a unidades de 100)
+    const totalRedondeado = Math.round(totalPago / 100) * 100;
+    document.getElementById('totalPagar').textContent = `$${totalRedondeado.toLocaleString('es-CO', {maximumFractionDigits: 0})}`;
     document.getElementById('porcentajeTotal').textContent = `${totalPorcentaje.toFixed(4)}%`;
 }
 
