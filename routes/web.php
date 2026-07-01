@@ -159,6 +159,7 @@ Route::middleware('auth')->group(function () {
             Route::post('generar/{afiliado}',   [ReciboController::class, 'generarUno'])->name('generar.uno');
             Route::post('generar-todos',        [ReciboController::class, 'generarTodos'])->name('generar.todos');
             Route::get('exportar-vigentes',     [ReciboController::class, 'exportarVigentes'])->name('exportar.vigentes');
+            Route::get('vigentes',              [ReciboController::class, 'afiliadosVigentes'])->name('vigentes');
         });
         Route::resource('recibos', ReciboController::class);
         Route::resource('recibo_detalles', ReciboDetalleController::class);

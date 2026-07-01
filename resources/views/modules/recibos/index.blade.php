@@ -69,6 +69,10 @@
             <i class="bi bi-download me-1"></i>Exportar afiliados vigentes
         </a>
 
+        <a href="{{ route('recibos.vigentes') }}" class="btn btn-outline-info">
+            <i class="bi bi-eye me-1"></i>Ver afiliados vigentes
+        </a>
+
         <div class="vr d-none d-md-block"></div>
 
         <a href="{{ route('recibos.activos') }}" class="btn btn-outline-secondary">

@@ -825,6 +825,82 @@ public function activosSiguientePeriodo()
 
     return view('modules.recibos.activos_siguiente', compact('afiliados', 'totalAfiliados', 'afiliadosNuevosCount', 'afiliadosContinuanCount'));
 }
+
+public function afiliadosVigentes(Request $request)
+{
+    $empresaId = session('empresa_id');
+
+    // =========================
+    // 🔥 AFILIADOS CON RECIBO ACTIVO DEL MES ACTUAL
+    // =========================
+    $idsRecibo = Recibo::where('empresa_id', $empresaId)
+        ->whereNull('fecha_retiro')
+        ->whereMonth('fecha', now()->month)
+        ->whereYear('fecha', now()->year)
+        ->pluck('afiliado_id');
+
+    // =========================
+    // 🔥 NUEVOS INGRESOS DEL MES ACTUAL
+    // =========================
+    $idsIngreso = Afiliacion::where('empresa_id', $empresaId)
+        ->where('estado', 1)
+        ->whereMonth('fecha_afiliacion', now()->month)
+        ->whereYear('fecha_afiliacion', now()->year)
+        ->pluck('afiliado_id');
+
+    // =========================
+    // 🔥 UNIFICAR
+    // =========================
+    $ids = $idsRecibo
+        ->merge($idsIngreso)
+        ->unique();
+
+    // =========================
+    // 🔥 TRAER AFILIADOS CON DATOS COMPLETOS
+    // =========================
+    $afiliados = Afiliado::with([
+            'empresa',
+            'subtipoCotizante',
+            'empresaLaboral',
+            'afiliacion.eps',
+            'afiliacion.pension',
+            'afiliacion.caja'
+        ])
+        ->whereIn('id', $ids)
+        ->where('estado', 1)
+        ->orderBy('primer_apellido')
+        ->paginate(20);
+
+    // =========================
+    // 🔥 CALCULAR VALORES
+    // =========================
+    $afiliados = $afiliados->map(function ($a) {
+        $data = $this->calcularRecibo($a->id, now());
+        $afiliacion = $a->afiliacion;
+
+        return [
+            'numero_documento' => $a->numero_documento,
+            'nombre_completo' => trim(
+                ($a->primer_nombre ?? '') . ' ' .
+                ($a->segundo_nombre ?? '') . ' ' .
+                ($a->primer_apellido ?? '') . ' ' .
+                ($a->segundo_apellido ?? '')
+            ),
+            'telefono' => $a->telefono,
+            'valor' => $data['total'] ?? 0,
+            'subtipo_cotizante' => $a->subtipoCotizante->nombre ?? '—',
+            'eps' => $afiliacion->eps->nombre ?? '—',
+            'nivel_arl' => $afiliacion->nivel_arl ?? '—',
+            'pension' => $afiliacion->pension->nombre ?? '—',
+            'caja' => $afiliacion->caja->nombre ?? '—',
+            'fecha_afiliacion' => $afiliacion->fecha_afiliacion ?? '—',
+            'empresa_laboral' => $a->empresaLaboral->nombre ?? '—'
+        ];
+    });
+
+    return view('modules.recibos.vigentes', compact('afiliados'));
+}
+
 public function crearLote(Request $request)
 {
 
