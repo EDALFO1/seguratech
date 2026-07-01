@@ -99,6 +99,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('afiliados', AfiliadoController::class)->parameters(['afiliados' => 'afiliado']);
         Route::get('/afiliaciones/plantilla', [AfiliacionController::class, 'descargarPlantilla'])->name('afiliaciones.plantilla');
         Route::post('/afiliaciones/importar', [AfiliacionController::class, 'importar'])->name('afiliaciones.importar');
+        Route::get('/afiliaciones/buscar-arl', [AfiliacionController::class, 'buscarArl'])->name('api.arl.buscar');
         Route::resource('afiliaciones', AfiliacionController::class)->parameters(['afiliaciones' => 'afiliacion']);
         Route::resource('afiliado_servicios', AfiliadoServicioController::class)->parameters(['afiliado_servicios' => 'afiliado_servicio']);
 

@@ -78,10 +78,10 @@ class AfiliacionController extends Controller
 
     $eps = Eps::orderBy('nombre')->get();
 
-    // ✅ CORREGIDO
-    $arls = Arl::orderBy('nombre')
-        ->orderBy('nivel')
-        ->get();
+    // Obtener solo nombres únicos de ARLs
+    $arls = Arl::distinct()
+        ->orderBy('nombre')
+        ->pluck('nombre');
 
     $pensions = Pension::orderBy('nombre')->get();
     $cajas = Caja::orderBy('nombre')->get();
@@ -176,10 +176,10 @@ class AfiliacionController extends Controller
 
     $eps = Eps::orderBy('nombre')->get();
 
-    // ✅ CORREGIDO
-    $arls = Arl::orderBy('nombre')
-        ->orderBy('nivel')
-        ->get();
+    // Obtener solo nombres únicos de ARLs
+    $arls = Arl::distinct()
+        ->orderBy('nombre')
+        ->pluck('nombre');
 
     $pensions = Pension::orderBy('nombre')->get();
 
@@ -314,5 +314,21 @@ class AfiliacionController extends Controller
         });
 
     return response()->json($afiliados);
+}
+
+public function buscarArl(Request $request)
+{
+    $nombre = $request->nombre;
+    $nivel = $request->nivel;
+
+    $arl = Arl::where('nombre', $nombre)
+        ->where('nivel', $nivel)
+        ->first();
+
+    if (!$arl) {
+        return response()->json(['error' => 'ARL no encontrada'], 404);
+    }
+
+    return response()->json($arl);
 }
 }

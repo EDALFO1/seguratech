@@ -236,6 +236,40 @@ $(document).ready(function () {
         }
     });
 
+    // SINCRONIZAR ARL Y NIVEL
+    function sincronizarArl() {
+        let nombreArl = $('#arl_nombre').val();
+        let nivelArl = $('#nivel_arl').val();
+
+        if (!nombreArl || !nivelArl) {
+            $('#arl_id').val('');
+            return;
+        }
+
+        axios.get("{{ route('api.arl.buscar') }}", {
+            params: {
+                nombre: nombreArl,
+                nivel: nivelArl
+            }
+        })
+        .then(function (response) {
+            if (response.data && response.data.id) {
+                $('#arl_id').val(response.data.id);
+            }
+        })
+        .catch(function () {
+            $('#arl_id').val('');
+        });
+    }
+
+    $('#arl_nombre').on('change', sincronizarArl);
+    $('#nivel_arl').on('change', sincronizarArl);
+
+    // Sincronizar al cargar si es edición
+    if ($('#arl_id').val()) {
+        sincronizarArl();
+    }
+
 });
 </script>
 @endpush

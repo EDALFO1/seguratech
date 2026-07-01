@@ -57,25 +57,26 @@ $isEdit = isset($afiliacion) && $afiliacion->id;
     {{-- ARL --}}
     <div class="col-md-4">
         <label class="form-label fw-semibold">ARL</label>
-        <select name="arl_id" class="form-select campo-form @error('arl_id') is-invalid @enderror">
+        <select id="arl_nombre" class="form-select campo-form @error('arl_id') is-invalid @enderror">
             <option value="">Seleccione</option>
-            @foreach($arls as $a)
-                <option value="{{ $a->id }}" {{ old('arl_id', $afiliacion->arl_id ?? '') == $a->id ? 'selected' : '' }}>{{ $a->nombre }}</option>
+            @foreach($arls as $nombre)
+                <option value="{{ $nombre }}" {{ old('arl_nombre', $afiliacion->arl?->nombre ?? '') == $nombre ? 'selected' : '' }}>{{ $nombre }}</option>
             @endforeach
         </select>
-        @error('arl_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        <input type="hidden" name="arl_id" id="arl_id" value="{{ old('arl_id', $afiliacion->arl_id ?? '') }}">
+        @error('arl_id') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
     </div>
 
     {{-- NIVEL ARL --}}
     <div class="col-md-4">
         <label class="form-label fw-semibold">Nivel ARL</label>
-        <select name="nivel_arl" class="form-select campo-form @error('nivel_arl') is-invalid @enderror">
+        <select id="nivel_arl" name="nivel_arl" class="form-select campo-form @error('nivel_arl') is-invalid @enderror">
             <option value="">Seleccione</option>
             @for($i=1; $i<=5; $i++)
-                <option value="{{ $i }}" {{ old('nivel_arl', $afiliacion->nivel_arl ?? '') == $i ? 'selected' : '' }}>Nivel {{ $i }}</option>
+                <option value="{{ $i }}" {{ (int)(old('nivel_arl', $afiliacion->nivel_arl ?? 0)) === $i ? 'selected' : '' }}>Nivel {{ $i }}</option>
             @endfor
         </select>
-        @error('nivel_arl') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        @error('nivel_arl') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
     </div>
 
     {{-- PENSIÓN --}}
