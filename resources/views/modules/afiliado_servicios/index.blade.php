@@ -4,11 +4,11 @@
 
 <div class="pagetitle d-flex justify-content-between align-items-center flex-wrap gap-2">
     <div>
-        <h1 class="mb-0"><i class="bi bi-diagram-3 me-2"></i>Servicios por Afiliado</h1>
+        <h1 class="mb-0"><i class="bi bi-diagram-3 me-2"></i>Servicios Adicionales</h1>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 small">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
-                <li class="breadcrumb-item active">Servicios por Afiliado</li>
+                <li class="breadcrumb-item active">Servicios Adicionales</li>
             </ol>
         </nav>
     </div>

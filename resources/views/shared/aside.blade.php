@@ -116,7 +116,7 @@
             <li>
                 <a href="{{ route('afiliado_servicios.index') }}"
                    class="{{ request()->routeIs('afiliado_servicios.*') ? 'active' : '' }}">
-                    <span>Servicios por Afiliado</span>
+                    <span>Servicios Adicionales</span>
                 </a>
             </li>
             @endif

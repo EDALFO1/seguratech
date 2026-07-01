@@ -12,7 +12,7 @@ class AfiliadoServicioController extends Controller
 {
     public function index()
     {
-        $titulo = "Servicios por Afiliado";
+        $titulo = "Servicios Adicionales";
 
         $registros = AfiliadoServicio::with(['afiliado', 'servicio'])
             ->whereHas('afiliado')
