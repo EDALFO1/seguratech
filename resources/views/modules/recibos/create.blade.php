@@ -55,8 +55,14 @@
                 </label>
                 <input type="text" id="buscar_afiliado"
                        class="form-control"
-                       placeholder="Buscar por documento o nombre">
-                <input type="hidden" name="afiliado_id" id="afiliado_id">
+                       placeholder="Buscar por documento o nombre"
+                       @if($afiliadoSeleccionado)
+                           value="{{ $afiliadoSeleccionado->primer_nombre }} {{ $afiliadoSeleccionado->primer_apellido }} - {{ $afiliadoSeleccionado->numero_documento }}"
+                       @endif>
+                <input type="hidden" name="afiliado_id" id="afiliado_id"
+                       @if($afiliadoSeleccionado)
+                           value="{{ $afiliadoSeleccionado->id }}"
+                       @endif>
                 <div id="resultados_afiliado" class="list-group shadow-sm"
                      style="position:absolute; z-index:20; width:100%;"></div>
             </div>
@@ -185,6 +191,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const divFechaRetiro = document.getElementById('div_fecha_retiro');
 
     let timeout = null;
+
+    // Si la página carga con un afiliado_id preseleccionado, ejecutar preview
+    if (afiliado_id.value) {
+        setTimeout(() => calcularPreview(), 100);
+    }
 
     // =========================
     // 🔥 BUSCADOR AFILIADOS

@@ -51,8 +51,9 @@
                         <th>Nivel ARL</th>
                         <th>Pensión</th>
                         <th>Caja</th>
-                        <th>Fecha Afiliación</th>
                         <th>Empresa Laboral</th>
+                        <th class="text-center">Estado de Pago</th>
+                        <th class="text-center" style="width:120px">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,12 +72,31 @@
                         <td><span class="badge bg-warning text-dark">{{ $item['nivel_arl'] }}</span></td>
                         <td>{{ $item['pension'] }}</td>
                         <td>{{ $item['caja'] }}</td>
-                        <td>{{ $item['fecha_afiliacion'] }}</td>
                         <td>{{ $item['empresa_laboral'] }}</td>
+                        <td class="text-center">
+                            @if($item['pagado'])
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle me-1"></i>PAGADO
+                                </span>
+                            @else
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-clock me-1"></i>PENDIENTE
+                                </span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if(!$item['pagado'])
+                                <a href="{{ route('recibos.create') }}?afiliado_id={{ $item['id'] }}" class="btn btn-success btn-sm" title="Crear Recibo">
+                                    <i class="bi bi-plus-circle"></i>
+                                </a>
+                            @else
+                                <span class="text-muted small">—</span>
+                            @endif
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="11" class="text-center py-5 text-muted">
+                        <td colspan="13" class="text-center py-5 text-muted">
                             <i class="bi bi-inbox fs-2 d-block mb-2 opacity-50"></i>
                             No hay afiliados vigentes para el período actual.
                         </td>

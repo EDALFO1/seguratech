@@ -57,11 +57,17 @@ class ReciboController extends Controller
     );
 }
 
-    public function create()
+    public function create(Request $request)
     {
         $afiliados = Afiliado::orderBy('primer_apellido')->get();
+        $afiliadoSeleccionado = null;
 
-        return view('modules.recibos.create', compact('afiliados'));
+        // Si viene afiliado_id desde la URL, cargar sus datos
+        if ($request->has('afiliado_id')) {
+            $afiliadoSeleccionado = Afiliado::find($request->afiliado_id);
+        }
+
+        return view('modules.recibos.create', compact('afiliados', 'afiliadoSeleccionado'));
     }
 
    
@@ -831,29 +837,46 @@ public function afiliadosVigentes(Request $request)
     $empresaId = session('empresa_id');
 
     // =========================
-    // 🔥 AFILIADOS CON RECIBO ACTIVO DEL MES ACTUAL
+    // 🔥 PERÍODO ANTERIOR (JUNIO si estamos en JULIO)
     // =========================
-    $idsRecibo = Recibo::where('empresa_id', $empresaId)
-        ->whereNull('fecha_retiro')
-        ->whereMonth('fecha', now()->month)
-        ->whereYear('fecha', now()->year)
+    $periodoAnterior = now()->subMonth()->format('Y-m');
+    $mesAnterior = now()->subMonth()->month;
+    $anioAnterior = now()->subMonth()->year;
+
+    // =========================
+    // 🔥 AFILIADOS CON RECIBO ACTIVO DEL PERÍODO ANTERIOR
+    // =========================
+    $idsReciboPeriodoAnterior = Recibo::where('empresa_id', $empresaId)
+        ->whereNull('novedad')
+        ->orWhere('novedad', '!=', 'Retiro')
+        ->whereMonth('fecha', $mesAnterior)
+        ->whereYear('fecha', $anioAnterior)
         ->pluck('afiliado_id');
 
     // =========================
-    // 🔥 NUEVOS INGRESOS DEL MES ACTUAL
+    // 🔥 AFILIADOS QUE SE AFILIARON EN EL PERÍODO ANTERIOR
     // =========================
-    $idsIngreso = Afiliacion::where('empresa_id', $empresaId)
+    $idsAfiliadosPeriodoAnterior = Afiliacion::where('empresa_id', $empresaId)
         ->where('estado', 1)
-        ->whereMonth('fecha_afiliacion', now()->month)
-        ->whereYear('fecha_afiliacion', now()->year)
+        ->whereMonth('fecha_afiliacion', $mesAnterior)
+        ->whereYear('fecha_afiliacion', $anioAnterior)
         ->pluck('afiliado_id');
 
     // =========================
     // 🔥 UNIFICAR
     // =========================
-    $ids = $idsRecibo
-        ->merge($idsIngreso)
+    $ids = $idsReciboPeriodoAnterior
+        ->merge($idsAfiliadosPeriodoAnterior)
         ->unique();
+
+    // =========================
+    // 🔥 RECIBOS GENERADOS EN EL MES ACTUAL
+    // =========================
+    $recibosActuales = Recibo::where('empresa_id', $empresaId)
+        ->whereMonth('fecha', now()->month)
+        ->whereYear('fecha', now()->year)
+        ->pluck('afiliado_id')
+        ->toArray();
 
     // =========================
     // 🔥 TRAER AFILIADOS CON DATOS COMPLETOS
@@ -872,13 +895,15 @@ public function afiliadosVigentes(Request $request)
         ->paginate(20);
 
     // =========================
-    // 🔥 CALCULAR VALORES
+    // 🔥 CALCULAR VALORES Y ESTADO DE PAGO
     // =========================
-    $afiliados = $afiliados->through(function ($a) {
+    $afiliados = $afiliados->through(function ($a) use ($recibosActuales) {
         $data = $this->calcularRecibo($a->id, now());
         $afiliacion = $a->afiliacion;
+        $tienePagoActual = in_array($a->id, $recibosActuales);
 
         return [
+            'id' => $a->id,
             'numero_documento' => $a->numero_documento,
             'nombre_completo' => trim(
                 ($a->primer_nombre ?? '') . ' ' .
@@ -894,7 +919,9 @@ public function afiliadosVigentes(Request $request)
             'pension' => $afiliacion->pension->nombre ?? '—',
             'caja' => $afiliacion->caja->nombre ?? '—',
             'fecha_afiliacion' => $afiliacion->fecha_afiliacion ?? '—',
-            'empresa_laboral' => $a->empresaLaboral->nombre ?? '—'
+            'empresa_laboral' => $a->empresaLaboral->nombre ?? '—',
+            'pagado' => $tienePagoActual,
+            'estado_pago' => $tienePagoActual ? 'PAGADO' : 'PENDIENTE'
         ];
     });
 
