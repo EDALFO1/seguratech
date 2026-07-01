@@ -1220,4 +1220,29 @@ public function guardar($ruta)
 
     return $ruta;
 }
+
+public function obtenerConceptosSS()
+{
+    $eps = \App\Models\Eps::orderBy('nombre')->get(['id', 'nombre', 'porcentaje']);
+    $arls = \App\Models\Arl::distinct('nombre')->orderBy('nombre')->get(['id', 'nombre', 'nivel', 'porcentaje']);
+    $pensions = \App\Models\Pension::orderBy('nombre')->get(['id', 'nombre', 'porcentaje']);
+    $cajas = \App\Models\Caja::orderBy('nombre')->get(['id', 'nombre', 'porcentaje']);
+
+    $parametro = \App\Models\ParametroAnual::where('anio', now()->year)->first();
+    $admin = $parametro?->administracion ?? 0;
+    $smmlv = $parametro?->salario_minimo ?? 0;
+
+    // Calcular porcentaje de administración sobre SMMLV
+    $porcentajeAdmin = $smmlv > 0 ? ($admin / $smmlv) * 100 : 0;
+
+    return response()->json([
+        'eps' => $eps,
+        'arls' => $arls,
+        'pensions' => $pensions,
+        'cajas' => $cajas,
+        'administracion' => $porcentajeAdmin,
+        'administracion_valor' => $admin,
+        'smmlv' => $smmlv
+    ]);
+}
 }

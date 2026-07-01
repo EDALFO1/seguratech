@@ -77,6 +77,14 @@
             </li>
             @endif
 
+            {{-- SIMULADOR SS --}}
+            <li>
+                <button type="button" class="st-pill simulador" data-bs-toggle="modal" data-bs-target="#simuladorSSModal" title="Simulador de Seguridad Social">
+                    <i class="bi bi-calculator-fill"></i>
+                    <span class="d-none d-lg-inline">Simulador</span>
+                </button>
+            </li>
+
             {{-- SEPARADOR --}}
             <li class="d-none d-lg-flex"><div class="st-sep mx-1"></div></li>
 
@@ -142,3 +150,233 @@
     </nav>
 
 </header>
+
+{{-- MODAL SIMULADOR SS --}}
+<div class="modal fade" id="simuladorSSModal" tabindex="-1" aria-labelledby="simuladorSSLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="simuladorSSLabel">
+                    <i class="bi bi-calculator-fill me-2"></i>Simulador de Seguridad Social
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Valor Base (IBC)</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text">$</span>
+                            <input type="number" id="valorIBC" class="form-control" placeholder="Ingresa un valor superior al salario mínimo" min="0" step="1">
+                        </div>
+                        <small class="text-muted d-block mt-1">Valor mínimo requerido: Salario Mínimo Legal Vigente</small>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Selecciona los conceptos a liquidar:</label>
+
+                        {{-- EPS (Valor fijo) --}}
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkEps" onchange="calcularTotal()">
+                                <label class="form-check-label" for="chkEps">
+                                    EPS <span class="badge bg-info ms-2" id="badgeEps"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- ARL (Solo nivel) --}}
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkArl" onchange="calcularTotal()">
+                                <label class="form-check-label" for="chkArl">
+                                    ARL
+                                </label>
+                            </div>
+                            <div class="ms-4">
+                                <select id="selectNivelArl" class="form-select form-select-sm" disabled onchange="calcularTotal()">
+                                    <option value="">Selecciona Nivel</option>
+                                    <option value="1">Nivel 1</option>
+                                    <option value="2">Nivel 2</option>
+                                    <option value="3">Nivel 3</option>
+                                    <option value="4">Nivel 4</option>
+                                    <option value="5">Nivel 5</option>
+                                </select>
+                            </div>
+                            <div class="ms-4 mt-1 small text-muted" id="porcentajeArl"></div>
+                        </div>
+
+                        {{-- PENSIÓN (Valor fijo) --}}
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkPension" onchange="calcularTotal()">
+                                <label class="form-check-label" for="chkPension">
+                                    Pensión <span class="badge bg-info ms-2" id="badgePension"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- CAJA (Valor fijo) --}}
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkCaja" onchange="calcularTotal()">
+                                <label class="form-check-label" for="chkCaja">
+                                    Caja de Compensación <span class="badge bg-info ms-2" id="badgeCaja"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- ADMINISTRACIÓN --}}
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkAdmin" onchange="calcularTotal()">
+                                <label class="form-check-label" for="chkAdmin">
+                                    Administración <span class="badge bg-info ms-2" id="badgeAdmin"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card bg-light border-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="small text-muted">Total a pagar:</div>
+                                        <div class="h4 text-primary fw-bold" id="totalPagar">$0</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="small text-muted">Porcentaje total:</div>
+                                        <div class="h4 text-success fw-bold" id="porcentajeTotal">0%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+let conceptosData = {};
+let epsValor = null;
+let pensionValor = null;
+let cajaValor = null;
+let arlPorNivel = {};
+
+// Cargar datos del simulador
+async function cargarConceptosSS() {
+    try {
+        const response = await axios.get("{{ route('recibos.conceptos-ss') }}");
+        conceptosData = response.data;
+
+        // Valores fijos (usar el primero de cada lista)
+        epsValor = conceptosData.eps[0];
+        pensionValor = conceptosData.pensions[0];
+        cajaValor = conceptosData.cajas[0];
+
+        // Mostrar valores fijos en badges
+        document.getElementById('badgeEps').textContent = `${epsValor.porcentaje}%`;
+        document.getElementById('badgePension').textContent = `${pensionValor.porcentaje}%`;
+        document.getElementById('badgeCaja').textContent = `${cajaValor.porcentaje}%`;
+        document.getElementById('badgeAdmin').textContent = `${conceptosData.administracion}%`;
+
+        // Crear mapa de porcentajes por nivel de ARL (promedio)
+        for (let nivel = 1; nivel <= 5; nivel++) {
+            const arlDelNivel = conceptosData.arls.filter(a => a.nivel === nivel);
+            if (arlDelNivel.length > 0) {
+                const promedio = arlDelNivel.reduce((sum, a) => sum + parseFloat(a.porcentaje), 0) / arlDelNivel.length;
+                arlPorNivel[nivel] = promedio;
+            }
+        }
+
+    } catch (error) {
+        console.error('Error cargando conceptos:', error);
+    }
+}
+
+// Habilitar/deshabilitar selector de ARL
+document.getElementById('chkArl').addEventListener('change', function() {
+    document.getElementById('selectNivelArl').disabled = !this.checked;
+    if (!this.checked) {
+        document.getElementById('selectNivelArl').value = '';
+    }
+    calcularTotal();
+});
+
+// Calcular total
+function calcularTotal() {
+    const valorIBC = parseFloat(document.getElementById('valorIBC').value) || 0;
+    let totalPago = 0;
+    let totalPorcentaje = 0;
+    let detalles = [];
+
+    // EPS (valor fijo)
+    if (document.getElementById('chkEps').checked && epsValor) {
+        const aporte = valorIBC * (epsValor.porcentaje / 100);
+        totalPago += aporte;
+        totalPorcentaje += parseFloat(epsValor.porcentaje);
+        detalles.push(`EPS: ${epsValor.porcentaje}%`);
+    }
+
+    // ARL (solo nivel)
+    if (document.getElementById('chkArl').checked && document.getElementById('selectNivelArl').value) {
+        const nivel = parseInt(document.getElementById('selectNivelArl').value);
+        const porcentaje = arlPorNivel[nivel];
+        if (porcentaje !== undefined) {
+            const aporte = valorIBC * (porcentaje / 100);
+            totalPago += aporte;
+            totalPorcentaje += porcentaje;
+            document.getElementById('porcentajeArl').textContent = `Nivel ${nivel}: ${porcentaje.toFixed(4)}%`;
+            detalles.push(`Nivel ${nivel}: ${porcentaje.toFixed(4)}%`);
+        }
+    } else {
+        document.getElementById('porcentajeArl').textContent = '';
+    }
+
+    // Pensión (valor fijo)
+    if (document.getElementById('chkPension').checked && pensionValor) {
+        const aporte = valorIBC * (pensionValor.porcentaje / 100);
+        totalPago += aporte;
+        totalPorcentaje += parseFloat(pensionValor.porcentaje);
+        detalles.push(`Pensión: ${pensionValor.porcentaje}%`);
+    }
+
+    // Caja (valor fijo)
+    if (document.getElementById('chkCaja').checked && cajaValor) {
+        const aporte = valorIBC * (cajaValor.porcentaje / 100);
+        totalPago += aporte;
+        totalPorcentaje += parseFloat(cajaValor.porcentaje);
+        detalles.push(`Caja: ${cajaValor.porcentaje}%`);
+    }
+
+    // Administración
+    if (document.getElementById('chkAdmin').checked) {
+        const aporte = valorIBC * (conceptosData.administracion / 100);
+        totalPago += aporte;
+        totalPorcentaje += parseFloat(conceptosData.administracion);
+        detalles.push(`Administración: ${conceptosData.administracion}%`);
+    }
+
+    // Actualizar totales
+    document.getElementById('totalPagar').textContent = `$${totalPago.toLocaleString('es-CO', {maximumFractionDigits: 0})}`;
+    document.getElementById('porcentajeTotal').textContent = `${totalPorcentaje.toFixed(4)}%`;
+}
+
+// Recargar cuando cambia el valor del IBC
+document.getElementById('valorIBC').addEventListener('input', calcularTotal);
+
+// Recargar cuando cambia el nivel de ARL
+document.getElementById('selectNivelArl').addEventListener('change', calcularTotal);
+
+// Cargar datos cuando se abre el modal
+document.getElementById('simuladorSSModal').addEventListener('show.bs.modal', cargarConceptosSS);
+</script>
+@endpush

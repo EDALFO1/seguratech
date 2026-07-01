@@ -160,6 +160,7 @@ Route::middleware('auth')->group(function () {
             Route::post('generar-todos',        [ReciboController::class, 'generarTodos'])->name('generar.todos');
             Route::get('exportar-vigentes',     [ReciboController::class, 'exportarVigentes'])->name('exportar.vigentes');
             Route::get('vigentes',              [ReciboController::class, 'afiliadosVigentes'])->name('vigentes');
+            Route::get('conceptos-ss',          [ReciboController::class, 'obtenerConceptosSS'])->name('conceptos-ss');
         });
         Route::resource('recibos', ReciboController::class);
         Route::resource('recibo_detalles', ReciboDetalleController::class);
