@@ -240,6 +240,21 @@
                     </div>
                 </div>
 
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label class="form-label fw-semibold small">Desglose de aportes:</label>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tbody id="detallesAportes">
+                                    <tr class="text-muted small">
+                                        <td colspan="2" class="text-center py-3">Selecciona conceptos para ver el desglose</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-12">
                         <div class="card bg-light border-0">
@@ -323,7 +338,11 @@ function calcularTotal() {
         const aporte = valorIBC * (epsValor.porcentaje / 100);
         totalPago += aporte;
         totalPorcentaje += parseFloat(epsValor.porcentaje);
-        detalles.push(`EPS: ${epsValor.porcentaje}%`);
+        detalles.push({
+            concepto: 'EPS',
+            porcentaje: epsValor.porcentaje,
+            aporte: aporte
+        });
     }
 
     // ARL (solo nivel)
@@ -335,7 +354,11 @@ function calcularTotal() {
             totalPago += aporte;
             totalPorcentaje += porcentaje;
             document.getElementById('porcentajeArl').textContent = `Nivel ${nivel}: ${porcentaje.toFixed(4)}%`;
-            detalles.push(`Nivel ${nivel}: ${porcentaje.toFixed(4)}%`);
+            detalles.push({
+                concepto: `ARL - Nivel ${nivel}`,
+                porcentaje: porcentaje,
+                aporte: aporte
+            });
         }
     } else {
         document.getElementById('porcentajeArl').textContent = '';
@@ -346,7 +369,11 @@ function calcularTotal() {
         const aporte = valorIBC * (pensionValor.porcentaje / 100);
         totalPago += aporte;
         totalPorcentaje += parseFloat(pensionValor.porcentaje);
-        detalles.push(`Pensión: ${pensionValor.porcentaje}%`);
+        detalles.push({
+            concepto: 'Pensión',
+            porcentaje: pensionValor.porcentaje,
+            aporte: aporte
+        });
     }
 
     // Caja (valor fijo)
@@ -354,7 +381,11 @@ function calcularTotal() {
         const aporte = valorIBC * (cajaValor.porcentaje / 100);
         totalPago += aporte;
         totalPorcentaje += parseFloat(cajaValor.porcentaje);
-        detalles.push(`Caja: ${cajaValor.porcentaje}%`);
+        detalles.push({
+            concepto: 'Caja de Compensación',
+            porcentaje: cajaValor.porcentaje,
+            aporte: aporte
+        });
     }
 
     // Administración
@@ -362,7 +393,24 @@ function calcularTotal() {
         const aporte = valorIBC * (conceptosData.administracion / 100);
         totalPago += aporte;
         totalPorcentaje += parseFloat(conceptosData.administracion);
-        detalles.push(`Administración: ${conceptosData.administracion}%`);
+        detalles.push({
+            concepto: 'Administración',
+            porcentaje: conceptosData.administracion,
+            aporte: aporte
+        });
+    }
+
+    // Actualizar tabla de detalles
+    const tablaDet = document.getElementById('detallesAportes');
+    if (detalles.length === 0) {
+        tablaDet.innerHTML = '<tr class="text-muted small"><td colspan="2" class="text-center py-3">Selecciona conceptos para ver el desglose</td></tr>';
+    } else {
+        tablaDet.innerHTML = detalles.map(d => `
+            <tr>
+                <td class="small">${d.concepto}</td>
+                <td class="text-end small fw-semibold">$${Math.round(d.aporte).toLocaleString('es-CO')}</td>
+            </tr>
+        `).join('');
     }
 
     // Actualizar totales (redondear a unidades de 100)
