@@ -874,7 +874,7 @@ public function afiliadosVigentes(Request $request)
     // =========================
     // 🔥 CALCULAR VALORES
     // =========================
-    $afiliados = $afiliados->map(function ($a) {
+    $afiliados = $afiliados->through(function ($a) {
         $data = $this->calcularRecibo($a->id, now());
         $afiliacion = $a->afiliacion;
 
