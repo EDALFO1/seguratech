@@ -153,50 +153,50 @@
 
 {{-- MODAL SIMULADOR SS --}}
 <div class="modal fade" id="simuladorSSModal" tabindex="-1" aria-labelledby="simuladorSSLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" style="max-height: 90vh;">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header sticky-top bg-white">
                 <h5 class="modal-title" id="simuladorSSLabel">
                     <i class="bi bi-calculator-fill me-2"></i>Simulador de Seguridad Social
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row mb-4">
+            <div class="modal-body" style="padding: 0.75rem;">
+                <div class="row mb-3">
                     <div class="col-12">
-                        <label class="form-label fw-semibold">Valor Base (IBC)</label>
-                        <div class="input-group input-group-lg">
+                        <label class="form-label fw-semibold small">Valor Base (IBC)</label>
+                        <div class="input-group input-group-sm">
                             <span class="input-group-text">$</span>
-                            <input type="number" id="valorIBC" class="form-control" placeholder="Ingresa un valor superior al salario mínimo" min="0" step="1">
+                            <input type="number" id="valorIBC" class="form-control form-control-sm" placeholder="Ingresa valor" min="0" step="1">
                         </div>
-                        <small class="text-muted d-block mt-1">Valor mínimo requerido: Salario Mínimo Legal Vigente</small>
+                        <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">Salario Mínimo Legal Vigente</small>
                     </div>
                 </div>
 
-                <div class="row mb-4">
+                <div class="row mb-2">
                     <div class="col-12">
-                        <label class="form-label fw-semibold">Selecciona los conceptos a liquidar:</label>
+                        <label class="form-label fw-semibold small">Conceptos a liquidar:</label>
 
                         {{-- EPS (Valor fijo) --}}
-                        <div class="mb-3">
-                            <div class="form-check">
+                        <div class="mb-2">
+                            <div class="form-check form-check-sm">
                                 <input class="form-check-input" type="checkbox" id="chkEps" onchange="calcularTotal()">
-                                <label class="form-check-label" for="chkEps">
-                                    EPS <span class="badge bg-info ms-2" id="badgeEps"></span>
+                                <label class="form-check-label small" for="chkEps">
+                                    EPS <span class="badge bg-info ms-1" id="badgeEps" style="font-size: 0.65rem;"></span>
                                 </label>
                             </div>
                         </div>
 
                         {{-- ARL (Solo nivel) --}}
-                        <div class="mb-3">
-                            <div class="form-check">
+                        <div class="mb-2">
+                            <div class="form-check form-check-sm">
                                 <input class="form-check-input" type="checkbox" id="chkArl" onchange="calcularTotal()">
-                                <label class="form-check-label" for="chkArl">
+                                <label class="form-check-label small" for="chkArl">
                                     ARL
                                 </label>
                             </div>
-                            <div class="ms-4">
-                                <select id="selectNivelArl" class="form-select form-select-sm" disabled onchange="calcularTotal()">
+                            <div class="ms-3">
+                                <select id="selectNivelArl" class="form-select form-select-sm" style="font-size: 0.875rem;" disabled onchange="calcularTotal()">
                                     <option value="">Selecciona Nivel</option>
                                     <option value="1">Nivel 1</option>
                                     <option value="2">Nivel 2</option>
@@ -205,49 +205,49 @@
                                     <option value="5">Nivel 5</option>
                                 </select>
                             </div>
-                            <div class="ms-4 mt-1 small text-muted" id="porcentajeArl"></div>
+                            <div class="ms-3 mt-1 small text-muted" id="porcentajeArl" style="font-size: 0.75rem;"></div>
                         </div>
 
                         {{-- PENSIÓN (Valor fijo) --}}
-                        <div class="mb-3">
-                            <div class="form-check">
+                        <div class="mb-2">
+                            <div class="form-check form-check-sm">
                                 <input class="form-check-input" type="checkbox" id="chkPension" onchange="calcularTotal()">
-                                <label class="form-check-label" for="chkPension">
-                                    Pensión <span class="badge bg-info ms-2" id="badgePension"></span>
+                                <label class="form-check-label small" for="chkPension">
+                                    Pensión <span class="badge bg-info ms-1" id="badgePension" style="font-size: 0.65rem;"></span>
                                 </label>
                             </div>
                         </div>
 
                         {{-- CAJA (Valor fijo) --}}
-                        <div class="mb-3">
-                            <div class="form-check">
+                        <div class="mb-2">
+                            <div class="form-check form-check-sm">
                                 <input class="form-check-input" type="checkbox" id="chkCaja" onchange="calcularTotal()">
-                                <label class="form-check-label" for="chkCaja">
-                                    Caja de Compensación <span class="badge bg-info ms-2" id="badgeCaja"></span>
+                                <label class="form-check-label small" for="chkCaja">
+                                    Caja <span class="badge bg-info ms-1" id="badgeCaja" style="font-size: 0.65rem;"></span>
                                 </label>
                             </div>
                         </div>
 
                         {{-- ADMINISTRACIÓN --}}
-                        <div class="mb-3">
-                            <div class="form-check">
+                        <div class="mb-2">
+                            <div class="form-check form-check-sm">
                                 <input class="form-check-input" type="checkbox" id="chkAdmin" onchange="calcularTotal()">
-                                <label class="form-check-label" for="chkAdmin">
-                                    Administración <span class="badge bg-info ms-2" id="badgeAdmin"></span>
+                                <label class="form-check-label small" for="chkAdmin">
+                                    Administración <span class="badge bg-info ms-1" id="badgeAdmin" style="font-size: 0.65rem;"></span>
                                 </label>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row mb-3">
+                <div class="row mb-2">
                     <div class="col-12">
-                        <label class="form-label fw-semibold small">Desglose de aportes:</label>
+                        <label class="form-label fw-semibold small">Desglose:</label>
                         <div class="table-responsive">
-                            <table class="table table-sm table-borderless mb-0">
+                            <table class="table table-sm table-borderless mb-0" style="font-size: 0.85rem;">
                                 <tbody id="detallesAportes">
                                     <tr class="text-muted small">
-                                        <td colspan="2" class="text-center py-3">Selecciona conceptos para ver el desglose</td>
+                                        <td colspan="2" class="text-center py-2">Selecciona conceptos</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -257,16 +257,16 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <div class="card bg-light border-0">
-                            <div class="card-body">
-                                <div class="row">
+                        <div class="card bg-light border-0" style="margin-bottom: 0;">
+                            <div class="card-body" style="padding: 0.75rem;">
+                                <div class="row g-2">
                                     <div class="col-6">
-                                        <div class="small text-muted">Total a pagar:</div>
-                                        <div class="h4 text-primary fw-bold" id="totalPagar">$0</div>
+                                        <div class="small text-muted" style="font-size: 0.75rem;">Total a pagar:</div>
+                                        <div class="h5 text-primary fw-bold" id="totalPagar">$0</div>
                                     </div>
                                     <div class="col-6">
-                                        <div class="small text-muted">Porcentaje total:</div>
-                                        <div class="h4 text-success fw-bold" id="porcentajeTotal">0%</div>
+                                        <div class="small text-muted" style="font-size: 0.75rem;">Porcentaje:</div>
+                                        <div class="h5 text-success fw-bold" id="porcentajeTotal">0%</div>
                                     </div>
                                 </div>
                             </div>
@@ -388,15 +388,15 @@ function calcularTotal() {
         });
     }
 
-    // Administración
+    // Administración (valor fijo, no depende del IBC)
     if (document.getElementById('chkAdmin').checked) {
-        const aporte = valorIBC * (conceptosData.administracion / 100);
+        const aporte = parseFloat(conceptosData.administracion);
         totalPago += aporte;
-        totalPorcentaje += parseFloat(conceptosData.administracion);
         detalles.push({
             concepto: 'Administración',
-            porcentaje: conceptosData.administracion,
-            aporte: aporte
+            porcentaje: null,
+            aporte: aporte,
+            esValorFijo: true
         });
     }
 

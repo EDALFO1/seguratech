@@ -1230,19 +1230,13 @@ public function obtenerConceptosSS()
 
     $parametro = \App\Models\ParametroAnual::where('anio', now()->year)->first();
     $admin = $parametro?->administracion ?? 0;
-    $smmlv = $parametro?->salario_minimo ?? 0;
-
-    // Calcular porcentaje de administración sobre SMMLV
-    $porcentajeAdmin = $smmlv > 0 ? ($admin / $smmlv) * 100 : 0;
 
     return response()->json([
         'eps' => $eps,
         'arls' => $arls,
         'pensions' => $pensions,
         'cajas' => $cajas,
-        'administracion' => $porcentajeAdmin,
-        'administracion_valor' => $admin,
-        'smmlv' => $smmlv
+        'administracion' => $admin
     ]);
 }
 }
