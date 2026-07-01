@@ -49,12 +49,6 @@
             </table>
         </div>
 
-        <div class="p-3 border-top">
-            <a href="{{ route('recibos.sin_recibo') }}" class="btn btn-primary">
-                <i class="bi bi-arrow-right-circle me-1"></i>Ir a generar recibos
-            </a>
-        </div>
-
     </div>
 </div>
 

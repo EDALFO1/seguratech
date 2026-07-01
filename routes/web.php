@@ -155,7 +155,6 @@ Route::middleware('auth')->group(function () {
             Route::post('preview',              [ReciboController::class, 'preview'])->name('preview');
             Route::post('generar',              [ReciboController::class, 'generar'])->name('generar');
             Route::get('activos-siguiente',     [ReciboController::class, 'activosSiguientePeriodo'])->name('activos');
-            Route::get('sin-recibo',            [ReciboController::class, 'usuariosSinRecibo'])->name('sin_recibo');
             Route::post('cerrar-periodo',       [ReciboController::class, 'cerrarPeriodo'])->name('cerrar_periodo');
             Route::post('generar/{afiliado}',   [ReciboController::class, 'generarUno'])->name('generar.uno');
             Route::post('generar-todos',        [ReciboController::class, 'generarTodos'])->name('generar.todos');

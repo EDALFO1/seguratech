@@ -574,31 +574,6 @@ public function preview(Request $request)
     return response()->json($data);
 }
 
-public function usuariosSinRecibo()
-{
-    $empresaId = session('empresa_id');
-
-    // 🔥 PERIODO ACTUAL (MES ANTERIOR)
-    $periodo = now()->subMonth()->format('Y-m');
-
-    // 🔥 AFILIADOS ACTIVOS
-    $afiliados = Afiliado::where('empresa_id', $empresaId)
-        ->where('estado', 1)
-        ->get();
-
-    // 🔥 RECIBOS DEL PERIODO
-    $recibos = Recibo::where('empresa_id', $empresaId)
-        ->whereRaw("DATE_FORMAT(DATE_SUB(fecha, INTERVAL 1 MONTH),'%Y-%m') = ?", [$periodo])
-        ->pluck('afiliado_id');
-
-    // 🔥 FILTRAR LOS QUE NO TIENEN RECIBO
-    $sinRecibo = $afiliados->whereNotIn('id', $recibos);
-
-    return view('modules.recibos.sin_recibo', [
-        'afiliados' => $sinRecibo
-    ]);
-}
-
 public function generarUno(Request $request, $afiliadoId)
 {
     $empresaId = session('empresa_id');

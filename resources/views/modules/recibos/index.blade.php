@@ -47,10 +47,6 @@
             <i class="bi bi-plus-circle me-1"></i>Crear Recibo
         </a>
 
-        <a href="{{ route('recibos.sin_recibo') }}" class="btn btn-outline-warning">
-            <i class="bi bi-person-dash me-1"></i>Usuarios sin recibo
-        </a>
-
         <div class="vr d-none d-md-block"></div>
 
         <a href="{{ route('export.pila.excel') }}"
