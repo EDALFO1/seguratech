@@ -22,12 +22,23 @@
 
 <section class="section mt-3">
 
-{{-- BUSCADOR --}}
+{{-- FILTROS --}}
 <div class="card shadow-sm border-0 mb-3">
     <div class="card-body">
-        <div class="input-group">
-            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-            <input type="text" id="buscador" class="form-control" placeholder="Buscar por documento, nombre, teléfono..." onkeyup="filtrarTabla()">
+        <div class="row g-2">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" id="buscador" class="form-control" placeholder="Buscar por documento, nombre, teléfono..." onkeyup="filtrarTabla()">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select id="filtroEstadoPago" class="form-select" onchange="filtrarTabla()">
+                    <option value="">Todos los estados</option>
+                    <option value="pagado">Pagados</option>
+                    <option value="pendiente">Pendientes</option>
+                </select>
+            </div>
         </div>
     </div>
 </div>
@@ -118,26 +129,38 @@
 @push('scripts')
 <script>
 function filtrarTabla() {
-    const input = document.getElementById('buscador');
-    const filtro = input.value.toLowerCase();
+    const inputBuscador = document.getElementById('buscador');
+    const filtroBuscador = inputBuscador.value.toLowerCase();
+    const filtroEstadoPago = document.getElementById('filtroEstadoPago').value.toLowerCase();
     const tabla = document.getElementById('tablaDatos');
     const filas = tabla.getElementsByTagName('tr');
 
     for (let i = 1; i < filas.length; i++) {
         const fila = filas[i];
         const celdas = fila.getElementsByTagName('td');
-        let encontrado = false;
+        let coincideBuscador = false;
+        let coincideEstadoPago = true;
 
         // Buscar en documento, nombre y teléfono
         const documento = celdas[0]?.textContent?.toLowerCase() || '';
         const nombre = celdas[1]?.textContent?.toLowerCase() || '';
         const telefono = celdas[2]?.textContent?.toLowerCase() || '';
 
-        if (documento.includes(filtro) || nombre.includes(filtro) || telefono.includes(filtro)) {
-            encontrado = true;
+        if (documento.includes(filtroBuscador) || nombre.includes(filtroBuscador) || telefono.includes(filtroBuscador)) {
+            coincideBuscador = true;
         }
 
-        fila.style.display = encontrado ? '' : 'none';
+        // Filtrar por estado de pago
+        if (filtroEstadoPago) {
+            const estadoPago = celdas[10]?.textContent?.toLowerCase() || '';
+            if (filtroEstadoPago === 'pagado') {
+                coincideEstadoPago = estadoPago.includes('pagado');
+            } else if (filtroEstadoPago === 'pendiente') {
+                coincideEstadoPago = estadoPago.includes('pendiente');
+            }
+        }
+
+        fila.style.display = (coincideBuscador && coincideEstadoPago) ? '' : 'none';
     }
 }
 </script>
