@@ -40,6 +40,20 @@ class RemisionController extends Controller
         'fecha' => 'required|date'
     ]);
 
+    // 🔥 VALIDAR FECHA RETIRO
+    if ($request->novedad == 'Retiro') {
+
+        $fechaRetiro = Carbon::parse($request->fecha_retiro);
+        $periodo = Carbon::parse($request->fecha)->subMonth();
+
+        if (
+            $fechaRetiro->month != $periodo->month ||
+            $fechaRetiro->year != $periodo->year
+        ) {
+            return back()->with('error', 'La fecha de retiro debe ser del mes anterior');
+        }
+    }
+
     $empresaId = session('empresa_id');
 
     $data = $this->calcularRemision($request->afiliado_id, $request->fecha);
@@ -113,7 +127,10 @@ class RemisionController extends Controller
             'dias_liquidar' => $data['dias'],
             'mensajeria' => $mensajeria,
             'intereses' => $intereses,
-            'total' => $totalFinal
+            'total' => $totalFinal,
+
+            'novedad' => $request->novedad,
+            'fecha_retiro' => $request->fecha_retiro
         ]);
 
         // =========================
@@ -169,6 +186,14 @@ class RemisionController extends Controller
                     ]);
                 }
             }
+        }
+
+        // =========================
+        // 🔥 INACTIVAR AFILIADO
+        // =========================
+        if ($request->novedad == 'Retiro') {
+            Afiliado::where('id', $request->afiliado_id)
+                ->update(['estado' => 0]);
         }
 
         DB::commit();
@@ -237,7 +262,10 @@ public function update(Request $request, $id)
         $remision->update([
             'mensajeria' => $mensajeria,
             'intereses'  => $intereses,
-            'total'      => $totalFinal
+            'total'      => $totalFinal,
+
+            'novedad' => $request->novedad,
+            'fecha_retiro' => $request->fecha_retiro
         ]);
 
         // 🔥 LIMPIAR TODO (CLAVE)
@@ -423,6 +451,19 @@ public function destroy($id)
         $dias = 30 - ($diaIngreso - 1);
     } else {
         $dias = 30;
+    }
+
+    // 🔹 CASO RETIRO
+    if (request('novedad') == 'Retiro' && request('fecha_retiro')) {
+
+        $fechaRetiro = Carbon::parse(request('fecha_retiro'));
+
+        if (
+            $fechaRetiro->month == $periodo->month &&
+            $fechaRetiro->year == $periodo->year
+        ) {
+            $dias = min($fechaRetiro->day, 30);
+        }
     }
 
     if ($dias <= 0) return null;

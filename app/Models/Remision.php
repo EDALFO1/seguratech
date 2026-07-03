@@ -16,7 +16,9 @@ class Remision extends BaseModel
         'dias_liquidar',
         'mensajeria',
         'intereses',
-        'total'
+        'total',
+        'novedad',
+        'fecha_retiro'
     ];
 
     public function empresa()

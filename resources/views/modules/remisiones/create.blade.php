@@ -128,6 +128,22 @@
                 </div>
             </div>
 
+            <div class="col-12"><hr class="my-1"></div>
+
+            {{-- NOVEDAD --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Novedad</label>
+                <select name="novedad" id="novedad" class="form-select">
+                    <option value="">NINGUNA</option>
+                    <option value="Retiro">Retiro</option>
+                </select>
+            </div>
+
+            <div class="col-md-3" id="div_fecha_retiro" style="display:none;">
+                <label class="form-label fw-semibold">Fecha retiro</label>
+                <input type="date" name="fecha_retiro" id="fecha_retiro" class="form-control">
+            </div>
+
             {{-- CARGOS DINAMICOS --}}
             <div class="col-12 mt-2">
                 <label class="form-label fw-semibold">Cargos adicionales</label>
@@ -274,7 +290,63 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     });
 
+    // =========================
+    // 🔥 NOVEDAD RETIRO
+    // =========================
+    const novedad = document.getElementById('novedad');
+    const fechaRetiro = document.getElementById('fecha_retiro');
+    const divFechaRetiro = document.getElementById('div_fecha_retiro');
+
+    novedad.addEventListener('change', function () {
+
+        if (this.value === 'Retiro') {
+            divFechaRetiro.style.display = 'block';
+        } else {
+            divFechaRetiro.style.display = 'none';
+            fechaRetiro.value = '';
+        }
+
+        cargarPreview();
+    });
+
+    fechaRetiro.addEventListener('change', cargarPreview);
+
 });
+
+// =========================
+// 🔥 VALIDAR RETIRO
+// =========================
+function validarFechaRetiro(){
+
+    const novedad = document.getElementById('novedad');
+    const fechaRetiro = document.getElementById('fecha_retiro');
+    const fecha = document.getElementById('fecha');
+
+    if (novedad.value !== 'Retiro' || !fechaRetiro.value) return true;
+
+    let [y, m, d] = fechaRetiro.value.split('-');
+    let [yr, mr, dr] = fecha.value.split('-');
+
+    let fechaSeleccionada = new Date(y, m-1, d);
+    let fechaRemision = new Date(yr, mr-1, dr);
+
+    let mesAnterior = new Date(
+        fechaRemision.getFullYear(),
+        fechaRemision.getMonth() - 1,
+        1
+    );
+
+    if (
+        fechaSeleccionada.getMonth() !== mesAnterior.getMonth() ||
+        fechaSeleccionada.getFullYear() !== mesAnterior.getFullYear()
+    ) {
+        alert("⚠ La fecha de retiro debe ser del mes anterior a la remisión");
+        fechaRetiro.value = '';
+        return false;
+    }
+
+    return true;
+}
 
 // =========================
 // 🔥 CARGOS DINÁMICOS
@@ -391,13 +463,18 @@ function cargarPreview(){
 
     if(!afiliado || !fecha) return;
 
+    if(!validarFechaRetiro()) return;
+
+    let novedad = document.getElementById("novedad").value;
+    let fechaRetiro = document.getElementById("fecha_retiro").value;
+
     fetch("{{ route('remisiones.preview') }}",{
         method:'POST',
         headers:{
             'Content-Type':'application/json',
             'X-CSRF-TOKEN':'{{ csrf_token() }}'
         },
-        body: JSON.stringify({ afiliado_id:afiliado, fecha:fecha })
+        body: JSON.stringify({ afiliado_id:afiliado, fecha:fecha, novedad:novedad, fecha_retiro:fechaRetiro })
     })
     .then(res => res.json())
     .then(data => {

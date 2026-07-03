@@ -134,6 +134,25 @@
                 </div>
             </div>
 
+            <div class="col-12"><hr class="my-1"></div>
+
+            {{-- NOVEDAD --}}
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Novedad</label>
+                <select name="novedad" id="novedad" class="form-select">
+                    <option value="">NINGUNA</option>
+                    <option value="Retiro" {{ $remision->novedad=='Retiro'?'selected':'' }}>Retiro</option>
+                </select>
+            </div>
+
+            <div class="col-md-3" id="div_fecha_retiro"
+                 style="{{ $remision->novedad=='Retiro'?'':'display:none;' }}">
+                <label class="form-label fw-semibold">Fecha retiro</label>
+                <input type="date" name="fecha_retiro" id="fecha_retiro"
+                       class="form-control"
+                       value="{{ $remision->fecha_retiro }}">
+            </div>
+
             {{-- CARGOS --}}
             <div class="col-12 mt-2">
                 <label class="form-label fw-semibold">Cargos adicionales</label>
@@ -210,6 +229,14 @@ document.addEventListener("DOMContentLoaded", function(){
     ["mensajeria","intereses"].forEach(id => {
         document.getElementById(id)
         ?.addEventListener("input", recalcularTotal);
+    });
+
+    // 🔥 manejar novedad
+    const novedad = document.getElementById('novedad');
+    const divFechaRetiro = document.getElementById('div_fecha_retiro');
+
+    novedad.addEventListener('change', function () {
+        divFechaRetiro.style.display = (this.value === 'Retiro') ? 'block' : 'none';
     });
 
 });
