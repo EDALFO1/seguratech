@@ -33,6 +33,9 @@
 <!-- Template CSS -->
 <link href="{{ asset('NiceAdmin/assets/css/style.css') }}" rel="stylesheet">
 
+<!-- Mobile Responsive CSS -->
+<link href="{{ asset('css/responsive-mobile.css') }}" rel="stylesheet">
+
 <style>
 body { overflow-x: hidden; }
 
@@ -945,6 +948,376 @@ html.dark-mode [class*="thead"],
 html.dark-mode [class*="header"] {
     background: #334155 !important;
     color: #f1f5f9 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE MOBILE OPTIMIZATIONS
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── MOBILE EXTRA SMALL (< 480px) ── */
+@media (max-width: 479px) {
+    #header {
+        height: 56px !important;
+        padding: 0 0.75rem !important;
+    }
+
+    #header .logo .logo-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.7rem !important;
+    }
+
+    #header .logo {
+        gap: 6px !important;
+    }
+
+    .toggle-sidebar-btn {
+        font-size: 1.2rem !important;
+        padding: 4px !important;
+    }
+
+    #main {
+        margin-top: 56px !important;
+        padding: 12px 15px !important;
+    }
+
+    .pagetitle h1 {
+        font-size: 1.5rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .pagetitle {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    .pagetitle .btn {
+        width: 100% !important;
+        margin-top: 10px !important;
+    }
+
+    .st-empresa-chip {
+        max-width: 180px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .card {
+        margin-bottom: 20px !important;
+    }
+
+    .card-body {
+        padding: 12px !important;
+    }
+
+    .table {
+        font-size: 0.8rem !important;
+    }
+
+    .table th, .table td {
+        padding: 8px 6px !important;
+    }
+
+    .btn-sm {
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .btn {
+        padding: 0.4rem 0.75rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    .form-control, .form-select {
+        padding: 0.5rem 0.5rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .form-label {
+        font-size: 0.8rem !important;
+        margin-bottom: 0.3rem !important;
+    }
+
+    /* DataTable responsive */
+    .dataTables_wrapper {
+        font-size: 0.75rem !important;
+    }
+
+    .dataTables_length, .dataTables_filter, .dataTables_info {
+        font-size: 0.75rem !important;
+    }
+
+    .paginate_button {
+        padding: 4px 8px !important;
+        margin: 0 1px !important;
+    }
+
+    /* Breadcrumb responsive */
+    .breadcrumb {
+        font-size: 0.75rem !important;
+        padding: 0.25rem 0 !important;
+    }
+
+    /* Alert responsive */
+    .alert {
+        padding: 10px 12px !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Input group responsive */
+    .input-group-text {
+        padding: 0.5rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Select2 responsive */
+    .select2-container--default .select2-selection--single {
+        height: 38px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 36px !important;
+        padding-left: 8px !important;
+    }
+
+    /* Badge responsive */
+    .badge {
+        font-size: 0.65rem !important;
+        padding: 0.35em 0.5em !important;
+    }
+
+    /* Nav pill responsive */
+    .st-pill {
+        padding: 5px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .st-pill .badge-count {
+        min-width: 14px !important;
+        height: 14px !important;
+        font-size: 0.5rem !important;
+        padding: 0 3px !important;
+    }
+}
+
+/* ── MOBILE SMALL (480px - 767px) ── */
+@media (max-width: 767px) {
+    #header {
+        gap: 8px !important;
+        padding: 0 10px !important;
+    }
+
+    #sidebar {
+        width: 220px !important;
+        padding: 12px !important;
+    }
+
+    .sidebar-nav .nav-heading {
+        font-size: 0.6rem !important;
+        margin: 8px 0 4px 10px !important;
+    }
+
+    .sidebar-nav .nav-link {
+        font-size: 0.85rem !important;
+        padding: 8px 10px !important;
+    }
+
+    .sidebar-nav .nav-link i:not(.bi-chevron-down) {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 1rem !important;
+    }
+
+    .sidebar-nav .nav-content li a {
+        padding: 8px 10px 8px 48px !important;
+        font-size: 0.8rem !important;
+    }
+
+    #main {
+        margin-top: 60px !important;
+        padding: 15px 20px !important;
+    }
+
+    .pagetitle {
+        gap: 10px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .pagetitle h1 {
+        font-size: 1.75rem !important;
+    }
+
+    .section {
+        padding: 10px 0 !important;
+    }
+
+    .card {
+        margin-bottom: 20px !important;
+        box-shadow: 0px 0 15px rgba(1, 41, 112, 0.08) !important;
+    }
+
+    .card-body {
+        padding: 15px !important;
+    }
+
+    .table-responsive {
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .table {
+        font-size: 0.85rem !important;
+        margin-bottom: 0 !important;
+    }
+
+    .table th, .table td {
+        padding: 10px 8px !important;
+    }
+
+    .btn {
+        padding: 0.45rem 0.85rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .btn-sm {
+        padding: 5px 10px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .form-control {
+        font-size: 1rem !important;
+        padding: 0.6rem 0.8rem !important;
+    }
+
+    .form-select {
+        font-size: 1rem !important;
+        padding: 0.6rem 2.5rem 0.6rem 0.8rem !important;
+    }
+
+    /* Evitar zoom automático en inputs (iOS) */
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+
+    .input-group-text {
+        padding: 0.6rem 0.8rem !important;
+    }
+
+    /* Toolbar responsive */
+    .card-body .row {
+        gap: 8px !important;
+    }
+
+    .col-lg-5, .col-lg-4, .col-lg-3 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Flexbox responsive para acciones */
+    .d-flex {
+        flex-wrap: wrap !important;
+    }
+
+    .gap-2 {
+        gap: 8px !important;
+    }
+
+    /* Modal responsive */
+    .modal-body {
+        padding: 15px !important;
+    }
+
+    /* Dropdown responsive */
+    .dropdown-menu {
+        min-width: 160px !important;
+    }
+
+    /* Header nav pills responsive */
+    .header-nav {
+        gap: 6px !important;
+    }
+
+    .st-pill {
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .st-pill i {
+        font-size: 0.9rem !important;
+    }
+
+    .st-pill .badge-count {
+        min-width: 15px !important;
+        height: 15px !important;
+        font-size: 0.55rem !important;
+    }
+
+    /* Avatar responsive */
+    .st-avatar {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 0.7rem !important;
+    }
+
+    /* Ensure forms don't overflow */
+    .form-row {
+        gap: 8px !important;
+    }
+
+    .form-group {
+        margin-bottom: 15px !important;
+    }
+
+    /* Navigation */
+    .nav-tabs {
+        gap: 0 !important;
+    }
+
+    .nav-tabs .nav-link {
+        padding: 0.6rem 0.75rem !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* ── Ensure table scrolling on mobile ── */
+@media (max-width: 767px) {
+    .table-responsive {
+        display: block !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+    }
+
+    .table-responsive > .table {
+        margin-bottom: 0 !important;
+        border-collapse: collapse !important;
+    }
+
+    .table thead {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+    }
+}
+
+/* ── Back to top button position ── */
+@media (max-width: 767px) {
+    .back-to-top {
+        right: 10px !important;
+        bottom: 10px !important;
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+    .back-to-top i {
+        font-size: 18px !important;
+    }
+}
+
+/* ── Prevent text selection on buttons in mobile ── */
+@media (max-width: 767px) {
+    button, .btn, [role="button"] {
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        -webkit-touch-callout: none !important;
+    }
 }
 </style>
 

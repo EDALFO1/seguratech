@@ -186,13 +186,22 @@
 
   const useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const isSmallScreen = window.matchMedia('(max-width: 1023.5px)').matches;
+  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+  // Determinar altura de TinyMCE según el dispositivo
+  const editorHeight = isMobile ? 300 : 600;
+  const editorToolbar = isMobile
+    ? "undo redo | bold italic underline strikethrough | align numlist bullist | link image | fullscreen"
+    : "undo redo | accordion accordionremove | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl";
 
   tinymce.init({
     selector: 'textarea.tinymce-editor',
-    plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
+    plugins: isMobile
+      ? 'autolink autosave link image fullscreen'
+      : 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
     editimage_cors_hosts: ['picsum.photos'],
-    menubar: 'file edit view insert format tools table help',
-    toolbar: "undo redo | accordion accordionremove | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl",
+    menubar: isMobile ? false : 'file edit view insert format tools table help',
+    toolbar: editorToolbar,
     autosave_ask_before_unload: true,
     autosave_interval: '30s',
     autosave_prefix: '{path}{query}-{id}-',
@@ -250,7 +259,7 @@
         });
       }
     },
-    height: 600,
+    height: editorHeight,
     image_caption: true,
     quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
     noneditable_class: 'mceNonEditable',
@@ -258,7 +267,7 @@
     contextmenu: 'link image table',
     skin: useDarkMode ? 'oxide-dark' : 'oxide',
     content_css: useDarkMode ? 'dark' : 'default',
-    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:' + (isMobile ? '14px' : '16px') + ' }'
   });
 
   /**

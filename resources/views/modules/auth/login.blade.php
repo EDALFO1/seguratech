@@ -264,6 +264,21 @@
     .st-form-panel { width: 100%; padding: 2.5rem 1.75rem; }
     .st-mobile-logo { display: flex; }
   }
+
+  @media (max-width: 480px) {
+    body { font-size: 14px; }
+    .st-form-panel { padding: 2rem 1.25rem; }
+    .st-form-inner { max-width: 100%; }
+    .st-form-header h2 { font-size: 1.4rem; }
+    .st-form-header p { font-size: 0.8rem; }
+    .st-label { font-size: 0.75rem; }
+    .form-control { font-size: 16px !important; padding: 0.65rem 0.8rem !important; }
+    .st-btn-login { padding: 0.75rem; font-size: 0.9rem; }
+    .st-mobile-logo { margin-bottom: 1.5rem; }
+    .st-mobile-logo img { height: 32px; }
+    .st-mobile-logo span { font-size: 1.1rem; }
+    .st-input-wrap .form-control { padding: 0.65rem 1rem 0.65rem 2.5rem !important; }
+  }
 </style>
 
 <div class="st-login-wrapper">
