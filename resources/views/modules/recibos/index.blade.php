@@ -57,6 +57,14 @@
             <span class="badge bg-dark ms-1">{{ $pendientes }}</span>
         </a>
 
+        <a href="{{ route('export.pago.simple') }}"
+           class="btn btn-outline-info {{ $pendientes == 0 ? 'disabled' : '' }}"
+           {{ $pendientes == 0 ? 'onclick=return false;' : '' }}>
+            <i class="bi bi-file-earmark-excel me-1"></i>
+            Exportar Pago Simple
+            <span class="badge bg-dark ms-1">{{ $pendientes }}</span>
+        </a>
+
         <a href="{{ route('export.index') }}" class="btn btn-outline-info">
             <i class="bi bi-archive me-1"></i>Ver Lotes
         </a>

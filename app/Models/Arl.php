@@ -34,7 +34,7 @@ class Arl extends Model
 
         'codigo' => [
             'required',
-            'alpha_num',
+            'regex:/^[a-zA-Z0-9\-]+$/',
             'max:20'
         ],
 

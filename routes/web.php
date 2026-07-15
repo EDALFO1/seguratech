@@ -224,6 +224,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/',                 [ExportBatchController::class, 'index'])->name('index');
             Route::post('/crear',           [ExportBatchController::class, 'crearLote'])->name('crear');
             Route::get('pila-excel',        [ReciboController::class, 'exportarPilaExcel'])->name('pila.excel');
+            Route::get('pago-simple',       [ReciboController::class, 'exportarPagoSimple'])->name('pago.simple');
             Route::get('afiliados/exportar',    [AfiliadoController::class, 'exportar'])->name('afiliados.exportar');
             Route::get('arl-afiliados/exportar',[ArlAfiliadoController::class, 'exportar'])->name('arl-afiliados.exportar');
             Route::get('{id}',              [ExportBatchController::class, 'show'])->name('show');

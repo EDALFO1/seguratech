@@ -15,6 +15,7 @@ use App\Exports\AfiliadosVigentesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PilaExcelExport;
 use App\Exports\PilaRealExport;
+use App\Exports\PagoSimpleExport;
 
 
 class ReciboController extends Controller
@@ -1143,6 +1144,178 @@ public function exportarPilaExcel()
         // =========================
         $zipPath = storage_path(
             "app/private/pila_excel_{$batch->id}.zip"
+        );
+
+        $zip = new \ZipArchive();
+
+        $result = $zip->open(
+            $zipPath,
+            \ZipArchive::CREATE | \ZipArchive::OVERWRITE
+        );
+
+        if ($result !== true) {
+            throw new \Exception('No se pudo crear ZIP');
+        }
+
+        foreach ($files as $file) {
+
+            if (!file_exists($file)) {
+
+                throw new \Exception(
+                    'Archivo inexistente: ' . $file
+                );
+            }
+
+            $zip->addFile(
+                $file,
+                basename($file)
+            );
+        }
+
+        $zip->close();
+
+        if (!file_exists($zipPath)) {
+            throw new \Exception('ZIP no generado');
+        }
+
+        return response()->download($zipPath)
+            ->deleteFileAfterSend(true);
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return back()->with(
+            'error',
+            $e->getMessage()
+        );
+    }
+}
+
+public function exportarPagoSimple()
+{
+    $empresaId = session('empresa_id');
+
+    $empresa = \App\Models\Empresa::find($empresaId);
+
+    if (!$empresa) {
+        return back()->with('error', 'Empresa no encontrada');
+    }
+
+    // =========================
+    // 🔥 RECIBOS PENDIENTES
+    // =========================
+    $recibos = \App\Models\Recibo::with([
+        'afiliado.documento',
+        'afiliado.subtipoCotizante',
+        'afiliado.afiliaciones.eps',
+        'afiliado.afiliaciones.arl',
+        'afiliado.afiliaciones.pension',
+        'afiliado.afiliaciones.caja',
+    ])
+        ->where('empresa_id', $empresaId)
+        ->whereNull('export_batch_id')
+        ->get();
+
+    if ($recibos->isEmpty()) {
+        return back()->with('error', 'No hay datos para exportar');
+    }
+
+    // =========================
+    // 🔥 SEPARAR POR CAJA
+    // =========================
+    $comfiar = collect();
+    $otros = collect();
+
+    foreach ($recibos as $r) {
+
+        $afiliacion = $r->afiliado
+            ->afiliaciones
+            ->where('estado', 1)
+            ->first();
+
+        $caja = strtoupper(
+            trim($afiliacion?->caja?->nombre ?? '')
+        );
+
+        if ($caja === 'COMFIAR') {
+            $comfiar->push($r);
+        } else {
+            $otros->push($r);
+        }
+    }
+
+    DB::beginTransaction();
+
+    try {
+
+        // =========================
+        // 🔥 CREAR LOTE
+        // =========================
+        $batch = \App\Models\ExportBatch::create([
+            'empresa_id' => $empresaId,
+            'codigo' => 'SIMPLE-' . now()->format('YmdHis'),
+            'periodo' => now()->format('Y-m'),
+            'recibos_count' => $recibos->count(),
+            'total' => $recibos->sum('total')
+        ]);
+
+        // =========================
+        // 🔥 MARCAR EXPORTADOS
+        // =========================
+        foreach ($recibos as $r) {
+
+            $r->update([
+                'export_batch_id' => $batch->id
+            ]);
+        }
+
+        // =========================
+        // 🔥 GENERAR ARCHIVOS
+        // =========================
+        $files = [];
+
+        // 🔹 COMFIAR
+        if ($comfiar->count() > 0) {
+
+            $rutaComfiar = storage_path(
+                "app/private/simple_comfiar_{$batch->id}.xlsx"
+            );
+
+            (new \App\Exports\PagoSimpleExport(
+                $empresaId,
+                now()->format('Y-m'),
+                $comfiar,
+                'COMFIAR'
+            ))->exportar($rutaComfiar);
+
+            $files[] = $rutaComfiar;
+        }
+
+        // 🔹 OTRAS CAJAS
+        if ($otros->count() > 0) {
+
+            $rutaOtros = storage_path(
+                "app/private/simple_otros_{$batch->id}.xlsx"
+            );
+
+            (new \App\Exports\PagoSimpleExport(
+                $empresaId,
+                now()->format('Y-m'),
+                $otros,
+                'OTROS'
+            ))->exportar($rutaOtros);
+
+            $files[] = $rutaOtros;
+        }
+
+        DB::commit();
+
+        // =========================
+        // 🔥 ZIP FINAL
+        // =========================
+        $zipPath = storage_path(
+            "app/private/simple_excel_{$batch->id}.zip"
         );
 
         $zip = new \ZipArchive();
