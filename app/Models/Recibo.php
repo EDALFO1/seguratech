@@ -59,6 +59,9 @@ class Recibo extends BaseModel
     {
         return $this->hasMany(ReciboDetalle::class);
     }
-    
 
+    public function exportBatch()
+    {
+        return $this->belongsTo(ExportBatch::class, 'export_batch_id');
+    }
 }

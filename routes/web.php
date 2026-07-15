@@ -33,7 +33,8 @@ use App\Http\Controllers\{
     RemisionDetalleController,
     ServicioExternoController,
     PlanController,
-    ArlAfiliadoController
+    ArlAfiliadoController,
+    ReporteHistoricoController
 };
 
 /*
@@ -230,6 +231,19 @@ Route::middleware('auth')->group(function () {
             Route::get('{id}',              [ExportBatchController::class, 'show'])->name('show');
             Route::post('{id}/reversar',    [ExportBatchController::class, 'reversar'])->name('reversar');
             Route::get('{id}/descargar',    [ExportBatchController::class, 'descargar'])->name('descargar');
+        });
+    });
+
+    /*
+    |-----------------------------------
+    | REPORTES (modulo:reportes)
+    |-----------------------------------
+    */
+
+    Route::middleware('modulo:reportes')->group(function () {
+        Route::prefix('reportes')->name('reportes.')->group(function () {
+            Route::get('historico-afiliado', [ReporteHistoricoController::class, 'index'])->name('historico-afiliado');
+            Route::get('api/buscar-afiliados', [ReporteHistoricoController::class, 'buscarAfiliados'])->name('api-buscar-afiliados');
         });
     });
 

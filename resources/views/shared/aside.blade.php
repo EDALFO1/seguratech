@@ -228,6 +228,12 @@
                     <span>Afiliados ARL Excel</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('reportes.historico-afiliado') }}"
+                   class="{{ request()->routeIs('reportes.*') ? 'active' : '' }}">
+                    <span>Histórico de Pagos</span>
+                </a>
+            </li>
         </ul>
     </li>
     @endif
