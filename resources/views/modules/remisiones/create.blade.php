@@ -40,19 +40,7 @@
 
         <div class="row g-3">
 
-            {{-- EMPRESA --}}
-            <div class="col-md-6">
-                <label class="form-label fw-semibold">Empresa</label>
-                <input type="text" class="form-control bg-light"
-                       value="{{ session('empresa_nombre') }}" readonly>
-            </div>
-
-            {{-- NIT --}}
-            <div class="col-md-3">
-                <label class="form-label fw-semibold">NIT</label>
-                <input type="text" class="form-control bg-light"
-                       value="{{ session('empresa_nit') }}" readonly>
-            </div>
+           
 
             {{-- FECHA --}}
             <div class="col-md-2">
@@ -63,7 +51,7 @@
             </div>
 
             {{-- PERIODO --}}
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <label class="form-label fw-semibold">Periodo</label>
                 <input type="text" id="periodo" class="form-control bg-light" readonly>
             </div>

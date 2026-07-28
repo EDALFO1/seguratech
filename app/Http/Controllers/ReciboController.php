@@ -234,6 +234,8 @@ public function update(Request $request, Recibo $recibo)
 
     $empresaId = session('empresa_id');
 
+    $novedadAnterior = $recibo->novedad;
+
     DB::beginTransaction();
 
     try {
@@ -322,6 +324,20 @@ public function update(Request $request, Recibo $recibo)
             }
         }
 
+        // =========================
+        // 🔥 SINCRONIZAR ESTADO AFILIADO SEGÚN NOVEDAD
+        // =========================
+        if ($novedadAnterior != 'Retiro' && $request->novedad == 'Retiro') {
+            // se agregó la novedad de retiro
+            Afiliado::where('id', $request->afiliado_id)
+                ->update(['estado' => 0]);
+
+        } elseif ($novedadAnterior == 'Retiro' && $request->novedad != 'Retiro') {
+            // se quitó la novedad de retiro
+            Afiliado::where('id', $request->afiliado_id)
+                ->update(['estado' => 1]);
+        }
+
         DB::commit();
 
     } catch (\Exception $e){
@@ -339,7 +355,16 @@ public function update(Request $request, Recibo $recibo)
             return back()->with('error','No se puede eliminar, ya fue exportado');
         }
 
+        $eraRetiro = $recibo->novedad == 'Retiro';
+        $afiliadoId = $recibo->afiliado_id;
+
         $recibo->delete();
+
+        // 🔥 REACTIVAR AFILIADO SI EL RECIBO TENÍA NOVEDAD DE RETIRO
+        if ($eraRetiro) {
+            Afiliado::where('id', $afiliadoId)
+                ->update(['estado' => 1]);
+        }
 
         return redirect()->route('recibos.index')
             ->with('success','Recibo eliminado correctamente');

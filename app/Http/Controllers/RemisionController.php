@@ -188,13 +188,9 @@ class RemisionController extends Controller
             }
         }
 
-        // =========================
-        // 🔥 INACTIVAR AFILIADO
-        // =========================
-        if ($request->novedad == 'Retiro') {
-            Afiliado::where('id', $request->afiliado_id)
-                ->update(['estado' => 0]);
-        }
+        // 🔥 NOTA: la novedad de retiro en Remisión es solo informativa
+        // (para liquidar valores e imprimir). El estado del afiliado
+        // se maneja únicamente desde el módulo de Recibos.
 
         DB::commit();
 
@@ -322,6 +318,10 @@ public function update(Request $request, $id)
                 }
             }
         }
+
+        // 🔥 NOTA: la novedad de retiro en Remisión es solo informativa
+        // (para liquidar valores e imprimir). El estado del afiliado
+        // se maneja únicamente desde el módulo de Recibos.
 
         DB::commit();
 
