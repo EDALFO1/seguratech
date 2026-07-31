@@ -34,14 +34,13 @@
                     <i class="bi bi-check-lg me-1"></i>Actualizar
                 </button>
                 <a href="{{ route('usuarios.index') }}" class="btn btn-outline-secondary">Cancelar</a>
-                <button type="button" class="btn btn-outline-danger btn-sm ms-auto btn-delete">
-                    <i class="bi bi-trash me-1"></i>Eliminar
-                </button>
+                <form action="{{ route('usuarios.destroy', $usuario) }}" method="POST" class="ms-auto form-delete" data-nombre="{{ $usuario->name ?? '' }}">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-trash me-1"></i>Eliminar
+                    </button>
+                </form>
             </div>
-        </form>
-
-        <form action="{{ route('usuarios.destroy', $usuario) }}" method="POST" class="d-none form-delete" data-nombre="{{ $usuario->name ?? '' }}">
-            @csrf @method('DELETE')
         </form>
     </div>
 </div>
@@ -52,9 +51,10 @@
 @push('scripts')
 <script>
 $(function () {
-    $('.btn-delete').on('click', function () {
-        const form = document.querySelector('.form-delete');
-        const nombre = $(form).data('nombre') || 'este registro';
+    $('.form-delete').on('submit', function (e) {
+        e.preventDefault();
+        const form = this;
+        const nombre = $(this).data('nombre') || 'este registro';
         Swal.fire({
             title: '¿Eliminar?',
             text: `«${nombre}» será eliminado permanentemente.`,

@@ -234,7 +234,7 @@ table.detalle tfoot td.num {
 
 <div class="nota">
     <strong>CRA 9 # 9 - 49</strong> · Tel: 8818282<br>
-    No. cuenta: <strong>017070235944</strong> · Banco DAVIVIENDA, cta. ahorros<br>
+    No. cuenta: <strong>017070235951</strong> · Banco DAVIVIENDA, cta. ahorros<br>
     Enviar comprobante de consignación por WhatsApp al <strong>3152041979</strong> o <strong>3183375879</strong>
 </div>
 
