@@ -27,7 +27,7 @@ class ReciboController extends Controller
     // 🔥 PERIODO ACTUAL
     // EJEMPLO:
     // si hoy es junio -> mostrar recibos del periodo mayo
-    $periodo = now()->subMonth()->format('Y-m');
+    $periodo = now()->subMonthNoOverflow()->format('Y-m');
 
     // 🔥 SOLO RECIBOS DEL PERIODO ACTUAL
     $recibos = Recibo::with('afiliado')
@@ -98,7 +98,7 @@ public function store(Request $request)
     if ($request->novedad == 'Retiro') {
 
         $fechaRetiro = \Carbon\Carbon::parse($request->fecha_retiro);
-        $periodo = \Carbon\Carbon::parse($request->fecha)->subMonth();
+        $periodo = \Carbon\Carbon::parse($request->fecha)->subMonthNoOverflow();
 
         if (
             $fechaRetiro->month != $periodo->month ||
@@ -119,7 +119,7 @@ public function store(Request $request)
         return back()->with('error','No se pudo calcular el recibo');
     }
 
-    $periodoFecha = Carbon::parse($request->fecha)->subMonth();
+    $periodoFecha = Carbon::parse($request->fecha)->subMonthNoOverflow();
     $periodo = $periodoFecha->format('Y-m');
 
     DB::beginTransaction();
@@ -249,7 +249,7 @@ public function update(Request $request, Recibo $recibo)
             return back()->with('error','No se pudo recalcular');
         }
 
-        $periodoFecha = Carbon::parse($request->fecha)->subMonth();
+        $periodoFecha = Carbon::parse($request->fecha)->subMonthNoOverflow();
         $periodo = $periodoFecha->format('Y-m');
 
         $existe = Recibo::where('empresa_id', $empresaId)
@@ -611,7 +611,7 @@ public function generarUno(Request $request, $afiliadoId)
         return back()->with('error','No se pudo generar');
     }
 
-    $periodo = now()->subMonth()->format('Y-m');
+    $periodo = now()->subMonthNoOverflow()->format('Y-m');
 
     $existe = Recibo::where('empresa_id', $empresaId)
         ->where('afiliado_id', $afiliadoId)
@@ -668,7 +668,7 @@ public function generarTodos()
 {
     $empresaId = session('empresa_id');
     $fecha = now();
-    $periodo = now()->subMonth()->format('Y-m');
+    $periodo = now()->subMonthNoOverflow()->format('Y-m');
 
     $afiliados = Afiliado::where('empresa_id', $empresaId)
         ->where('estado', 1)
@@ -735,7 +735,7 @@ public function cerrarPeriodo()
     $empresaId = session('empresa_id');
 
     // 🔥 PERIODO (MES ANTERIOR)
-    $periodo = now()->subMonth()->format('Y-m');
+    $periodo = now()->subMonthNoOverflow()->format('Y-m');
 
     // 🔥 AFILIADOS ACTIVOS
     $afiliados = Afiliado::where('empresa_id', $empresaId)
@@ -840,9 +840,9 @@ public function afiliadosVigentes(Request $request)
     // =========================
     // 🔥 PERÍODO ANTERIOR (JUNIO si estamos en JULIO)
     // =========================
-    $periodoAnterior = now()->subMonth()->format('Y-m');
-    $mesAnterior = now()->subMonth()->month;
-    $anioAnterior = now()->subMonth()->year;
+    $periodoAnterior = now()->subMonthNoOverflow()->format('Y-m');
+    $mesAnterior = now()->subMonthNoOverflow()->month;
+    $anioAnterior = now()->subMonthNoOverflow()->year;
 
     // =========================
     // 🔥 AFILIADOS CON RECIBO ACTIVO DEL PERÍODO ANTERIOR

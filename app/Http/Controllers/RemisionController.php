@@ -44,7 +44,7 @@ class RemisionController extends Controller
     if ($request->novedad == 'Retiro') {
 
         $fechaRetiro = Carbon::parse($request->fecha_retiro);
-        $periodo = Carbon::parse($request->fecha)->subMonth();
+        $periodo = Carbon::parse($request->fecha)->subMonthNoOverflow();
 
         if (
             $fechaRetiro->month != $periodo->month ||
@@ -62,7 +62,7 @@ class RemisionController extends Controller
         return back()->with('error','No se pudo calcular la remisión');
     }
 
-    $periodoFecha = Carbon::parse($request->fecha)->subMonth();
+    $periodoFecha = Carbon::parse($request->fecha)->subMonthNoOverflow();
     $periodo = $periodoFecha->format('Y-m');
 
     DB::beginTransaction();
