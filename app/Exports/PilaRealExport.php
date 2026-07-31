@@ -97,7 +97,7 @@ public function __construct($empresaId, $periodo, $recibos = null)
         // PENSION
         $sheet->setCellValue(
             'A10',
-            $dt->copy()->subMonth()->format('Y-m')
+            $dt->copy()->subMonthNoOverflow()->format('Y-m')
         );
 
         // SALUD
@@ -448,7 +448,7 @@ $fechaAfiliacion =
 
 // periodo liquidado
 $periodoLiquidado =
-    $dt->copy()->subMonth();
+    $dt->copy()->subMonthNoOverflow();
 
 // si ingreso en el mes liquidado
 if (

@@ -49,7 +49,7 @@ class PagoSimpleExport
         // =====================================================
         // FILA 2: PERIODOS (Una sola vez)
         // =====================================================
-        $sheet->setCellValue("O2", $dt->copy()->subMonth()->format('Y-m'));
+        $sheet->setCellValue("O2", $dt->copy()->subMonthNoOverflow()->format('Y-m'));
         $sheet->setCellValue("P2", $dt->format('Y-m'));
         $sheet->setCellValue("Q2", '');
 
@@ -175,7 +175,7 @@ class PagoSimpleExport
 
             // O: Ingreso (solo si es nuevo en el mes anterior)
             $fechaAfiliacion = Carbon::parse($afiliacion->fecha_afiliacion);
-            $mesAnterior = $dt->copy()->subMonth();
+            $mesAnterior = $dt->copy()->subMonthNoOverflow();
 
             if ($fechaAfiliacion->year == $mesAnterior->year &&
                 $fechaAfiliacion->month == $mesAnterior->month) {

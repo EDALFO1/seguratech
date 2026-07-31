@@ -48,7 +48,7 @@ class PilaValidator
 
             // 🔴 VALIDAR MES RETIRO
             if($r->novedad == 'Retiro'){
-                $mesAnterior = now()->subMonth()->format('Y-m');
+                $mesAnterior = now()->subMonthNoOverflow()->format('Y-m');
 
                 if(!str_contains($r->fecha_retiro, $mesAnterior)){
                     $errores[] = "Retiro fuera de periodo {$a->numero_documento}";
